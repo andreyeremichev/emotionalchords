@@ -1,0 +1,36 @@
+<svg
+  width="300"
+  height="140"
+  viewBox="0 0 260 140"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <style>
+      .ec-wave {
+        stroke: #26292f;
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+      .ec-text {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont,
+          "Inter", "Segoe UI", sans-serif;
+        font-weight: 600;
+        fill: #26292f;
+      }
+    </style>
+  </defs>
+
+  <!-- Wave group (unchanged proportions) -->
+  <g id="wave-group" transform="translate(0,0) scale(0.4,0.8)">
+    <path
+      class="ec-wave"
+      d="M 30 80 C 60 20, 105 20, 135 80 S 205 140, 235 80"
+    />
+  </g>
+
+  <!-- Text block (unchanged) -->
+  <text class="ec-text" x="95" y="60" font-size="30">emotional</text>
+  <text class="ec-text" x="95" y="100" font-size="30">chords</text>
+</svg>
