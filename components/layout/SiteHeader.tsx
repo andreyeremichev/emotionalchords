@@ -4,15 +4,15 @@ import Image from "next/image";
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-black/5 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-3">
           {/* Logo SVG from /public */}
           <Image
             src="/emotional-chords-logo.svg"
             alt="Emotional Chords logo"
-            width={160}   // tweak these two
-            height={60}   // to taste
+            width={160}
+            height={60}
             priority
           />
         </Link>
@@ -31,12 +31,7 @@ export function SiteHeader() {
           >
             Learn
           </Link>
-          <Link
-            href="/more"
-            className="rounded-full px-3 py-1 hover:bg-black/5"
-          >
-            More
-          </Link>
+          
         </nav>
       </div>
     </header>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import HomeDemoPlayer from "@/components/home/HomeDemoPlayer";
-import { EMOTIONS, type EmotionId, type EmotionMeta } from "@/lib/emotions";
+import { EMOTIONS, type EmotionId } from "@/lib/emotions";
 
 export default function HomePage() {
   const [activeEmotionId, setActiveEmotionId] = useState<EmotionId>("sadness");
@@ -20,21 +20,21 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#faf7f3] text-[#1c1c1c]">
+    <div className="bg-[#faf7f3] text-[#1c1c1c]">
       {/* =========================
           HERO
       ========================= */}
-      <section className="mx-auto max-w-5xl px-4 pt-10 pb-8 sm:pt-16 sm:pb-12">
+      <section className="mx-auto max-w-5xl px-4 pt-7 pb-5 sm:pt-10 sm:pb-7">
         <div className="max-w-3xl">
           <h1 className="text-3xl font-semibold tracking-tight text-[#111] sm:text-4xl">
-  Play{" "}
-  <span className="bg-gradient-to-r from-[#87a8ff] via-[#c68bfe] to-[#ff80b5] bg-clip-text text-transparent">
-    emotion
-  </span>{" "}
-  on piano ✨
-</h1>
+            Play{" "}
+            <span className="bg-gradient-to-r from-[#87a8ff] via-[#c68bfe] to-[#ff80b5] bg-clip-text text-transparent">
+              emotion
+            </span>{" "}
+            on piano ✨
+          </h1>
 
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-neutral-700">
+          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-neutral-700">
             Tap an emotion. Hear it once.
             <br />
             Then play it step by step — in under 10 minutes.
@@ -46,7 +46,7 @@ export default function HomePage() {
           DEMO BLOCK
       ========================= */}
       <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
             Demo
           </p>
@@ -59,20 +59,17 @@ export default function HomePage() {
           </p>
 
           {/* Demo player */}
-          <div className="mt-6">
-            <HomeDemoPlayer
-              emotion={activeEmotion}
-              playToken={playToken}
-            />
+          <div className="mt-4">
+            <HomeDemoPlayer emotion={activeEmotion} playToken={playToken} />
           </div>
 
           {/* Emotion picker */}
-          <div className="mt-6">
+          <div className="mt-5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
               Pick an emotion
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {EMOTIONS.map((e) => {
                 const active = e.id === activeEmotionId;
                 return (
@@ -96,7 +93,7 @@ export default function HomePage() {
           </div>
 
           {/* CTA */}
-          <div className="mt-6">
+          <div className="mt-5">
             <Link
               href={`/emotions/${activeEmotion.id}`}
               className="inline-flex items-center rounded-full bg-black px-5 py-2 text-sm font-semibold text-white hover:bg-neutral-800"
@@ -111,7 +108,7 @@ export default function HomePage() {
           EMOTION EXPLORER
       ========================= */}
       <section className="border-t border-black/10 bg-[#faf7f3]">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <h2 className="text-lg font-semibold tracking-tight">
             Explore all emotions
           </h2>
@@ -121,7 +118,7 @@ export default function HomePage() {
             session to master each — and then both together.
           </p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {EMOTIONS.map((e) => (
               <Link
                 key={e.id}
@@ -155,7 +152,7 @@ export default function HomePage() {
           LEARN TEASER
       ========================= */}
       <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <h2 className="text-lg font-semibold tracking-tight">
             Want to understand why it works?
           </h2>
@@ -165,7 +162,7 @@ export default function HomePage() {
             without heavy theory language.
           </p>
 
-          <ul className="mt-4 space-y-2 text-sm">
+          <ul className="mt-3 space-y-2 text-sm">
             <li>
               🧭{" "}
               <Link
@@ -178,11 +175,16 @@ export default function HomePage() {
             </li>
           </ul>
 
-          <p className="mt-6 text-xs text-neutral-500">
+          <p className="mt-4 text-xs text-neutral-500">
             Emotions first. Theory later.
           </p>
         </div>
       </section>
-    </main>
+
+      {/* =========================
+          FOOTER SPACER (prevents fixed-bottom UI from covering footer)
+      ========================= */}
+      <div className="h-20" aria-hidden="true" />
+    </div>
   );
 }

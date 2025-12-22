@@ -7,6 +7,48 @@ import { EMOTION_BY_ID, type EmotionId } from "@/lib/emotions";
 
 type Params = { emotion: string };
 
+function emotionHowToJsonLd(e: { id: string; label: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LearningResource", "HowTo"],
+    name: `How to play ${e.label} on piano (beginner)`,
+    url: `https://emotionalchords.app/emotions/${e.id}`,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "EmotionalChords",
+      url: "https://emotionalchords.app",
+    },
+    description:
+      `Beginner-friendly steps to play ${e.label.toLowerCase()} on piano. ` +
+      "Two styles: Flow (smooth, familiar) and Color (expressive, cinematic). " +
+      "No sheet music. No music theory required.",
+    educationalLevel: "Beginner",
+    inLanguage: "en",
+    supply: [{ "@type": "HowToSupply", name: "Piano or keyboard" }],
+    tool: [{ "@type": "HowToTool", name: "EmotionalChords interactive practice" }],
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Step 1 — Smooth chords",
+        text:
+          "Play comfortable chord shapes slowly. Keep your hands relaxed and focus on a clean, even sound.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Step 2 — Play with feeling",
+        text:
+          "Add rhythm and touch. Repeat the same chords with a simple pattern to make the emotion feel real.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Step 3 — Lift the emotion",
+        text:
+          "Play the same idea higher on the keyboard to lift the feeling (brighter, lighter, or more intense).",
+      },
+    ],
+  };
+}
+
 // Next 16 (Turbopack) may treat params as a Promise → await it
 export async function generateMetadata({
   params,
@@ -18,8 +60,8 @@ export async function generateMetadata({
   const e = EMOTION_BY_ID[id];
   if (!e) return {};
 
-  const title = `${e.label} – Two chord recipes (Flow & Color) • EmotionalChords`;
-  const description = `Practice ${e.label} with two chord recipes: Flow (familiar) and Color (surprising). Step-by-step, beginner-friendly.`;
+  const title = `${e.label} Piano Chords (Beginner) | EmotionalChords`;
+  const description = `Learn how to play ${e.label.toLowerCase()} on piano step by step. Two styles: Flow (smooth, familiar) and Color (expressive, cinematic). No sheet music. No music theory required.`;
 
   return {
     title,
@@ -30,7 +72,9 @@ export async function generateMetadata({
       url: `https://emotionalchords.app/emotions/${e.id}`,
       title,
       description,
-      images: ["/og/og-image.png"],
+      images: [
+        { url: "/og/og-image.png", width: 1200, height: 630, alt: `EmotionalChords — ${e.label}` },
+      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -38,7 +82,17 @@ export async function generateMetadata({
       description,
       images: ["/og/og-image.png"],
     },
-    robots: { index: true, follow: true },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
   };
 }
 
@@ -65,10 +119,83 @@ export default async function EmotionPage({
         </h1>
 
         <p className="mt-2 text-sm text-neutral-700">
-          Two ways to play the same feeling: <strong>Flow</strong> (familiar) and{" "}
-          <strong>Color</strong> (surprising). Start with root-position chords.
-          Smooth shapes and rhythm come next.
-        </p>
+  Two ways to play the same feeling: <strong>Flow</strong> (smooth, familiar) and{" "}
+  <strong>Color</strong> (expressive, cinematic). You’ll practice it in three
+  steps: <strong>smooth chords</strong>, <strong>play with feeling</strong>{" "}
+  (rhythm + touch), and <strong>lift it higher</strong>.
+</p>
+
+{/* =========================
+    AI + Human Quick Answer
+========================= */}
+<div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
+  <p className="text-sm leading-relaxed text-neutral-800">
+    <strong>How to play {e.label.toLowerCase()} on piano (beginner):</strong>{" "}
+    start with <strong>smooth chords</strong>, then repeat them with a simple{" "}
+    <strong>rhythm</strong>, and finally <strong>lift the emotion</strong> by
+    playing the same idea higher on the keyboard.
+  </p>
+
+  <ul className="mt-2 space-y-1 text-xs text-neutral-700">
+    <li>✅ No sheet music</li>
+    <li>✅ No music theory required</li>
+    <li>✅ Two styles: Flow (smooth) and Color (cinematic)</li>
+  </ul>
+</div>
+
+{/* =========================
+    JSON-LD for AI engines
+========================= */}
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(emotionHowToJsonLd(e)) }}
+/>
+
+{/* =========================
+    AI + Human Quick Answer
+========================= */}
+<div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
+  <p className="text-sm leading-relaxed text-neutral-800">
+    <strong>How to play {e.label.toLowerCase()} on piano (beginner):</strong>{" "}
+    play the chords slowly and smoothly, keep your hands comfortable, and lift
+    the sound by moving higher on the keyboard.
+  </p>
+  <ul className="mt-2 space-y-1 text-xs text-neutral-700">
+    <li>✅ No sheet music</li>
+    <li>✅ No music theory required</li>
+    <li>
+      ✅ Try both styles: <strong>Flow</strong> and <strong>Color</strong>
+    </li>
+  </ul>
+</div>
+
+{/* =========================
+    JSON-LD for AI engines
+========================= */}
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": ["LearningResource", "HowTo"],
+      name: `How to play ${e.label} on piano (beginner)`,
+      url: `https://emotionalchords.app/emotions/${e.id}`,
+      isPartOf: {
+        "@type": "WebSite",
+        name: "EmotionalChords",
+        url: "https://emotionalchords.app",
+      },
+      description: `Beginner-friendly steps to play ${e.label.toLowerCase()} on piano using two styles: Flow (smooth, familiar) and Color (expressive, cinematic). No sheet music. No music theory required.`,
+      educationalLevel: "Beginner",
+      inLanguage: "en",
+      step: [
+        { "@type": "HowToStep", name: "Play smooth chords", text: "Start with easy chord shapes and play them slowly and smoothly." },
+        { "@type": "HowToStep", name: "Play with feeling", text: "Use gentle rhythm and touch to bring the emotion out." },
+        { "@type": "HowToStep", name: "Lift the emotion", text: "Move the same idea higher on the keyboard to brighten or intensify it." },
+      ],
+    }),
+  }}
+/>
       </header>
 
       {/* Two-tier mobile-first practice board (client component) */}
