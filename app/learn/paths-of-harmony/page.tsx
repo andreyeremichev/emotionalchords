@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import TwoPathsEmotionCompare from "./TwoPathsEmotionCompare";
 import FlowKeyboard from "./FlowKeyboard";
 import ColorKeyboard from "./ColorKeyboard";
+import TextColorKeyboardSection from "./TextColorKeyboardSection";
+import TextFlowKeyboardSection from "./TextFlowKeyboardSection";
 
 export const metadata: Metadata = {
   title: "Paths of Harmony – Flow vs Color • EmotionalChords",
@@ -220,6 +222,10 @@ export default function PathsOfHarmonyPage() {
           <TwoPathsEmotionCompare />
         </div>
       </section>
+
+<TextFlowKeyboardSection />     
+
+<TextColorKeyboardSection />
 
       {/* Table / Map */}
       <section>
@@ -589,30 +595,9 @@ export default function PathsOfHarmonyPage() {
           It&apos;s not “harder.” It&apos;s just more concentrated.
         </p>
 
-        <div className="highlight-box">
-          <p>
-            <strong>Simple idea:</strong> Flow is the “home recipe.” Color is the “twist.”
-            Try both for the same emotion and notice what changes.
-          </p>
-        </div>
+        
       </section>
 
-      {/* Flow keyboard demo */}
-      <section>
-        <h2>🎹 Try Flow on the keyboard</h2>
-        <p>Press play and follow along. This is the emotional baseline.</p>
-        <FlowKeyboard />
-      </section>
-
-      {/* Color keyboard demo */}
-      <section>
-        <h2>🎹 Now try Color</h2>
-        <p>
-          Same emotion — different feeling. Color adds the twist: small moves that
-          change the mood quickly.
-        </p>
-        <ColorKeyboard />
-      </section>
 
       {/* Closing */}
       <section>

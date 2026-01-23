@@ -16,6 +16,85 @@ import {
   pitchNameToPc,
 } from "@/lib/harmony/flow";
 
+// ===============================
+// Tone Sampler + "Smooth" voicing (matches Practice)
+// ===============================
+
+const PITCHES_SHARP = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"] as const;
+
+function midiToName(midi: number) {
+  const pc = PITCHES_SHARP[midi % 12];
+  const oct = Math.floor(midi / 12) - 1;
+  return `${pc}${oct}`;
+}
+
+function chordToPitchClasses(symbol: string): { rootPc: number; pcs: number[] } {
+  const m = /^([A-G])(b|#)?(m|°|dim)?$/i.exec(symbol.trim());
+  if (!m) return { rootPc: 0, pcs: [] };
+
+  const letter = m[1].toUpperCase();
+  const acc = m[2] || "";
+  const qual = (m[3] || "").toLowerCase();
+
+  const basePCMap: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  let pc = basePCMap[letter] ?? 0;
+  if (acc === "#") pc = (pc + 1) % 12;
+  if (acc === "b") pc = (pc + 11) % 12;
+
+  let quality: "M" | "m" | "dim" = "M";
+  if (qual === "m") quality = "m";
+  if (qual === "°" || qual === "dim") quality = "dim";
+
+  const steps = quality === "M" ? [0, 4, 7] : quality === "m" ? [0, 3, 7] : [0, 3, 6];
+  const pcs = steps.map((s) => (pc + s) % 12);
+  return { rootPc: pc, pcs };
+}
+
+function buildFullPianoUrls(): Record<string, string> {
+  const urls: Record<string, string> = {};
+
+  for (const p of ["A", "A#", "B"] as const) {
+    const name = `${p}0`;
+    urls[name] = `${name.replace("#", "%23")}.wav`;
+  }
+
+  for (let oct = 1; oct <= 7; oct++) {
+    for (const p of PITCHES_SHARP) {
+      const name = `${p}${oct}`;
+      urls[name] = `${name.replace("#", "%23")}.wav`;
+    }
+  }
+
+  urls["C8"] = "C8.wav";
+  return urls;
+}
+
+async function ensureSampler(ref: React.MutableRefObject<Tone.Sampler | null>) {
+  if (ref.current) return;
+  const sampler = new Tone.Sampler({
+    urls: buildFullPianoUrls(),
+    baseUrl: "/audio/notes/",
+  }).toDestination();
+
+  await Tone.loaded();
+  ref.current = sampler;
+}
+
+/** RH triad mapped to octave 4 (C4 bucket) */
+function triadNamesInRH(symbol: string): string[] {
+  const { pcs } = chordToPitchClasses(symbol);
+  if (!pcs.length) return [];
+  const base = 60; // C4
+  return pcs.map((pc) => midiToName(base + ((pc - 0 + 12) % 12)));
+}
+
+/** LH root mapped to octave 3 */
+function rootNameInLH(symbol: string): string {
+  const { rootPc } = chordToPitchClasses(symbol);
+  const midi = (3 + 1) * 12 + rootPc; // octave 3
+  return midiToName(midi);
+}
+
 /* =========================
    Shared emotion model
 ========================= */
@@ -504,80 +583,47 @@ function nodeIndexForToken(tok: DegToken, mode: Mode): number {
   }
 }
 
-function buildFullPianoUrls(): Record<string, string> {
-  const urls: Record<string, string> = {};
 
-  for (const p of ["A", "A#", "B"] as const) {
-    const name = `${p}0`;
-    const safe = name.replace("#", "%23");
-    urls[name] = `${safe}.wav`;
-  }
+type VoicingMode = "SMOOTH" | "BLOCK";
 
-  for (let oct = 1; oct <= 7; oct++) {
-    for (const p of PITCHES) {
-      const name = `${p}${oct}`;
-      const safe = name.replace("#", "%23");
-      urls[name] = `${safe}.wav`;
-    }
-  }
+/**
+ * Play chord symbols with Tone.Sampler (Smooth) OR fallback to WebAudio (Block).
+ * - Smooth: LH root (oct 3) + RH triad (oct 4)
+ * - Block: keep existing playProgression() pipeline (pcs forced to one octave)
+ */
+async function playChordSymbolsWithVoicing(params: {
+  chordSymbols: string[];
+  voicing: VoicingMode;
+  chordDurSec: number;
+  samplerRef: React.MutableRefObject<Tone.Sampler | null>;
+  // For BLOCK mode (existing WebAudio)
 
-  {
-    const name = "C8";
-    const safe = name.replace("#", "%23");
-    urls[name] = `${safe}.wav`;
-  }
+}) {
+  const { chordSymbols, voicing, chordDurSec, samplerRef, parsedForBlock } = params;
 
-  return urls;
+  
+
+  // SMOOTH
+  await Tone.start().catch(() => {});
+  await ensureSampler(samplerRef).catch(() => {});
+  const sampler = samplerRef.current;
+  if (!sampler) return;
+
+  const t0 = Tone.now() + 0.02;
+
+  chordSymbols.forEach((sym, i) => {
+    const rh = triadNamesInRH(sym);
+    const lh = rootNameInLH(sym);
+    const notes = [lh, ...rh].filter(Boolean);
+
+    const at = t0 + i * chordDurSec;
+    try {
+      // short hit, similar to Practice (slight tail but not full sustain)
+      (sampler as any).triggerAttackRelease(notes, Math.max(0.2, chordDurSec - 0.05), at);
+    } catch {}
+  });
 }
 
-async function ensurePianoSampler(ref: React.MutableRefObject<Tone.Sampler | null>) {
-  if (ref.current) return;
-
-  const urls = buildFullPianoUrls();
-  const sampler = new Tone.Sampler({
-    urls,
-    baseUrl: "/audio/notes/",
-  }).toDestination();
-
-  await Tone.loaded();
-  ref.current = sampler;
-}
-function triadFromChordName(name: string): string[] {
-  const m = /^([A-G])(b|#)?(m|°|dim)?$/i.exec(name);
-  if (!m) return [];
-  const letter = m[1].toUpperCase();
-  const acc = m[2] || "";
-  const qual = (m[3] || "").toLowerCase();
-
-  const basePCMap: Record<string, number> = {
-    C: 0,
-    D: 2,
-    E: 4,
-    F: 5,
-    G: 7,
-    A: 9,
-    B: 11,
-  };
-  let pc = basePCMap[letter] ?? 0;
-  if (acc === "#") pc = (pc + 1 + 12) % 12;
-  if (acc === "b") pc = (pc - 1 + 12) % 12;
-
-  let quality: "M" | "m" | "dim" = "M";
-  if (qual === "m") quality = "m";
-  if (qual === "°" || qual === "dim") quality = "dim";
-
-  const steps =
-    quality === "M"
-      ? TRIAD_MAJOR
-      : quality === "m"
-      ? TRIAD_MINOR
-      : TRIAD_DIM;
-
-  const baseOct = 4;
-  const rootMidi = (baseOct + 1) * 12 + pc;
-
-  return steps.map((semi) => midiToNoteName(rootMidi + semi));
-}
 
 /* =========================
    FLOW circle component
@@ -586,14 +632,16 @@ function triadFromChordName(name: string): string[] {
 type FlowCircleProps = {
   emotion: EmotionConfig;
   playToken: number;       // increment triggers one pass
+  voicing: VoicingMode;
+  samplerRef: React.MutableRefObject<Tone.Sampler | null>;
   onFinished?: () => void; // called when done
 };
 
-function FlowCircle({ emotion, playToken, onFinished }: FlowCircleProps) {
+function FlowCircle({ emotion, playToken, voicing, samplerRef, onFinished }: FlowCircleProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeNodeIndex, setActiveNodeIndex] = useState<number | null>(null);
 
-  const samplerRef = useRef<Tone.Sampler | null>(null);
+  
   const timeoutsRef = useRef<number[]>([]);
 
   // 1. Shared Flow preset for this emotion
@@ -640,27 +688,25 @@ function FlowCircle({ emotion, playToken, onFinished }: FlowCircleProps) {
   setIsPlaying(true);
   setActiveNodeIndex(null);
 
-  await Tone.start();
-  await ensurePianoSampler(samplerRef);
-  const s = samplerRef.current;
-  if (!s) return;
-
   const baseStepSec = 0.9;
   const tempoMult = emotion.tempo || 1.0;
   const stepSec = baseStepSec / tempoMult;
 
+  // For BLOCK mode playback we need ParsedChord[]
+  const parsedForBlock = parseProgression(flowChordNames.join(" "));
+
+  // Fire audio (non-blocking)
+  playChordSymbolsWithVoicing({
+    chordSymbols: flowChordNames,
+    voicing,
+    chordDurSec: stepSec,
+    samplerRef,
+    parsedForBlock,
+  }).catch(() => {});
+
+  // Keep your existing node highlight timing
   let accSec = 0;
-  const now = Tone.now();
-
-  flowChordNames.forEach((chName, idx) => {
-    const notes = triadFromChordName(chName);
-    const startTime = now + accSec;
-
-    // Play Flow chord
-    if (notes.length) {
-      (s as any).triggerAttackRelease(notes, 0.8, startTime);
-    }
-
+  flowChordNames.forEach((_, idx) => {
     const tok = degreeTokens[idx];
     const nodeIndex = nodeIndexForToken(tok, mode);
 
@@ -679,7 +725,7 @@ function FlowCircle({ emotion, playToken, onFinished }: FlowCircleProps) {
     onFinished?.();
   }, (totalSec + 0.5) * 1000);
   timeoutsRef.current.push(endId);
-}, [flowChordNames, degreeTokens, mode, emotion.tempo, stopPlayback, onFinished]);
+}, [flowChordNames, degreeTokens, mode, emotion.tempo, stopPlayback, onFinished, voicing, samplerRef]);
 
   useEffect(() => {
     if (!playToken) return;
@@ -842,10 +888,12 @@ function getChordHighlightColor(emotionId: EmotionId, chordName: string): string
 type ColorCircleProps = {
   emotion: EmotionConfig;
   playToken: number;
+  voicing: VoicingMode;
+  samplerRef: React.MutableRefObject<Tone.Sampler | null>;
   onFinished?: () => void;
 };
 
-function ColorCircle({ emotion, playToken, onFinished }: ColorCircleProps) {
+function ColorCircle({ emotion, playToken, voicing, samplerRef, onFinished }: ColorCircleProps) {
   const [playing, setPlaying] = useState(false);
   const [activeRoot, setActiveRoot] = useState<number | null>(null);
   const [activeChordIdx, setActiveChordIdx] = useState<number | null>(null);
@@ -901,10 +949,13 @@ console.log(
     startRef.current = performance.now();
     totalMsRef.current = totalMs;
 
-    playProgression(chords, {
-      playMode: "chords",
-      chordDur: chordDurSec,
-    }).catch(() => {});
+    playChordSymbolsWithVoicing({
+  chordSymbols: chordNames,
+  voicing,
+  chordDurSec,
+  samplerRef,
+  parsedForBlock: chords,
+}).catch(() => {});
 
        const loop = () => {
   const now = performance.now();
@@ -927,7 +978,7 @@ console.log(
 };
 
     rafRef.current = requestAnimationFrame(loop);
-  }, [chords, chordDurSec, stopPlayback]);
+  }, [chords, chordNames, chordDurSec, stopPlayback, onFinished, voicing, samplerRef, emotion.id, emotion.colorChords]);
 
   useEffect(() => {
     if (!playToken) return;
@@ -1036,6 +1087,15 @@ export default function TwoPathsEmotionCompare() {
   const [emotionId, setEmotionId] = useState<EmotionId>("playful");
   const [flowPlayToken, setFlowPlayToken] = useState(0);
   const [colorPlayToken, setColorPlayToken] = useState(0);
+
+  // Shared audio voicing for BOTH circles (comparison must be controlled)
+  const [voicing, setVoicing] = useState<VoicingMode>("SMOOTH");
+
+  // Shared Tone sampler so we load samples once
+  const samplerRef = useRef<Tone.Sampler | null>(null);
+  useEffect(() => {
+    ensureSampler(samplerRef).catch(() => {});
+  }, []);
 
   // ⬇️ Add these two lines:
   const [showIntro, setShowIntro] = useState(false);
@@ -1197,6 +1257,7 @@ useEffect(() => {
         <div style={{ fontSize: 12, color: "#555" }}>
           Flow &amp; Color versions of the same feeling.
         </div>
+        
       </>
     )}
   </div>
@@ -1207,9 +1268,11 @@ useEffect(() => {
           <div className="two-paths-circle-block">
             <div className="two-paths-circle-label">{copy.flowLabel}</div>
             <FlowCircle
-              emotion={active}
-              playToken={flowPlayToken}
-              onFinished={() => {
+  emotion={active}
+  playToken={flowPlayToken}
+  voicing="SMOOTH"
+  samplerRef={samplerRef}
+  onFinished={() => {
                 setColorPlayToken((t) => t + 1);
                 setShowIntro(false);
                 setShowOutro(true);
@@ -1231,13 +1294,16 @@ useEffect(() => {
 <div className="two-paths-circle-block">
   <div className="two-paths-circle-label">{copy.colorLabel}</div>
   <ColorCircle
-    emotion={active}
-    playToken={colorPlayToken}
-    onFinished={() => {
+  emotion={active}
+  playToken={colorPlayToken}
+  voicing="SMOOTH"
+  samplerRef={samplerRef}
+  onFinished={() => {
       setShowOutro(false);
     }}
   />
   <div className="two-paths-circle-meta">
+   
     <div>
       Local steps: <code>{active.colorFormula}</code>
     </div>
