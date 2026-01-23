@@ -49,8 +49,7 @@ export default function EmotionsHubPage() {
   </h1>
   <p className="mt-2 max-w-2xl text-sm text-neutral-700">
     Each emotion has two styles: <strong>Flow</strong> (smooth, familiar) and{" "}
-    <strong>Color</strong> (expressive, cinematic). Start with Step 1 (root
-    positions). Smooth shapes and rhythm come next.
+    <strong>Color</strong> (expressive, cinematic). Start with Step 1.
   </p>
 
   {/* =========================
@@ -141,8 +140,7 @@ export default function EmotionsHubPage() {
               Practice {e.label} <span className="opacity-60">→</span>
             </div>
             <p className="mt-1 text-[11px] text-neutral-500">
-              Step 1 is available now. Step 2 (smooth) and Step 3 (feeling) are
-              coming next.
+              Start with Step 1 (smooth), then Step 2 (feeling). Step 3 (lift the emotion) is optional and can be combined with Step 2 only if you feel ready.
             </p>
           </Link>
         ))}
