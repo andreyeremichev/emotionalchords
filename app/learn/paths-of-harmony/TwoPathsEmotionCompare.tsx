@@ -599,7 +599,7 @@ async function playChordSymbolsWithVoicing(params: {
   // For BLOCK mode (existing WebAudio)
 
 }) {
-  const { chordSymbols, voicing, chordDurSec, samplerRef, parsedForBlock } = params;
+  const { chordSymbols, voicing, chordDurSec, samplerRef } = params;
 
   
 
