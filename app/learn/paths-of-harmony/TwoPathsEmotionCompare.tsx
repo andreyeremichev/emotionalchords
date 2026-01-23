@@ -692,17 +692,14 @@ function FlowCircle({ emotion, playToken, voicing, samplerRef, onFinished }: Flo
   const tempoMult = emotion.tempo || 1.0;
   const stepSec = baseStepSec / tempoMult;
 
-  // For BLOCK mode playback we need ParsedChord[]
-  const parsedForBlock = parseProgression(flowChordNames.join(" "));
-
+  
   // Fire audio (non-blocking)
   playChordSymbolsWithVoicing({
     chordSymbols: flowChordNames,
     voicing,
     chordDurSec: stepSec,
-    samplerRef,
-    parsedForBlock,
-  }).catch(() => {});
+  samplerRef,
+}).catch(() => {});
 
   // Keep your existing node highlight timing
   let accSec = 0;
@@ -954,7 +951,7 @@ console.log(
   voicing,
   chordDurSec,
   samplerRef,
-  parsedForBlock: chords,
+  
 }).catch(() => {});
 
        const loop = () => {
