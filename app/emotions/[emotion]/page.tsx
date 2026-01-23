@@ -25,7 +25,9 @@ function emotionHowToJsonLd(e: { id: string; label: string }) {
     educationalLevel: "Beginner",
     inLanguage: "en",
     supply: [{ "@type": "HowToSupply", name: "Piano or keyboard" }],
-    tool: [{ "@type": "HowToTool", name: "EmotionalChords interactive practice" }],
+    tool: [
+      { "@type": "HowToTool", name: "EmotionalChords interactive practice" },
+    ],
     step: [
       {
         "@type": "HowToStep",
@@ -73,14 +75,19 @@ export async function generateMetadata({
       title,
       description,
       images: [
-        { url: "/og/og-image.png", width: 1200, height: 630, alt: `EmotionalChords — ${e.label}` },
+        {
+          url: "/og/emotionalchords.jpg",
+          width: 1200,
+          height: 630,
+          alt: `EmotionalChords — ${e.label}`,
+        },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/og/og-image.png"],
+      images: ["/og/emotionalchords.jpg"],
     },
     robots: {
       index: true,
@@ -119,90 +126,44 @@ export default async function EmotionPage({
         </h1>
 
         <p className="mt-2 text-sm text-neutral-700">
-  Two ways to play the same feeling: <strong>Flow</strong> (smooth, familiar) and{" "}
-  <strong>Color</strong> (expressive, cinematic). You’ll practice it in three
-  steps: <strong>smooth chords</strong>, <strong>play with feeling</strong>{" "}
-  (rhythm + touch), and <strong>lift it higher</strong>.
-</p>
+          Two ways to play the same feeling: <strong>Flow</strong> (smooth,
+          familiar) and <strong>Color</strong> (expressive, cinematic). You’ll
+          practice it in three steps: <strong>smooth chords</strong>,{" "}
+          <strong>play with feeling</strong> (rhythm + touch), and{" "}
+          <strong>lift it higher</strong>.
+        </p>
 
-{/* =========================
-    AI + Human Quick Answer
-========================= */}
-<div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
-  <p className="text-sm leading-relaxed text-neutral-800">
-    <strong>How to play {e.label.toLowerCase()} on piano (beginner):</strong>{" "}
-    start with <strong>smooth chords</strong>, then repeat them with a simple{" "}
-    <strong>rhythm</strong>, and finally <strong>lift the emotion</strong> by
-    playing the same idea higher on the keyboard.
-  </p>
+        <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
+          <p className="text-sm leading-relaxed text-neutral-800">
+            <strong>
+              How to play {e.label.toLowerCase()} on piano (beginner):
+            </strong>{" "}
+            start with <strong>smooth chords</strong>, then repeat them with a
+            simple <strong>rhythm</strong>, and finally{" "}
+            <strong>lift the emotion</strong> by playing the same idea higher on
+            the keyboard.
+          </p>
 
-  <ul className="mt-2 space-y-1 text-xs text-neutral-700">
-    <li>✅ No sheet music</li>
-    <li>✅ No music theory required</li>
-    <li>✅ Two styles: Flow (smooth) and Color (cinematic)</li>
-  </ul>
-</div>
+          <ul className="mt-2 space-y-1 text-xs text-neutral-700">
+            <li>✅ No sheet music</li>
+            <li>✅ No music theory required</li>
+            <li>✅ Two styles: Flow (smooth) and Color (cinematic)</li>
+          </ul>
+        </div>
 
-{/* =========================
-    JSON-LD for AI engines
-========================= */}
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(emotionHowToJsonLd(e)) }}
-/>
-
-{/* =========================
-    AI + Human Quick Answer
-========================= */}
-<div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
-  <p className="text-sm leading-relaxed text-neutral-800">
-    <strong>How to play {e.label.toLowerCase()} on piano (beginner):</strong>{" "}
-    play the chords slowly and smoothly, keep your hands comfortable, and lift
-    the sound by moving higher on the keyboard.
-  </p>
-  <ul className="mt-2 space-y-1 text-xs text-neutral-700">
-    <li>✅ No sheet music</li>
-    <li>✅ No music theory required</li>
-    <li>
-      ✅ Try both styles: <strong>Flow</strong> and <strong>Color</strong>
-    </li>
-  </ul>
-</div>
-
-{/* =========================
-    JSON-LD for AI engines
-========================= */}
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": ["LearningResource", "HowTo"],
-      name: `How to play ${e.label} on piano (beginner)`,
-      url: `https://emotionalchords.app/emotions/${e.id}`,
-      isPartOf: {
-        "@type": "WebSite",
-        name: "EmotionalChords",
-        url: "https://emotionalchords.app",
-      },
-      description: `Beginner-friendly steps to play ${e.label.toLowerCase()} on piano using two styles: Flow (smooth, familiar) and Color (expressive, cinematic). No sheet music. No music theory required.`,
-      educationalLevel: "Beginner",
-      inLanguage: "en",
-      step: [
-        { "@type": "HowToStep", name: "Play smooth chords", text: "Start with easy chord shapes and play them slowly and smoothly." },
-        { "@type": "HowToStep", name: "Play with feeling", text: "Use gentle rhythm and touch to bring the emotion out." },
-        { "@type": "HowToStep", name: "Lift the emotion", text: "Move the same idea higher on the keyboard to brighten or intensify it." },
-      ],
-    }),
-  }}
-/>
+        {/* JSON-LD for AI engines */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(emotionHowToJsonLd(e)),
+          }}
+        />
       </header>
 
-      {/* Two-tier mobile-first practice board (client component) */}
       <EmotionPracticeBoard emotion={e} />
 
       <p className="mt-8 text-xs text-neutral-500">
-        Next: Step 2 (smooth shapes) and Step 3 (play with feeling).
+        Next: Step 2 (play with feeling) and Step 3 (lift it higher).
       </p>
     </main>
   );
