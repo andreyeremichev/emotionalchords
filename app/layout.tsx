@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { Analytics } from "@vercel/analytics/next"
 
 const SITE_NAME = "EmotionalChords";
 const SITE_URL = "https://emotionalchords.app";
@@ -107,6 +108,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
 
           <SiteFooter />
+          <Analytics/>
         </div>
       </body>
     </html>
