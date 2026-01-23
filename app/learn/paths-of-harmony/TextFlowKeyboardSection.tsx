@@ -173,7 +173,7 @@ const flowChordsDisplay = useMemo(() => {
           flowChords={flowChordsRaw.join(" ")}
 displayChords={flowChordsDisplay}
           phrases={FLOW_CHORD_TEXT[selectedMeta.id]}
-          autoPlayKey={autoPlayKey}
+          autoPlayKey={autoPlayKey ?? undefined}
         />
         <p>
           <strong>Tap an emotion below.</strong> This plays the Flow progression

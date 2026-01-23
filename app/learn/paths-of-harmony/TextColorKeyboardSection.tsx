@@ -126,7 +126,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
           }}
           colorChords={selectedMeta.colorChords}
           phrases={COLOR_CHORD_TEXT[selectedMeta.id]}
-          autoPlayKey={autoPlayKey}
+          autoPlayKey={autoPlayKey ?? undefined}
         />
         <p>
           <strong>Pick an emotion below.</strong> This plays the Color progression
