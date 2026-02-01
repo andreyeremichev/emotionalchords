@@ -7,25 +7,28 @@ import TextColorKeyboardSection from "./TextColorKeyboardSection";
 import TextFlowKeyboardSection from "./TextFlowKeyboardSection";
 
 export const metadata: Metadata = {
-  title: "Paths of Harmony – Flow vs Color • EmotionalChords",
+  title: "Paths of Harmony – Flow vs Color: Motion Behind Emotion",
   description:
-    "Learn why some chord moves feel familiar and others feel surprising. Explore Flow vs Color with simple demos and emotion recipes.",
+    "Why do some chords feel calm, tense, or emotional? This page explores how harmonic motion creates emotion — and how Flow and Color are two ways that motion behaves.",
   alternates: { canonical: "/learn/paths-of-harmony" },
+
   openGraph: {
     type: "article",
     url: "https://emotionalchords.app/learn/paths-of-harmony",
-    title: "Paths of Harmony – Flow vs Color",
+    title: "Paths of Harmony – Flow vs Color: Motion Behind Emotion",
     description:
-      "Learn why some chord moves feel familiar and others feel surprising. Explore Flow vs Color with simple demos and emotion recipes.",
-    images: ["/og/og-image.png"],
+      "Emotion emerges from motion. Flow and Color show how harmony moves — and why it feels the way it does.",
+    images: ["/og/emotionalchords.jpg"],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "Paths of Harmony – Flow vs Color",
+    title: "Paths of Harmony – Flow vs Color: Motion Behind Emotion",
     description:
-      "Learn why some chord moves feel familiar and others feel surprising.",
-    images: ["/og/og-image.png"],
+      "Emotion emerges from motion. Flow and Color show how harmony moves — and why it feels the way it does.",
+    images: ["/og/emotionalchords.jpg"],
   },
+
   robots: { index: true, follow: true },
 };
 
