@@ -178,22 +178,22 @@ export default function PathsOfHarmonyPage() {
       <header>
         <div className="section-label">
           <span>✨</span>
-          <span>Emotional Harmony</span>
+          <span>Motion (Emotion): how harmony creates feeling</span>
         </div>
 
         <h1 className="gradient-title">Paths of Harmony: Flow vs Color ✨</h1>
 
         <p className="lead lead-colored">
-          Harmony isn&apos;t just “music theory” — it&apos;s a language of{" "}
-          <strong>emotion</strong>. This page shows why the same feeling (like 😢
-          sadness, 😡 anger, or 🕵️‍♀️ mystery) can move in two different ways:
-          <strong> Flow</strong> (familiar and smooth) and <strong>Color</strong>{" "}
-          (surprising and intense).
-          <br />
-          <br />
-          You don&apos;t need to memorize terms. Just listen, compare, and notice
-          what your hands feel.
-        </p>
+  Harmony isn&apos;t just “music theory” — it&apos;s motion that produces{" "}
+  <strong>emotion</strong>. This page shows two motion behaviors for the same
+  emotion:
+  <strong> Flow</strong> (coherent, readable motion) and <strong>Color</strong>{" "}
+  (motion with sharper re-alignment).
+  <br />
+  <br />
+  You don&apos;t need to memorize terms. Just listen, compare, and notice
+  what changes step by step.
+</p>
       </header>
 
       {/* Demo: side-by-side */}
@@ -215,9 +215,9 @@ export default function PathsOfHarmonyPage() {
             </li>
           </ul>
           <p style={{ marginTop: 8 }}>
-            <strong>Try this:</strong> listen once, then listen again and ask:
-            “Which one feels calmer?” “Which one feels sharper?”
-          </p>
+  <strong>Try this:</strong> listen once, then listen again and ask:
+  “Where does orientation change?” “Where does pressure appear?” “Where does it return?”
+</p>
 
           <TwoPathsEmotionCompare />
         </div>
@@ -229,44 +229,44 @@ export default function PathsOfHarmonyPage() {
 
       {/* Table / Map */}
       <section>
-        <h2>Emotion Map — Flow &amp; Color side by side</h2>
+        <h2>Motion (Emotion) Map — Flow &amp; Color side by side</h2>
 
         <p style={{ fontSize: 13, marginBottom: 8 }}>
-          This map shows the ten emotions used on EmotionalChords. The{" "}
-          <strong>Flow</strong> column is the “home feeling” version. Some stay
-          fully inside the key; some add one or two “spice” chords that sharpen
-          the emotion. The <strong>Color</strong> column shows the more
-          surprising route — where the harmony steps outside the home key more
-          aggressively.
-        </p>
+  This map pairs each emotion with a motion label: <strong>Motion (Emotion)</strong>.
+  Flow and Color are two different motion behaviors that can produce the same emotion.
+  Flow stays coherent and readable; Color re-aligns faster and breaks orientation more aggressively.
+</p>
+<p style={{ fontSize: 12, marginBottom: 6, color: "#555" }}>
+  Each row names the <strong>motion</strong> first, with the resulting <strong>emotion</strong> shown in parentheses.
+</p>
 
         <div className="table-wrapper">
           <table>
             <thead>
-              <tr>
-                <th>Emotion</th>
-                <th>Flow (degrees → example)</th>
-                <th>Color (local steps → example)</th>
-                <th>
-                  ⭐ “Spice” chords
-                  <br />
-                  <span style={{ fontWeight: 400 }}>
-                    (the biggest feeling change)
-                  </span>
-                </th>
-              </tr>
-            </thead>
+  <tr>
+    <th>Motion (Emotion)</th>
+    <th>Flow (degrees → example)</th>
+    <th>Color (local steps → example)</th>
+    <th>
+      ⭐ Contrast points
+      <br />
+      <span style={{ fontWeight: 400 }}>
+        (where motion changes most)
+      </span>
+    </th>
+  </tr>
+</thead>
 
             <tbody>
               {/* GROUP 1 – FULLY DIATONIC FLOW */}
 
               <tr>
                 <td>
-                  <span className="emotion-label">
-                    <span className="emotion-emoji">🌿</span>
-                    <span>Calm / Peace</span>
-                  </span>
-                </td>
+  <span className="emotion-label">
+    <span className="emotion-emoji">🌿</span>
+    <span>Settled Circulation (Calm)</span>
+  </span>
+</td>
                 <td>
                   <code>1, 5, 6, 4</code>
                   <br />
@@ -290,7 +290,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">🎈</span>
-                    <span>Playful</span>
+                    <span>Light Return (Playful)</span>
                   </span>
                 </td>
                 <td>
@@ -316,7 +316,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">✨</span>
-                    <span>Magic / Fantasy</span>
+                    <span>Guided Departure (Magic)</span>
                   </span>
                 </td>
                 <td>
@@ -342,7 +342,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">😢</span>
-                    <span>Sadness</span>
+                    <span>Unresolved Descent (Sadness)</span>
                   </span>
                 </td>
                 <td>
@@ -368,7 +368,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">🕵️‍♀️</span>
-                    <span>Mystery</span>
+                    <span>Obscured Orientation (Mystery)</span>
                   </span>
                 </td>
                 <td>
@@ -396,7 +396,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">🌧️</span>
-                    <span>Melancholy</span>
+                    <span>Altered Return (Melancholy)</span>
                   </span>
                 </td>
                 <td>
@@ -422,7 +422,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">🌌</span>
-                    <span>Wonder</span>
+                    <span>Upward Opening (Wonder)</span>
                   </span>
                 </td>
                 <td>
@@ -448,7 +448,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">😬</span>
-                    <span>Tension / Suspense</span>
+                    <span>Held Pressure (Tension)</span>
                   </span>
                 </td>
                 <td>
@@ -476,7 +476,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">😡</span>
-                    <span>Anger</span>
+                    <span>Grinding Advance (Anger)</span>
                   </span>
                 </td>
                 <td>
@@ -502,7 +502,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <span className="emotion-label">
                     <span className="emotion-emoji">😱</span>
-                    <span>Fear / Horror</span>
+                    <span>Loss of Ground (Fear)</span>
                   </span>
                 </td>
                 <td>
@@ -528,41 +528,41 @@ export default function PathsOfHarmonyPage() {
         </div>
 
         <p style={{ fontSize: 13, marginTop: 6 }}>
-          In the <strong>Flow</strong> column, chords marked with{" "}
-          <span style={{ fontSize: "90%" }}>⭐</span> are the “spice” chords — they
-          step slightly outside the plain home key and sharpen the feeling.
-        </p>
+  In the <strong>Flow</strong> column, chords marked with{" "}
+  <span style={{ fontSize: "90%" }}>⭐</span> are contrast points — moments where the motion deviates most from the baseline.
+  They don&apos;t add “more emotion” by themselves; they change the motion, and emotion emerges from that change.
+</p>
 
         <h3 style={{ marginTop: 18 }}>How the “spice” increases</h3>
 
         <p>
-          You can think of Flow like a ladder:
-          <strong> clean</strong> → <strong>one twist</strong> →{" "}
-          <strong>two twists</strong>.
-        </p>
+  You can think of Flow like a ladder of motion contrast:
+  <strong> baseline</strong> → <strong>one deviation</strong> →{" "}
+  <strong>two deviations</strong>.
+</p>
 
         <ul>
           <li>
-            <strong>0 spice chords</strong> — <em>Calm, Playful, Magic, Sadness, Mystery</em>.
-            <br />
-            The feeling is stable and clear — great for learning the baseline.
-          </li>
+  <strong>0 contrast points</strong> — <em>Calm, Playful, Magic, Sadness, Mystery</em>.
+  <br />
+  Motion stays coherent and readable — great for learning the baseline.
+</li>
           <li>
-            <strong>1 spice chord</strong> — <em>Melancholy, Wonder, Tension</em>.
-            <br />
-            One chord steps outside the plain home key to add light, ache, or pressure.
-          </li>
+  <strong>1 contrast point</strong> — <em>Melancholy, Wonder, Tension</em>.
+  <br />
+  One step deviates strongly from the baseline, changing the motion noticeably.
+</li>
           <li>
-            <strong>2 spice chords</strong> — <em>Anger, Fear / Horror</em>.
-            <br />
-            Two outside chords make the emotion sharper, heavier, or more intense.
-          </li>
+  <strong>2 contrast points</strong> — <em>Anger, Fear / Horror</em>.
+  <br />
+  Two deviation events reshape the motion more aggressively.
+</li>
         </ul>
 
         <p>
-          You don&apos;t need to remember chord names. It&apos;s enough to feel the
-          ladder: as Flow adds more “spice,” the emotion gets more vivid.
-        </p>
+  You don&apos;t need to remember chord names. It&apos;s enough to feel the ladder:
+  as Flow includes more contrast points, the motion changes more sharply — and the emotion becomes clearer.
+</p>
       </section>
 
       {/* Flow explanation */}
@@ -570,14 +570,14 @@ export default function PathsOfHarmonyPage() {
         <h2>Flow: the smooth, familiar path</h2>
 
         <p>
-          <strong>Flow</strong> is the path that feels like a song. Chords connect
-          in a way your ear expects — grounded, calm, and “going somewhere.”
-        </p>
+  <strong>Flow</strong> is coherent motion. Chords connect in a readable way:
+  orientation stays intact, and returns make sense when they arrive.
+</p>
 
-        <p>
-          Flow is great for stable emotions and easy-to-remember progressions.
-          If you&apos;re new, start here: it gives your hands a clean emotional baseline.
-        </p>
+<p>
+  Flow is ideal for learning the baseline motion behind an emotion.
+  It gives your hands a clean reference before you explore sharper motion changes.
+</p>
       </section>
 
       {/* Color explanation */}
@@ -585,15 +585,14 @@ export default function PathsOfHarmonyPage() {
         <h2>Color: the surprising, expressive path</h2>
 
         <p>
-          <strong>Color</strong> takes smaller, sharper moves. You&apos;ll notice
-          tiny steps up or down, sudden brightness, and tension that snaps into place.
-        </p>
+  <strong>Color</strong> is motion with faster re-alignment. Orientation breaks sooner,
+  the frame shifts more aggressively, and returns are less guaranteed.
+</p>
 
-        <p>
-          That&apos;s why Color can make emotions feel more intense right away —
-          sharper anger, closer fear, brighter wonder, stranger magic.
-          It&apos;s not “harder.” It&apos;s just more concentrated.
-        </p>
+<p>
+  That&apos;s why Color often feels vivid quickly: not because it&apos;s “more emotional,”
+  but because the motion changes more per step.
+</p>
 
         
       </section>
@@ -604,16 +603,16 @@ export default function PathsOfHarmonyPage() {
         <h2>A simple takeaway</h2>
         <div className="highlight-box">
           <ul>
-            <li>
-              <strong>Flow</strong> = smooth, familiar, story-like.
-            </li>
-            <li>
-              <strong>Color</strong> = surprise, intensity, emotional twist.
-            </li>
-          </ul>
-          <p style={{ marginTop: 8 }}>
-            Try both paths for the same emotion — you&apos;ll feel the difference instantly.
-          </p>
+  <li>
+    <strong>Flow</strong> = coherent motion: readable steps and meaningful returns.
+  </li>
+  <li>
+    <strong>Color</strong> = re-aligned motion: faster frame shifts and less guaranteed footing.
+  </li>
+</ul>
+<p style={{ marginTop: 8 }}>
+  Try both paths for the same emotion — then listen again and track the motion.
+</p>
         </div>
       </section>
     </main>

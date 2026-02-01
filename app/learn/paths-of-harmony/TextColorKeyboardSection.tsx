@@ -40,64 +40,73 @@ const COLOR_EMOTIONS: ColorEmotionMeta[] = [
 
 const COLOR_CHORD_TEXT: Record<EmotionId, [string, string, string, string]> = {
   calm: [
-    "Sets a clear center, emotionally still.",
-    "Steps upward and outward, widening the emotional space without creating pressure.",
-    "Continues the expansion, now clearly away from the original center.",
-    "Pulls gently downward, like an exhale. Calm is restored through contrast, not return.",
+    "Establishes a stable reference point with no directional pull.",
+    "Expands upward, increasing space without introducing pressure.",
+    "Continues outward movement, increasing distance while staying smooth.",
+    "Returns gently, settling the motion without resolving tension.",
   ],
+
   playful: [
-    "Sets a familiar reference point.",
-    "Jumps sideways in color. Surprise appears, but nothing destabilizes.",
-    "Leaps again, brighter and less grounded. The emotion is amused, not tense.",
-    "Lands lightly in a new place. Playfulness survives because nothing insists on resolution.",
+    "Establishes a familiar reference point.",
+    "Jumps away lightly, introducing motion without consequence.",
+    "Leaps again, increasing distance while keeping balance.",
+    "Returns loosely, landing without commitment or weight.",
   ],
+
   magic: [
-    "Establishes a grounded reference.",
-    "Drops far away from that ground. The emotional floor disappears briefly.",
-    "Flashes sharply upward. A new light appears with no preparation.",
-    "Stabilizes just enough to let the brightness linger without resolving it.",
+    "Sets a grounded starting frame.",
+    "Breaks far away from that frame, removing orientation.",
+    "Flashes upward suddenly, creating a sense of appearance rather than travel.",
+    "Stabilizes briefly, allowing the new space to linger without explanation.",
   ],
+
   sadness: [
-    "Establishes the familiar center.",
-    "Moves away gently, as expected.",
-    "Introduces a brighter, foreign color. Hope appears briefly.",
-    "Slips back down. The contrast makes the sadness feel sharper and more aware.",
+    "Establishes a familiar center.",
+    "Moves downward and away, initiating withdrawal.",
+    "Introduces a brief upward contrast that does not redirect the motion.",
+    "Falls back down, reinforcing descent without recovery.",
   ],
+
   mystery: [
-    "Establishes a recognizable base.",
-    "Moves upward into unfamiliar territory.",
-    "Removes tonal clarity. The emotion is suspended, searching for rules.",
-    "Lands in an unexpected place. Resolution is implied, not confirmed.",
+    "Establishes a guarded but readable reference.",
+    "Moves upward into unfamiliar alignment.",
+    "Removes positional clarity, suspending orientation.",
+    "Re-enters the frame unexpectedly, without explaining what happened.",
   ],
+
   melancholy: [
-    "Sets a minor, inward-facing state.",
-    "Jumps upward into unexpected brightness.",
-    "Shifts again, now emotionally distant from the start.",
-    "Stays unresolved. The emotion lingers as longing rather than sadness.",
+    "Establishes an inward-facing starting point.",
+    "Moves upward into brightness without releasing the center.",
+    "Shifts again, increasing distance while preserving connection.",
+    "Returns altered, with the center no longer feeling neutral.",
   ],
+
   wonder: [
-    "Sets a grounded reference.",
-    "Moves upward with intent.",
-    "Climbs further, now clearly outside the original space.",
-    "Floats high without return. Wonder remains unresolved and open-ended.",
+    "Establishes a grounded reference.",
+    "Opens upward, expanding vertical space.",
+    "Continues rising, extending beyond the original frame.",
+    "Remains elevated, leaving the space open rather than returning.",
   ],
+
   tension: [
-    "Sets an apparently stable ground.",
-    "Tightens inward. Space disappears.",
-    "Breaks structure. The emotion feels compressed and unstable.",
-    "Pushes upward aggressively. Suspense remains because the ground never returns.",
+    "Establishes an apparently stable ground.",
+    "Tightens inward, reducing available space.",
+    "Breaks structural balance, compressing motion.",
+    "Pushes upward while refusing release, keeping pressure active.",
   ],
+
   anger: [
-    "Sets a tense but controlled base.",
-    "Shifts upward abruptly. Stability cracks.",
-    "Tightens further. The emotion is compressed and aggressive.",
-    "Locks into strain. Anger refuses resolution.",
+    "Establishes a controlled but resistant base.",
+    "Forces upward motion, breaking stability.",
+    "Continues pushing forward, increasing strain.",
+    "Locks into resistance, maintaining force without resolution.",
   ],
+
   fear: [
-    "Sets a fragile reference.",
-    "Removes stability completely. Orientation vanishes.",
-    "Pushes upward without support. Panic replaces motion.",
-    "Collapses into unresolved instability. Fear remains uncontained.",
+    "Establishes a fragile reference point.",
+    "Removes the sense of ground entirely.",
+    "Attempts upward motion without support.",
+    "Collapses back into instability, offering no safe footing.",
   ],
 };
 

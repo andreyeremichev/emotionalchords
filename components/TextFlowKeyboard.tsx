@@ -113,7 +113,7 @@ async function ensurePianoSampler(ref: React.MutableRefObject<Tone.Sampler | nul
   ref.current = sampler;
 }
 
-const HIT_MS = 1000;
+const HIT_MS = 1200;
 const REPEATS = 2;
 const LABELS = ["One", "Two", "Three", "Four"] as const;
 

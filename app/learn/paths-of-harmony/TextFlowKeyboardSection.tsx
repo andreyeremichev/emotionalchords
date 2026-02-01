@@ -41,74 +41,74 @@ const EMOTIONS: EmotionMeta[] = [
 
 const FLOW_CHORD_TEXT: Record<EmotionId, [string, string, string, string]> = {
   calm: [
-  "Establishes a neutral emotional ground without direction or demand.",
-  "Moves away smoothly, opening space while remaining fully stable.",
-  "Softens the state, releasing weight rather than increasing depth.",
-  "Gathers the space back together, settling without urgency or tension.",
-],
+    "Establishes a stable reference with no directional pull.",
+    "Moves outward smoothly, expanding space without resistance.",
+    "Softens the motion, reducing weight without changing direction.",
+    "Returns gently, settling the circulation without urgency.",
+  ],
 
-playful: [
-  "Establishes a friendly and stable baseline.",
-  "Introduces a small lift that creates curiosity without uncertainty.",
-  "Adds momentum, feeling like a hop rather than a push.",
-  "Returns cleanly, resolving play without consequence.",
-],
+  playful: [
+    "Establishes a stable reference point.",
+    "Steps away lightly, introducing motion without risk.",
+    "Adds momentum, increasing movement without pressure.",
+    "Returns easily, completing the loop without consequence.",
+  ],
 
-magic: [
-  "Begins slightly off-center, placing the listener gently off-ground.",
-  "Brings orientation back, making the emotional space readable again.",
-  "Pushes forward with intent, guiding motion rather than drifting.",
-  "Lifts into a softened state, ending suspended between reality and imagination.",
-],
+  magic: [
+    "Begins slightly away from the center.",
+    "Re-establishes orientation, restoring a readable frame.",
+    "Moves forward along a clear path rather than drifting.",
+    "Lifts into a suspended state, maintaining openness without closure.",
+  ],
 
-sadness: [
-  "Sets a neutral emotional ground with no weight yet.",
-  "Pulls downward and away, introducing heaviness without shock.",
-  "Continues retreat, turning the emotion inward and personal.",
-  "Hovers without resolution, letting sadness persist.",
-],
+  sadness: [
+    "Establishes a neutral starting point.",
+    "Moves downward and away, initiating withdrawal.",
+    "Continues retreat, increasing distance without redirection.",
+    "Remains unresolved, allowing the descent to persist.",
+  ],
 
-mystery: [
-  "Sets a shadowed but stable reference point.",
-  "Shifts the ground slightly, creating uncertainty without threat.",
-  "Blurs orientation, leaving the emotion without clear footing.",
-  "Returns fully, resolving mystery without explanation.",
-],
+  mystery: [
+    "Establishes a stable but shadowed reference.",
+    "Shifts alignment slightly, introducing uncertainty.",
+    "Removes positional clarity, suspending orientation.",
+    "Returns to the reference, restoring structure without explanation.",
+  ],
 
-melancholy: [
-  "Begins already softened, reflective rather than neutral.",
-  "Turns inward, slowing and thickening the emotional motion.",
-  "Reconnects with the original ground, making the memory more defined.",
-  "Introduces strained brightness, where the ache comes from contrast, not loss.",
-],
+  melancholy: [
+    "Establishes an inward-facing reference.",
+    "Turns inward further, slowing and thickening motion.",
+    "Revisits the center, now carrying accumulated change.",
+    "Introduces contrast that alters the return without breaking it.",
+  ],
 
-wonder: [
-  "Establishes a quiet, contained base.",
-  "Lifts gently, introducing curiosity without destabilizing the ground.",
-  "Continues upward, expanding the emotional horizon.",
-  "Shines briefly above the center, where wonder feels like elevation rather than tension.",
-],
+  wonder: [
+    "Establishes a quiet, contained base.",
+    "Opens upward, expanding vertical space.",
+    "Continues rising, extending beyond the original frame.",
+    "Remains elevated, holding the opening without tension.",
+  ],
 
-tension: [
-  "Establishes an apparently neutral starting point.",
-  "Introduces contained instability, where something feels wrong but held.",
-  "Compresses inward, sharply increasing pressure.",
-  "Returns to the start, resetting tension rather than resolving it.",
-],
+  tension: [
+    "Establishes an apparently stable ground.",
+    "Introduces instability while keeping it contained.",
+    "Compresses inward, increasing pressure sharply.",
+    "Returns to the starting point, resetting pressure without release.",
+  ],
 
-anger: [
-  "Establishes a restrained but tense baseline.",
-  "Adds pressure, turning restraint into resistance.",
-  "Grinds upward, pushing forcefully against limits.",
-  "Forces forward motion, leaving anger active and unresolved.",
-],
+  anger: [
+    "Establishes a restrained but resistant base.",
+    "Forces upward motion, breaking stability.",
+    "Continues pushing forward, increasing strain.",
+    "Maintains force, refusing resolution or retreat.",
+  ],
 
-fear: [
-  "Establishes a fragile but recognizable emotional ground.",
-  "Drops into instability, making the ground feel unsafe.",
-  "Surges upward abruptly, triggering a panic response.",
-  "Falls back uneasily, where safety feels temporary and unreliable.",
-],
+  fear: [
+    "Establishes a fragile reference point.",
+    "Removes the sense of ground entirely.",
+    "Attempts upward motion without support.",
+    "Falls back into instability, offering no secure footing.",
+  ],
 };
 
 const SHARP_TO_FLAT_ROOT: Record<string, string> = {
