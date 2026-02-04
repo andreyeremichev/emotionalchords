@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 
 const SITE_NAME = "EmotionalChords";
 const SITE_URL = "https://emotionalchords.app";
@@ -25,7 +25,7 @@ function SiteJsonLd() {
       name: SITE_NAME,
       url: SITE_URL,
       description:
-        "Beginner-friendly emotional piano practice tool. Play emotions on piano in under 10 minutes — no sheet music, no music theory required.",
+        "Motion-first piano practice: choose a harmonic motion (emotion emerges), then practice it step by step in Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
       inLanguage: "en",
     },
     {
@@ -36,7 +36,7 @@ function SiteJsonLd() {
       applicationCategory: "MusicApplication",
       operatingSystem: "Web",
       description:
-        "Interactive emotional piano practice tool for beginners. Two styles per emotion: Flow (smooth, familiar) and Color (expressive, cinematic). No sheet music. No music theory required.",
+        "Interactive motion-first piano practice tool. Choose a motion (emotion emerges), then practice it step by step in two paths: Flow (coherent, readable motion) and Color (faster re-alignment). No sheet music. No heavy theory language.",
       isBasedOn:
         "Co-created with AI assistance: AI-generated code and progression drafts refined through human testing, iteration, and musical feedback.",
     },
@@ -53,31 +53,31 @@ function SiteJsonLd() {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Play Emotions on Piano in 10 Minutes | EmotionalChords",
+    default: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
     template: "%s | EmotionalChords",
   },
   description:
-    "Play emotions on piano in under 10 minutes. Tap an emotion, hear it once, then play it step by step — no sheet music, no music theory. Flow (smooth) and Color (cinematic) styles.",
+    "Choose a harmonic motion and stay with it — emotion emerges. Practice each motion step by step in two paths: Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
   applicationName: SITE_NAME,
   category: "Music",
   authors: [{ name: "EmotionalChords" }],
-  
+
   openGraph: {
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Play Emotions on Piano in 10 Minutes | EmotionalChords",
+    title: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
     description:
-      "A beginner-friendly emotional piano practice tool. No sheet music. No music theory. Learn emotions step by step in Flow (smooth) and Color (cinematic) styles.",
+      "Choose a harmonic motion and stay with it — emotion emerges. Practice in two paths: Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
     images: [
       { url: OG_IMAGE, width: 1200, height: 630, alt: "EmotionalChords OG" },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Play Emotions on Piano in 10 Minutes | EmotionalChords",
+    title: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
     description:
-      "Tap an emotion → hear it → play it step by step. No sheet music. No music theory.",
+      "Choose a motion. Stay with it. Practice in Flow (coherent) and Color (re-aligned) paths. No sheet music. No heavy theory language.",
     images: [OG_IMAGE],
   },
   robots: {
@@ -108,7 +108,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
 
           <SiteFooter />
-          <Analytics/>
+          <Analytics />
         </div>
       </body>
     </html>
