@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import StepTabs, { StepId } from "@/components/ui/StepTabs";
+import StepTabs from "@/components/ui/StepTabs";
+import type { StepId } from "@/components/ui/StepTabs";
 
 export default function PathPracticeBlock(props: {
   title: string;
@@ -14,7 +15,7 @@ export default function PathPracticeBlock(props: {
 
   step1: React.ReactNode;
   step2?: React.ReactNode;
-  step3?: React.ReactNode;
+  
 
   disabledSteps?: StepId[];
 }) {
@@ -27,8 +28,8 @@ export default function PathPracticeBlock(props: {
     onStepChange,
     step1,
     step2,
-    step3,
-    disabledSteps = [2, 3],
+   
+    disabledSteps = [],
   } = props;
 
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -71,7 +72,7 @@ export default function PathPracticeBlock(props: {
           <div className="mt-4">
             {step === 1 && step1}
             {step === 2 && (step2 ?? <div className="text-sm text-neutral-600">Coming soon.</div>)}
-            {step === 3 && (step3 ?? <div className="text-sm text-neutral-600">Coming soon.</div>)}
+            
           </div>
         </div>
       )}
