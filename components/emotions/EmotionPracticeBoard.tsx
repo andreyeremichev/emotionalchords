@@ -52,7 +52,7 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
           />
         }
         
-        disabledSteps={[3]}
+        disabledSteps={[]}
       />
 
       <PathPracticeBlock
@@ -79,7 +79,7 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
           />
         }
         
-        disabledSteps={[3]}
+        disabledSteps={[]}
       />
     </div>
   );
