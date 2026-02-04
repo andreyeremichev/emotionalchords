@@ -12,7 +12,6 @@ import {
   practicePatternForEmotion,
   practiceStep2FlowSpeed,
   practiceStep2ColorSpeed,
-  practiceStep3Speed,
 } from "@/lib/practiceSession";
 
 export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
@@ -52,17 +51,8 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
             {...practiceStep2FlowSpeed(emotion.id)}
           />
         }
-        step3={
-          <Step2RhythmPractice
-            emotionLabel={`${motionLabel} · Flow · lifted`}
-            emotionPalette={emotion.palette}
-            chords={emotion.flow.chords}
-            pattern={practicePatternForEmotion(emotion.id)}
-            {...practiceStep3Speed(emotion.id)}
-            rhOctaveShift={12}
-          />
-        }
-        disabledSteps={[]}
+        
+        disabledSteps={[3]}
       />
 
       <PathPracticeBlock
@@ -88,17 +78,8 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
             {...practiceStep2ColorSpeed(emotion.id)}
           />
         }
-        step3={
-          <Step2RhythmPractice
-            emotionLabel={`${motionLabel} · Color · lifted`}
-            emotionPalette={emotion.palette}
-            chords={emotion.color.chords}
-            pattern={practicePatternForEmotion(emotion.id)}
-            {...practiceStep3Speed(emotion.id)}
-            rhOctaveShift={12}
-          />
-        }
-        disabledSteps={[]}
+        
+        disabledSteps={[3]}
       />
     </div>
   );

@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export type StepId = 1 | 2 | 3;
+export type StepId = 1 | 2;
 
 export default function StepTabs(props: {
   value: StepId;
@@ -37,7 +37,7 @@ export default function StepTabs(props: {
     <div className="mt-3 flex flex-wrap gap-2">
       {btn(1, "Step 1 · Smooth chords")}
 {btn(2, "Step 2 · Play with feeling")}
-{btn(3, "Step 3 · Lift the emotion")}
+
     </div>
   );
 }

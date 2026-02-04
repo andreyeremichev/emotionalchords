@@ -162,8 +162,7 @@ export default function EmotionsHubPage() {
             </div>
 
             <p className="mt-1 text-[11px] text-neutral-500">
-              Start with Step 1 (smooth), then Step 2 (feeling). Step 3 (lift it
-              higher) is optional.
+              Start with Step 1 (smooth), then Step 2 (feeling).
             </p>
           </Link>
         ))}
