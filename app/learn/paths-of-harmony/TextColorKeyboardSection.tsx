@@ -17,7 +17,14 @@ type EmotionId =
 
 type ColorEmotionMeta = {
   id: EmotionId;
+
+  // Motion-first naming
+  motion: string;
+  emotion: string;
+
+  // Keep label for compatibility if still used elsewhere
   label: string;
+
   emoji: string;
   gradientTop: string;
   gradientBottom: string;
@@ -26,16 +33,116 @@ type ColorEmotionMeta = {
 };
 
 const COLOR_EMOTIONS: ColorEmotionMeta[] = [
-  { id: "calm", label: "Calm", emoji: "🌿", gradientTop: "#2f5d4f", gradientBottom: "#6bbf8f", trailColor: "#6dd2a3", colorChords: "C D F Eb" },
-  { id: "playful", label: "Playful", emoji: "🎈", gradientTop: "#f59e0b", gradientBottom: "#f97316", trailColor: "#ffb74d", colorChords: "C Eb F# G#" },
-  { id: "magic", label: "Magic", emoji: "✨", gradientTop: "#6d28d9", gradientBottom: "#a855f7", trailColor: "#c4a1ff", colorChords: "C Ab E G" },
-  { id: "sadness", label: "Sadness", emoji: "😢", gradientTop: "#2D3E68", gradientBottom: "#6076AF", trailColor: "#4A6FA5", colorChords: "Cm Ab Fm Em" },
-  { id: "mystery", label: "Mystery", emoji: "🕵️‍♀️", gradientTop: "#272343", gradientBottom: "#4b4e91", trailColor: "#8fb3ff", colorChords: "Cm D F° F#" },
-  { id: "melancholy", label: "Melancholy", emoji: "🌧️", gradientTop: "#314159", gradientBottom: "#60738d", trailColor: "#5a7bbc", colorChords: "Cm A C#m A#" },
-  { id: "wonder", label: "Wonder", emoji: "🌌", gradientTop: "#1d3557", gradientBottom: "#457b9d", trailColor: "#8ecae6", colorChords: "Cm F G B" },
-  { id: "tension", label: "Tension", emoji: "😬", gradientTop: "#4b5563", gradientBottom: "#9ca3af", trailColor: "#fbbf24", colorChords: "C C#m E° F#" },
-  { id: "anger", label: "Anger", emoji: "😡", gradientTop: "#6b1b25", gradientBottom: "#c0392b", trailColor: "#ff7373", colorChords: "Cm C#m E° F#" },
-  { id: "fear", label: "Fear", emoji: "😱", gradientTop: "#222933", gradientBottom: "#4a5568", trailColor: "#6bc1ff", colorChords: "Cm F#° G A#°" },
+  {
+    id: "calm",
+    motion: "Settled Circulation",
+    emotion: "Calm / Peace",
+    label: "Calm / Peace",
+    emoji: "🌿",
+    gradientTop: "#2f5d4f",
+    gradientBottom: "#6bbf8f",
+    trailColor: "#6dd2a3",
+    colorChords: "C D F Eb",
+  },
+  {
+    id: "playful",
+    motion: "Light Return",
+    emotion: "Playful",
+    label: "Playful",
+    emoji: "🎈",
+    gradientTop: "#f59e0b",
+    gradientBottom: "#f97316",
+    trailColor: "#ffb74d",
+    colorChords: "C Eb F# G#",
+  },
+  {
+    id: "magic",
+    motion: "Guided Departure",
+    emotion: "Magic / Fantasy",
+    label: "Magic",
+    emoji: "✨",
+    gradientTop: "#6d28d9",
+    gradientBottom: "#a855f7",
+    trailColor: "#c4a1ff",
+    colorChords: "C Ab E G",
+  },
+  {
+    id: "sadness",
+    motion: "Unresolved Descent",
+    emotion: "Sadness",
+    label: "Sadness",
+    emoji: "😢",
+    gradientTop: "#2D3E68",
+    gradientBottom: "#6076AF",
+    trailColor: "#4A6FA5",
+    colorChords: "Cm Ab Fm Em",
+  },
+  {
+    id: "mystery",
+    motion: "Obscured Orientation",
+    emotion: "Mystery",
+    label: "Mystery",
+    emoji: "🕵️‍♀️",
+    gradientTop: "#272343",
+    gradientBottom: "#4b4e91",
+    trailColor: "#8fb3ff",
+    colorChords: "Cm D F° F#",
+  },
+  {
+    id: "melancholy",
+    motion: "Altered Return",
+    emotion: "Melancholy",
+    label: "Melancholy",
+    emoji: "🌧️",
+    gradientTop: "#314159",
+    gradientBottom: "#60738d",
+    trailColor: "#5a7bbc",
+    colorChords: "Cm A C#m A#",
+  },
+  {
+    id: "wonder",
+    motion: "Upward Opening",
+    emotion: "Wonder",
+    label: "Wonder",
+    emoji: "🌌",
+    gradientTop: "#1d3557",
+    gradientBottom: "#457b9d",
+    trailColor: "#8ecae6",
+    colorChords: "Cm F G B",
+  },
+  {
+    id: "tension",
+    motion: "Held Pressure",
+    emotion: "Tension / Suspense",
+    label: "Tension",
+    emoji: "😬",
+    gradientTop: "#4b5563",
+    gradientBottom: "#9ca3af",
+    trailColor: "#fbbf24",
+    colorChords: "C C#m E° F#",
+  },
+  {
+    id: "anger",
+    motion: "Grinding Advance",
+    emotion: "Anger",
+    label: "Anger",
+    emoji: "😡",
+    gradientTop: "#6b1b25",
+    gradientBottom: "#c0392b",
+    trailColor: "#ff7373",
+    colorChords: "Cm C#m E° F#",
+  },
+  {
+    id: "fear",
+    motion: "Loss of Ground",
+    emotion: "Fear / Horror",
+    label: "Fear",
+    emoji: "😱",
+    gradientTop: "#222933",
+    gradientBottom: "#4a5568",
+    trailColor: "#6bc1ff",
+    colorChords: "Cm F#° G A#°",
+  },
 ];
 
 const COLOR_CHORD_TEXT: Record<EmotionId, [string, string, string, string]> = {
@@ -126,7 +233,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
       <div className="highlight-box">
         <TextColorKeyboard
           emotionId={selectedMeta.id}
-          emotionLabel={selectedMeta.label}
+          emotionLabel={`${selectedMeta.motion} (${selectedMeta.emotion})`}
           emotionEmoji={selectedMeta.emoji}
           palette={{
             gradientTop: selectedMeta.gradientTop,
@@ -138,7 +245,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
           autoPlayKey={autoPlayKey ?? undefined}
         />
         <p>
-          <strong>Pick an emotion below.</strong> This plays the Color progression
+          <strong>Pick a motion below.</strong> This plays the Color progression
           in a smooth way (right-hand triad + left-hand root). Each chord is played twice so you can hear the step clearly. The sentence above
           the keyboard describes what the current chord is doing.
         </p>
@@ -178,7 +285,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
                 }}
               >
                 <span style={{ marginRight: 6 }}>{e.emoji}</span>
-                {e.label}
+                {e.motion}
               </button>
             );
           })}

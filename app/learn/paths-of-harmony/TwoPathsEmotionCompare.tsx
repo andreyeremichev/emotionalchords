@@ -113,7 +113,12 @@ type EmotionId =
 
 type EmotionConfig = {
   id: EmotionId;
-  label: string;
+
+  // Motion-first naming
+  motion: string;   // e.g. "Held Pressure"
+  emotion: string;  // e.g. "Tension"
+
+  label: string;    // keep for backward safety (can mirror emotion)
   emoji: string;
   // Flow side
   flowKey: "C minor" | "B♭ Major";
@@ -135,8 +140,10 @@ type EmotionConfig = {
 const EMOTIONS: EmotionConfig[] = [
   {
     id: "calm",
-    label: "Calm / Peace",
-    emoji: "🌿",
+  motion: "Settled Circulation",
+  emotion: "Calm / Peace",
+  label: "Calm / Peace",
+  emoji: "🌿",
     flowKey: "B♭ Major",
     flowDegrees: "1 5 6 4",
     flowFormula: "1, 5, 6, 4",
@@ -152,8 +159,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
   {
     id: "playful",
-    label: "Playful",
-    emoji: "🎈",
+  motion: "Light Return",
+  emotion: "Playful",
+  label: "Playful",
+  emoji: "🎈",
     flowKey: "B♭ Major",
     flowDegrees: "1 2 5 1",
     flowFormula: "1, 2, 5, 1",
@@ -169,8 +178,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
   {
     id: "magic",
-    label: "Magic / Fantasy",
-    emoji: "✨",
+  motion: "Guided Departure",
+  emotion: "Magic / Fantasy",
+  label: "Magic / Fantasy",
+  emoji: "✨",
     flowKey: "B♭ Major",
     flowDegrees: "4 1 5 6",
     flowFormula: "4, 1, 5, 6",
@@ -186,8 +197,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
   {
     id: "sadness",
-    label: "Sadness",
-    emoji: "😢",
+  motion: "Unresolved Descent",
+  emotion: "Sadness",
+  label: "Sadness",
+  emoji: "😢",
     flowKey: "C minor",
     flowDegrees: "1 6b 3b 7b",
     flowFormula: "1, 6b, 3b, 7b",
@@ -204,6 +217,8 @@ const EMOTIONS: EmotionConfig[] = [
 
   {
     id: "mystery",
+    motion: "Unresolved Tension",
+    emotion: "Mystery",
     label: "Mystery",
     emoji: "🕵️‍♀️",
     flowKey: "C minor",
@@ -220,9 +235,11 @@ const EMOTIONS: EmotionConfig[] = [
     tempo: 1.0,
   },
   {
-    id: "melancholy",
-    label: "Melancholy",
-    emoji: "🌧️",
+     id: "melancholy",
+  motion: "Altered Return",
+  emotion: "Melancholy",
+  label: "Melancholy",
+  emoji: "🌧️",
     flowKey: "C minor",
     flowDegrees: "6b 4 1 5",
     flowFormula: "6b, 4, 1, 5",
@@ -239,8 +256,10 @@ const EMOTIONS: EmotionConfig[] = [
   
   {
     id: "wonder",
-    label: "Wonder / Transcendence",
-    emoji: "🌌",
+  motion: "Upward Opening",
+  emotion: "Wonder",
+  label: "Wonder",
+  emoji: "🌌",
     flowKey: "C minor",
     flowDegrees: "1 6b 3b 4",
     flowFormula: "1, 6b, 3b, 4",
@@ -256,8 +275,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
   {
     id: "tension",
-    label: "Tension / Suspense",
-    emoji: "😬",
+  motion: "Held Pressure",
+  emotion: "Tension",
+  label: "Tension",
+  emoji: "😬",
     flowKey: "C minor",
     flowDegrees: "1 2 5 1",
     flowFormula: "1, 2, 5, 1",
@@ -273,8 +294,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
     {
     id: "anger",
-    label: "Anger",
-    emoji: "😡",
+  motion: "Grinding Advance",
+  emotion: "Anger",
+  label: "Anger",
+  emoji: "😡",
     flowKey: "C minor",
     flowDegrees: "1 4 2b 5",
     flowFormula: "1, 4, 2b, 5",
@@ -290,8 +313,10 @@ const EMOTIONS: EmotionConfig[] = [
   },
   {
     id: "fear",
-    label: "Fear / Horror",
-    emoji: "😱",
+  motion: "Loss of Ground",
+  emotion: "Fear",
+  label: "Fear",
+  emoji: "😱",
     flowKey: "C minor",
     flowDegrees: "1 2b 5 1",
     flowFormula: "1, 2b, 5, 1",
@@ -318,8 +343,8 @@ type EmotionCopy = {
 
 const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   playful: {
-    introLine1: "🎈 Playful",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🎈 Light Return",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = light return",
     colorLabel: "Color = quick deviation",
     outroLine1: "Blend them 🎨",
@@ -327,8 +352,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   anger: {
-    introLine1: "⚡ Anger",
-    introLine2: "Two motions, one emotion",
+    introLine1: "⚡ Grinding Advance",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = grinding advance",
     colorLabel: "Color = forced re-alignment",
     outroLine1: "Combine both ⚡️",
@@ -336,8 +361,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   mystery: {
-    introLine1: "🕵️‍♀️ Mystery",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🕵️‍♀️ Unresolved Tension",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = obscured orientation",
     colorLabel: "Color = broken alignment",
     outroLine1: "Mix them 🌀",
@@ -345,8 +370,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   sadness: {
-    introLine1: "😢 Sadness",
-    introLine2: "Two motions, one emotion",
+    introLine1: "😢 Unresolved Descent",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = unresolved descent",
     colorLabel: "Color = disrupted return",
     outroLine1: "Use both 💙",
@@ -354,8 +379,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   fear: {
-    introLine1: "😨 Fear",
-    introLine2: "Two motions, one emotion",
+    introLine1: "😨 Loss of Ground",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = unstable ground",
     colorLabel: "Color = loss of footing",
     outroLine1: "Pair them 🧩",
@@ -363,8 +388,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   melancholy: {
-    introLine1: "🌫️ Melancholy",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🌫️ Altered Return",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = altered return",
     colorLabel: "Color = distant re-alignment",
     outroLine1: "Let both paths 🌧️",
@@ -372,8 +397,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   calm: {
-    introLine1: "🌙 Calm",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🌙 Settled Circulation",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = settled circulation",
     colorLabel: "Color = gentle deviation",
     outroLine1: "Balance the two ☯️",
@@ -381,8 +406,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   tension: {
-    introLine1: "🎭 Tension",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🎭 Held Pressure",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = held pressure",
     colorLabel: "Color = compressed motion",
     outroLine1: "Use both 🪢",
@@ -390,8 +415,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   magic: {
-    introLine1: "✨ Magic",
-    introLine2: "Two motions, one emotion",
+    introLine1: "✨ Guided Departure",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = guided departure",
     colorLabel: "Color = sudden re-framing",
     outroLine1: "Blend them ✨",
@@ -399,8 +424,8 @@ const EMOTION_COPY: Record<EmotionId, EmotionCopy> = {
   },
 
   wonder: {
-    introLine1: "🌌 Wonder",
-    introLine2: "Two motions, one emotion",
+    introLine1: "🌌 Upward Opening",
+    introLine2: "Two paths for the same motion",
     flowLabel: "Flow = upward opening",
     colorLabel: "Color = elevated shift",
     outroLine1: "Combine both 🌠",
@@ -1258,11 +1283,11 @@ useEffect(() => {
       <>
         <div>
           <span className="emoji">{active.emoji}</span>{" "}
-          <span>{active.label}</span>
+          <span>{active.motion} <span style={{ opacity: 0.75 }}>({active.emotion})</span></span>
         </div>
         <div style={{ fontSize: 12, color: "#555" }}>
-          Flow &amp; Color versions of the same feeling.
-        </div>
+  Flow &amp; Color are two paths for the same motion.
+</div>
         
       </>
     )}
@@ -1325,7 +1350,7 @@ useEffect(() => {
       {/* Emotion bar (bottom) */}
       <div className="two-paths-emotion-bar">
         <div className="two-paths-emotion-label">
-          <strong>Tap an emotion to hear Flow, then Color</strong>
+          <strong>Tap a motion to hear Flow, then Color</strong>
         </div>
         <div className="two-paths-emotion-scroll">
           {EMOTIONS.map((e) => {
@@ -1341,7 +1366,7 @@ useEffect(() => {
                 onClick={() => handleEmotionClick(e.id)}
               >
                 <span className="emoji">{e.emoji}</span>
-                <span>{e.label}</span>
+                <span>{e.motion}</span>
               </button>
             );
           })}

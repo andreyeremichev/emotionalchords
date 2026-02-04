@@ -23,13 +23,13 @@ export function SiteHeader() {
             href="/emotions"
             className="rounded-full px-3 py-1 hover:bg-black/5"
           >
-            Emotions
+            Motion (Emotion)
           </Link>
           <Link
             href="/learn/paths-of-harmony"
             className="rounded-full px-3 py-1 hover:bg-black/5"
           >
-            Learn
+            Why it works
           </Link>
           
         </nav>

@@ -1,8 +1,7 @@
 // app/learn/paths-of-harmony/page.tsx
 import type { Metadata } from "next";
 import TwoPathsEmotionCompare from "./TwoPathsEmotionCompare";
-import FlowKeyboard from "./FlowKeyboard";
-import ColorKeyboard from "./ColorKeyboard";
+
 import TextColorKeyboardSection from "./TextColorKeyboardSection";
 import TextFlowKeyboardSection from "./TextFlowKeyboardSection";
 
@@ -189,7 +188,7 @@ export default function PathsOfHarmonyPage() {
         <p className="lead lead-colored">
   Harmony isn&apos;t just “music theory” — it&apos;s motion that produces{" "}
   <strong>emotion</strong>. This page shows two motion behaviors for the same
-  emotion:
+  motion:
   <strong> Flow</strong> (coherent, readable motion) and <strong>Color</strong>{" "}
   (motion with sharper re-alignment).
   <br />
@@ -201,34 +200,44 @@ export default function PathsOfHarmonyPage() {
 
       {/* Demo: side-by-side */}
       <section>
-        <h2>Compare Flow and Color side by side</h2>
+        <h2>Flow vs Color — two paths for the same motion</h2>
 
         <div className="highlight-box">
-          <p>
-            <strong>Pick any emotion below.</strong> You’ll see and hear two
-            versions of the same feeling:
-          </p>
-          <ul>
-            <li>
-              <strong>Flow</strong> feels natural and “expected.”
-            </li>
-            <li>
-              <strong>Color</strong> adds a twist — small moves that change the
-              mood fast.
-            </li>
-          </ul>
-          <p style={{ marginTop: 8 }}>
-  <strong>Try this:</strong> listen once, then listen again and ask:
-  “Where does orientation change?” “Where does pressure appear?” “Where does it return?”
+         <p>
+  <strong>Pick any motion below.</strong> You’ll see and hear two paths for the same motion:
+</p>
+<ul>
+  <li>
+    <strong>Flow</strong> keeps motion coherent and readable.
+  </li>
+  <li>
+    <strong>Color</strong> re-aligns faster and breaks orientation sooner.
+  </li>
+</ul>
+         <p style={{ marginTop: 8 }}>
+  <strong>Try this:</strong> listen once, then listen again and track:
+  “Where does orientation change?” “Where does pressure hold?” “Where does return change?”
 </p>
 
           <TwoPathsEmotionCompare />
         </div>
       </section>
 
-<TextFlowKeyboardSection />     
+<section style={{ marginTop: 18 }}>
+  <h2>Keyboard view — Flow motion</h2>
+  <p style={{ fontSize: 13, marginTop: 4 }}>
+    This is the same motion rendered as coherent steps. Don’t label it. Track what changes.
+  </p>
+  <TextFlowKeyboardSection />
+</section>
 
-<TextColorKeyboardSection />
+<section style={{ marginTop: 18 }}>
+  <h2>Keyboard view — Color motion</h2>
+  <p style={{ fontSize: 13, marginTop: 4 }}>
+    This is the same motion under faster re-alignment. Track where orientation breaks and reforms.
+  </p>
+  <TextColorKeyboardSection />
+</section>
 
       {/* Table / Map */}
       <section>
@@ -285,7 +294,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>Eb</code>
                   <br />
-                  <span>a gentle “exhale” away from C.</span>
+                  <span>a gentle downward settle away from the reference.</span>
                 </td>
               </tr>
 
@@ -311,7 +320,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>F#</code>
                   <br />
-                  <span>the playful “hop” that changes the color instantly.</span>
+                  <span>a quick deviation that shifts alignment instantly.</span>
                 </td>
               </tr>
 
@@ -337,7 +346,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>E</code>
                   <br />
-                  <span>a sudden flash of brightness in the harmony.</span>
+                  <span>a sudden re-framing event that changes orientation fast.</span>
                 </td>
               </tr>
 
@@ -363,7 +372,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>Em</code>
                   <br />
-                  <span>one bright, outside chord before falling back.</span>
+                  <span>a brief contrast event before the descent continues.</span>
                 </td>
               </tr>
 
@@ -389,7 +398,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>F°</code>
                   <br />
-                  <span>the “fog chord” — it blurs the key for a moment.</span>
+                  <span>a fog event — positional clarity drops briefly.</span>
                 </td>
               </tr>
 
@@ -417,7 +426,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>A</code>
                   <br />
-                  <span>bright, off-key, and strangely nostalgic.</span>
+                  <span>a contrast event that alters the return.</span>
                 </td>
               </tr>
 
@@ -443,7 +452,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>B</code>
                   <br />
-                  <span>a “halo chord” — very bright above the home key.</span>
+                  <span>an elevated event that opens the frame upward.</span>
                 </td>
               </tr>
 
@@ -469,7 +478,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>E°</code>
                   <br />
-                  <span>the “collapse inward” chord before the push.</span>
+                  <span>a compression event before the pressure holds.</span>
                 </td>
               </tr>
 
@@ -497,7 +506,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>C#m, E°, F#</code>
                   <br />
-                  <span>after Cm, everything rises chromatically and grinds.</span>
+                  <span>after the reference, motion forces upward through resistance.</span>
                 </td>
               </tr>
 
@@ -523,7 +532,7 @@ export default function PathsOfHarmonyPage() {
                 <td>
                   <code>F#°, A#°</code>
                   <br />
-                  <span>classic horror instability — tense and ungrounded.</span>
+                  <span>instability events that remove secure footing.</span>
                 </td>
               </tr>
             </tbody>
@@ -570,7 +579,7 @@ export default function PathsOfHarmonyPage() {
 
       {/* Flow explanation */}
       <section>
-        <h2>Flow: the smooth, familiar path</h2>
+        <h2>Flow: coherent motion</h2>
 
         <p>
   <strong>Flow</strong> is coherent motion. Chords connect in a readable way:
@@ -578,14 +587,14 @@ export default function PathsOfHarmonyPage() {
 </p>
 
 <p>
-  Flow is ideal for learning the baseline motion behind an emotion.
-  It gives your hands a clean reference before you explore sharper motion changes.
+  Flow is ideal for learning the baseline motion. It gives your hands a clean reference
+  before you explore sharper re-alignment.
 </p>
       </section>
 
       {/* Color explanation */}
       <section>
-        <h2>Color: the surprising, expressive path</h2>
+        <h2>Color: re-aligned motion</h2>
 
         <p>
   <strong>Color</strong> is motion with faster re-alignment. Orientation breaks sooner,

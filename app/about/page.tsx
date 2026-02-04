@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About | EmotionalChords",
   description:
-    "EmotionalChords helps beginners play emotions on piano in minutes — with guided steps, no sheet music, and no heavy theory.",
+    "EmotionalChords helps piano players enter states through harmonic motion. Choose a motion, stay with it, and let emotion emerge. Two paths: Flow (coherent motion) and Color (re-aligned motion).",
   alternates: { canonical: "/about" },
 };
 
@@ -21,25 +21,37 @@ export default function AboutPage() {
       </h1>
 
       <p className="mt-4 text-sm leading-relaxed text-neutral-700">
-        EmotionalChords helps motivated beginners{" "}
-        <strong>play emotions on piano in under 10 minutes</strong>.
+        EmotionalChords is a motion-first piano practice space.
         <br />
-        Tap an emotion, hear it once, then play it step by step.
+        You don’t aim for a feeling — you choose how harmony moves,{" "}
+        <strong>stay with it</strong>, and let emotion emerge.
       </p>
 
       <ul className="mt-5 space-y-2 text-sm text-neutral-700">
         <li>✅ No sheet music</li>
-        <li>✅ No music theory required</li>
+        <li>✅ No heavy theory language</li>
         <li>
-          ✅ Two styles: <strong>Flow</strong> (smooth, familiar) and{" "}
-          <strong>Color</strong> (expressive, cinematic)
+          ✅ Two paths for the same motion: <strong>Flow</strong> (coherent,
+          readable motion) and <strong>Color</strong> (faster re-alignment)
         </li>
+        <li>✅ Guided practice for players (not a course)</li>
       </ul>
 
       <p className="mt-6 text-sm text-neutral-700">
         Start here:{" "}
         <Link href="/emotions" className="underline underline-offset-2">
-          choose an emotion
+          choose a motion (emotion)
+        </Link>
+        .
+      </p>
+
+      <p className="mt-3 text-sm text-neutral-700">
+        If you want the underlying idea:{" "}
+        <Link
+          href="/learn/paths-of-harmony"
+          className="underline underline-offset-2"
+        >
+          Why it works
         </Link>
         .
       </p>

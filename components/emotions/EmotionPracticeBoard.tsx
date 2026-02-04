@@ -24,25 +24,28 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
   const [flowStep, setFlowStep] = useState<StepId>(1);
   const [colorStep, setColorStep] = useState<StepId>(1);
 
+  // Motion-first label used throughout the board
+  const motionLabel = `${emotion.motion} (${emotion.emotion})`;
+
   return (
     <div className="space-y-3">
       <PathPracticeBlock
-        title="🌊 Flow recipe"
-        subtitle="Familiar, smooth, song-like movement."
+        title="🌊 Flow path"
+        subtitle="Coherent, readable motion."
         isOpen={openPath === "flow"}
         onToggle={() => setOpenPath((p) => (p === "flow" ? null : "flow"))}
         step={flowStep}
         onStepChange={setFlowStep}
         step1={
           <Step1Practice
-            emotionLabel={`${emotion.label} (Flow)`}
+            emotionLabel={`${motionLabel} · Flow`}
             emotionPalette={emotion.palette}
             chords={emotion.flow.chords}
           />
         }
         step2={
           <Step2RhythmPractice
-            emotionLabel={`${emotion.label} (Flow)`}
+            emotionLabel={`${motionLabel} · Flow`}
             emotionPalette={emotion.palette}
             chords={emotion.flow.chords}
             pattern={practicePatternForEmotion(emotion.id)}
@@ -51,7 +54,7 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
         }
         step3={
           <Step2RhythmPractice
-            emotionLabel={`${emotion.label} (Flow · lifted)`}
+            emotionLabel={`${motionLabel} · Flow · lifted`}
             emotionPalette={emotion.palette}
             chords={emotion.flow.chords}
             pattern={practicePatternForEmotion(emotion.id)}
@@ -63,22 +66,22 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
       />
 
       <PathPracticeBlock
-        title="🎨 Color recipe"
-        subtitle="Surprising steps. Same feeling — sharper and more intense."
+        title="🎨 Color path"
+        subtitle="Faster re-alignment. Less guaranteed footing."
         isOpen={openPath === "color"}
         onToggle={() => setOpenPath((p) => (p === "color" ? null : "color"))}
         step={colorStep}
         onStepChange={setColorStep}
         step1={
           <Step1Practice
-            emotionLabel={`${emotion.label} (Color)`}
+            emotionLabel={`${motionLabel} · Color`}
             emotionPalette={emotion.palette}
             chords={emotion.color.chords}
           />
         }
         step2={
           <Step2RhythmPractice
-            emotionLabel={`${emotion.label} (Color)`}
+            emotionLabel={`${motionLabel} · Color`}
             emotionPalette={emotion.palette}
             chords={emotion.color.chords}
             pattern={practicePatternForEmotion(emotion.id)}
@@ -87,7 +90,7 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
         }
         step3={
           <Step2RhythmPractice
-            emotionLabel={`${emotion.label} (Color · lifted)`}
+            emotionLabel={`${motionLabel} · Color · lifted`}
             emotionPalette={emotion.palette}
             chords={emotion.color.chords}
             pattern={practicePatternForEmotion(emotion.id)}

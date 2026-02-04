@@ -19,12 +19,26 @@ export type EmotionPalette = {
 };
 
 export type EmotionRecipe = {
-  chords: string[]; // chord symbols to practice in Step 1
+  chords: string[]; // chord symbols
 };
 
 export type EmotionMeta = {
   id: EmotionId;
+
+  /**
+   * Motion-first naming (new)
+   * motion = mechanical label (primary)
+   * emotion = human label (secondary, in parentheses)
+   */
+  motion: string;
+  emotion: string;
+
+  /**
+   * Backwards-compatible label used across existing components.
+   * Keep for now so older UI still compiles; it mirrors `emotion`.
+   */
   label: string;
+
   emoji: string;
   keywords: string[];
   palette: EmotionPalette;
@@ -34,12 +48,23 @@ export type EmotionMeta = {
   color: EmotionRecipe;
 };
 
+export function motionEmotionLabel(e: EmotionMeta) {
+  return `${e.motion} (${e.emotion})`;
+}
+
 export const EMOTIONS: EmotionMeta[] = [
   {
     id: "calm",
-    label: "Calm",
+    motion: "Settled Circulation",
+    emotion: "Calm / Peace",
+    label: "Calm / Peace",
     emoji: "🌿",
-    keywords: ["calm chords", "peaceful piano", "relaxing progression"],
+    keywords: [
+      "settled circulation piano",
+      "calm chords",
+      "peaceful piano",
+      "relaxing progression",
+    ],
     palette: {
       gradientTop: "#2f5d4f",
       gradientBottom: "#6bbf8f",
@@ -50,9 +75,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "playful",
+    motion: "Light Return",
+    emotion: "Playful",
     label: "Playful",
     emoji: "🎈",
-    keywords: ["happy chords", "playful piano", "bright progression"],
+    keywords: [
+      "light return piano",
+      "playful piano",
+      "bright progression",
+      "happy chords",
+    ],
     palette: {
       gradientTop: "#f59e0b",
       gradientBottom: "#f97316",
@@ -63,9 +95,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "magic",
-    label: "Magic",
+    motion: "Guided Departure",
+    emotion: "Magic / Fantasy",
+    label: "Magic / Fantasy",
     emoji: "✨",
-    keywords: ["magical chords", "fantasy piano", "pixar chord progression"],
+    keywords: [
+      "guided departure piano",
+      "magical chords",
+      "fantasy piano",
+      "pixar chord progression",
+    ],
     palette: {
       gradientTop: "#6d28d9",
       gradientBottom: "#a855f7",
@@ -76,9 +115,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "sadness",
+    motion: "Unresolved Descent",
+    emotion: "Sadness",
     label: "Sadness",
     emoji: "😢",
-    keywords: ["sad piano chords", "emotional piano", "melancholy chords"],
+    keywords: [
+      "unresolved descent piano",
+      "sad piano chords",
+      "emotional piano",
+      "sadness progression",
+    ],
     palette: {
       gradientTop: "#2D3E68",
       gradientBottom: "#6076AF",
@@ -89,9 +135,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "mystery",
+    motion: "Obscured Orientation",
+    emotion: "Mystery",
     label: "Mystery",
     emoji: "🕵️‍♀️",
-    keywords: ["mysterious chords", "mystery piano", "dark harmonic mood"],
+    keywords: [
+      "obscured orientation piano",
+      "mysterious chords",
+      "mystery piano",
+      "dark harmonic mood",
+    ],
     palette: {
       gradientTop: "#272343",
       gradientBottom: "#4b4e91",
@@ -102,9 +155,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "melancholy",
+    motion: "Altered Return",
+    emotion: "Melancholy",
     label: "Melancholy",
     emoji: "🌧️",
-    keywords: ["melancholy chords", "somber piano", "emotional minor"],
+    keywords: [
+      "altered return piano",
+      "melancholy chords",
+      "somber piano",
+      "emotional minor",
+    ],
     palette: {
       gradientTop: "#314159",
       gradientBottom: "#60738d",
@@ -115,9 +175,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "wonder",
+    motion: "Upward Opening",
+    emotion: "Wonder",
     label: "Wonder",
     emoji: "🌌",
-    keywords: ["wonder chords", "beautiful piano", "inspirational chords"],
+    keywords: [
+      "upward opening piano",
+      "wonder chords",
+      "beautiful piano",
+      "inspirational chords",
+    ],
     palette: {
       gradientTop: "#1d3557",
       gradientBottom: "#457b9d",
@@ -128,9 +195,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "tension",
+    motion: "Held Pressure",
+    emotion: "Tension",
     label: "Tension",
     emoji: "😬",
-    keywords: ["tense chords", "drama chords", "suspense piano"],
+    keywords: [
+      "held pressure piano",
+      "tense chords",
+      "suspense piano",
+      "drama chords",
+    ],
     palette: {
       gradientTop: "#4b5563",
       gradientBottom: "#9ca3af",
@@ -141,9 +215,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "anger",
+    motion: "Grinding Advance",
+    emotion: "Anger",
     label: "Anger",
     emoji: "😡",
-    keywords: ["angry chords", "aggressive piano", "intense progression"],
+    keywords: [
+      "grinding advance piano",
+      "angry chords",
+      "aggressive piano",
+      "intense progression",
+    ],
     palette: {
       gradientTop: "#6b1b25",
       gradientBottom: "#c0392b",
@@ -154,9 +235,16 @@ export const EMOTIONS: EmotionMeta[] = [
   },
   {
     id: "fear",
-    label: "Fear",
+    motion: "Loss of Ground",
+    emotion: "Fear / Horror",
+    label: "Fear / Horror",
     emoji: "😱",
-    keywords: ["fear chords", "horror piano", "scary progression"],
+    keywords: [
+      "loss of ground piano",
+      "fear chords",
+      "horror piano",
+      "scary progression",
+    ],
     palette: {
       gradientTop: "#222933",
       gradientBottom: "#4a5568",
