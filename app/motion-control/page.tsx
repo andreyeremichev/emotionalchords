@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
 import Link from "next/link";
+import UnlockLink from "@/components/motion-control/UnlockLink";
 
 type Status = "IDLE" | "PLAYING" | "PAUSED" | "STOPPED" | "FINISHED";
 type Tonic = "C" | "D" | "Eb" | "F";
@@ -1017,12 +1018,11 @@ highlightNotesSecondary={practiceUI.lhPulse}
 </div>
 
   <div className="mt-5 flex flex-col gap-2">
-    <Link
-      href="/motion-control/unlock"
-      className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
-    >
-      Unlock Full Arc
-    </Link>
+   <UnlockLink
+  className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
+>
+  Unlock Full Arc
+</UnlockLink>
   </div>
 </section>
     </main>

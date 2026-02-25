@@ -21,6 +21,36 @@ function safeSet(key: string, value: string) {
     // ignore (private mode / blocked storage)
   }
 }
+function getOrCreateSessionId() {
+  const key = "mc_session_id";
+  try {
+    const existing = localStorage.getItem(key);
+    if (existing) return existing;
+    const id = crypto.randomUUID();
+    localStorage.setItem(key, id);
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
+function readAttributionFromUrl() {
+  const p = new URLSearchParams(window.location.search);
+  return {
+    utm: {
+      source: p.get("utm_source") || undefined,
+      medium: p.get("utm_medium") || undefined,
+      campaign: p.get("utm_campaign") || undefined,
+      content: p.get("utm_content") || undefined,
+      term: p.get("utm_term") || undefined,
+    },
+    click: {
+      gclid: p.get("gclid") || undefined,
+      fbclid: p.get("fbclid") || undefined,
+      msclkid: p.get("msclkid") || undefined,
+    },
+  };
+}
 
 export default function MotionControlUnlockPage() {
   const router = useRouter();
@@ -31,13 +61,32 @@ export default function MotionControlUnlockPage() {
     return hit?.label ?? "";
   }, [selected]);
 
-  function unlockNow() {
+  async function unlockNow() {
   if (selected === null) return;
 
-  // Mock unlock (DB wiring later)
+  const sessionId = getOrCreateSessionId();
+  const { utm, click } = readAttributionFromUrl();
+
+  // Local gating (fail-open)
   safeSet("mc_unlocked", "1");
   safeSet("mc_intent_price", String(selected));
   safeSet("mc_intent_price_label", selectedLabel);
+
+  // Persist to Neon (best effort; do not block unlock)
+  try {
+    await fetch("/api/mc/intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId,
+        selectedPrice: selected,
+        landingPath: window.location.pathname + window.location.search,
+        referrer: document.referrer || "",
+        utm,
+        click,
+      }),
+    });
+  } catch {}
 
   router.push("/motion-control/full-arc?unlocked=1");
 }
