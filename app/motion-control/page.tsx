@@ -641,7 +641,11 @@ function LoopGrid({
 // ------------------------------
 // Page
 // ------------------------------
-export default function MotionControlPage() {
+export default function MotionControlPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const [tonic, setTonic] = useState<Tonic>("C");
   const [character, setCharacter] = useState<MotionCharacter>("STRUCTURAL");
 
@@ -793,6 +797,23 @@ const practiceMechanics = `${lhPracticeInstruction(character)} ${rhPracticeInstr
 
   const loop1Grid = practiceBaseSchedule.slice(0, 6);
 const loop2Grid = practiceBaseSchedule.slice(6, 12);
+  // Preserve query string (UTMs) when navigating to unlock
+  const qs = (() => {
+    const sp = new URLSearchParams();
+    for (const [k, v] of Object.entries(searchParams ?? {})) {
+      if (typeof v === "string" && v.length) {
+        sp.set(k, v);
+      } else if (Array.isArray(v)) {
+        for (const item of v) {
+          if (item) sp.append(k, item);
+        }
+      }
+    }
+    const s = sp.toString();
+    return s ? `?${s}` : "";
+  })();
+
+  const unlockHref = `/motion-control/unlock${qs}`;
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
@@ -1019,6 +1040,7 @@ highlightNotesSecondary={practiceUI.lhPulse}
 
   <div className="mt-5 flex flex-col gap-2">
    <UnlockLink
+  href={unlockHref}
   className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
 >
   Unlock Full Arc

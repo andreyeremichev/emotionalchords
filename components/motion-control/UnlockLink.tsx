@@ -1,18 +1,15 @@
-"use client";
-
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import React from "react";
 
 export default function UnlockLink({
+  href,
   className,
   children,
 }: {
+  href: string;
   className?: string;
   children: React.ReactNode;
 }) {
-  const sp = useSearchParams();
-  const qs = sp?.toString();
-  const href = qs ? `/motion-control/unlock?${qs}` : "/motion-control/unlock";
   return (
     <Link href={href} className={className}>
       {children}
