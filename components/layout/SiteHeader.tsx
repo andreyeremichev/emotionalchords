@@ -17,22 +17,30 @@ export function SiteHeader() {
           />
         </Link>
 
-        {/* Right side nav – keep or simplify as you wish */}
-        <nav className="flex gap-3 text-sm text-neutral-700">
-          <Link
-            href="/emotions"
-            className="rounded-full px-3 py-1 hover:bg-black/5"
-          >
-            Motion (Emotion)
-          </Link>
-          <Link
-            href="/learn/paths-of-harmony"
-            className="rounded-full px-3 py-1 hover:bg-black/5"
-          >
-            Why it works
-          </Link>
-          
-        </nav>
+        <nav className="flex items-center gap-4 text-sm text-neutral-700">
+  {/* Primary */}
+  <Link
+    href="/emotions"
+    className="rounded-full px-3 py-1 font-medium hover:bg-black/5"
+  >
+    Emotion
+  </Link>
+
+  <Link
+    href="/motion-control"
+    className="rounded-full px-3 py-1 font-medium hover:bg-black/5"
+  >
+    Control
+  </Link>
+
+  {/* Secondary (lighter, underlined text) */}
+  <Link
+  href="/learn/paths-of-harmony"
+  className="text-xs opacity-70 hover:opacity-100 hover:underline focus:underline"
+>
+  Learn
+</Link>
+</nav>
       </div>
     </header>
   );
