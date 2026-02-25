@@ -10,7 +10,7 @@ import React, { useMemo, useState } from "react";
 // - showing a fixed label on C4
 import KeyboardPlaybook from "@/components/playbooks/KeyboardPlaybook";
 
-import { buildStep1Timeline, type TimelineEvent } from "./step1Timeline";
+import { buildStep1Timeline } from "./step1Timeline";
 import Step1AutoPlayer from "./Step1AutoPlayer";
 
 type StepId = "STEP_1" | "STEP_2" | "STEP_3";
@@ -70,15 +70,21 @@ export default function HypnoticHelplessPage() {
               // We reuse your existing keyboard. We render ONE keyboard for Step 1.
               renderKeyboard={(props) => (
                 <KeyboardPlaybook
-                  // ---- LOCKS ----
-                  rangeStart="C2"
-                  rangeEnd="C6"
-                  alwaysShowC4Label
-                  // ---- highlights ----
-                  highlightedKeys={props.highlightedKeys}
-                  activeKey={props.activeKey}
-                  // If your keyboard uses different prop names, we’ll adapt.
-                />
+  activeChordSymbol={null}
+  emotion={{
+    gradientTop: "#2b2f36",
+    gradientBottom: "#0f1115",
+    trailColor: "#8fa3bf",
+  }}
+  emotionLabel="Cycling Descent"
+  hideHeaderTitle
+  headerRight={props.headerRight}
+  // No labels unless you want them (primary is what triggers labels)
+  highlightNotesPrimary={props.activeKey ? [props.activeKey] : []}
+  highlightNotesSecondary={props.highlightedKeys}
+  highlightColorSecondary="rgba(0,0,0,0.25)"
+  noteLabelMapOverride={props.labelMapOverride}
+/>
               )}
             />
           ) : (
