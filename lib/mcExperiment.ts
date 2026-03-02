@@ -21,10 +21,14 @@ const token =
   process.env.REDIS_TOKEN;
 
   if (!url || !token) {
-    throw new Error(
-      "Missing Redis REST env vars. Need UPSTASH_REDIS_REST_URL+UPSTASH_REDIS_REST_TOKEN or REDIS_URL+REDIS_TOKEN."
-    );
-  }
+  // Local/dev: allow pages to work without Redis configured
+  if (process.env.NODE_ENV !== "production") return null;
+
+  // Production: hard fail so you don't lose live counts silently
+  throw new Error(
+    "Missing Redis REST env vars. Need UPSTASH_REDIS_REST_URL+UPSTASH_REDIS_REST_TOKEN or REDIS_URL+REDIS_TOKEN."
+  );
+}
 
   return new Redis({ url, token });
 }
@@ -69,12 +73,16 @@ function baseKey(date: string, campaign: string, content: string) {
 
 export async function incrStep(searchParams: Record<string, any>, step: string) {
   const redis = getRedis();
+  if (!redis) return;
+
   const date = utcDateYYYYMMDD();
   const { campaign, content } = pickCampaignContent(searchParams);
   await redis.incr(`${baseKey(date, campaign, content)}:${step}`);
 }
 export async function incrAmount(searchParams: Record<string, any>, bucket: AmountBucket) {
   const redis = getRedis();
+  if (!redis) return;
+
   const date = utcDateYYYYMMDD();
   const { campaign, content } = pickCampaignContent(searchParams);
   await redis.incr(`${baseKey(date, campaign, content)}:pwyw_amount:${bucket}`);
@@ -82,6 +90,8 @@ export async function incrAmount(searchParams: Record<string, any>, bucket: Amou
 
 export async function incrIntent(searchParams: Record<string, any>, intent: McIntent) {
   const redis = getRedis();
+  if (!redis) return;
+
   const date = utcDateYYYYMMDD();
   const { campaign, content } = pickCampaignContent(searchParams);
   await redis.incr(`${baseKey(date, campaign, content)}:pwyw_intent:${intent}`);

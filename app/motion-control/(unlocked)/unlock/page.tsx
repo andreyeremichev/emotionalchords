@@ -23,14 +23,22 @@ export default async function MotionControlUnlockPage({
 
       {/* REQUIRED DISCLOSURE ABOVE PWYW */}
       <section className="mt-5 rounded-2xl border p-4">
-        <div className="text-sm font-semibold">
-          No checkout yet. This is a pricing survey to guide future pricing.
-        </div>
-        <div className="mt-1 text-sm opacity-80">
-          You get full access regardless of what you choose.
-        </div>
-      </section>
+       <div className="text-sm font-semibold">
+    No checkout yet — this is a pricing survey (PWYW).
+  </div>
 
+  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 opacity-90">
+    <li>You get full access regardless of what you choose.</li>
+    <li>No payment is processed in this experiment.</li>
+    <li>We record only aggregated counts for pricing research (grouped by campaign parameters; no accounts, no email).</li>
+  </ul>
+      </section>
+<div className="mt-3 text-xs opacity-70">
+  Details:{" "}
+  <Link className="underline underline-offset-2" href="/terms">
+    Terms & Privacy
+  </Link>
+</div>
       <form className="mt-6 space-y-6" action={`/motion-control/unlock/submit${qs}`} method="POST">
         <section className="rounded-2xl border p-5">
           <h2 className="text-xl font-semibold">Choose what you’d pay (USD)</h2>
@@ -96,7 +104,7 @@ export default async function MotionControlUnlockPage({
           </button>
 
           <div className="mt-2 text-xs opacity-70">
-            Instant access. Your response is recorded for pricing research.
+  Instant access. We record only aggregated counts for pricing research.
           </div>
 
           <div className="mt-4 text-sm">

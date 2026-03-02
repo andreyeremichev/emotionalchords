@@ -42,21 +42,49 @@ export default function TermsPrivacyPage() {
         </ul>
 
         <h2 className="pt-2 text-base font-semibold text-neutral-900">
-          Privacy
-        </h2>
-        <ul className="list-disc space-y-2 pl-5">
-          <li>
-            We do not ask you to create an account.
-          </li>
-          <li>
-            If analytics are enabled, we may collect basic, anonymous usage data
-            (for example: page views, device type, and performance) to improve
-            the product.
-          </li>
-          <li>
-            We do not sell personal information.
-          </li>
-        </ul>
+  Privacy
+</h2>
+<ul className="list-disc space-y-2 pl-5">
+  <li>We do not ask you to create an account.</li>
+  <li>We do not collect email addresses in the current experiment.</li>
+  <li>We do not sell personal information.</li>
+</ul>
+
+<h2 className="pt-2 text-base font-semibold text-neutral-900">
+  Analytics (cookie-less)
+</h2>
+<ul className="list-disc space-y-2 pl-5">
+  <li>
+    We use Vercel Web Analytics (cookie-less) to understand basic traffic
+    (for example: page views, device/OS, and approximate country).
+  </li>
+  <li>
+    We do not run Google Analytics, Google Tag Manager, gtag, or advertising
+    conversion pixels/tags.
+  </li>
+</ul>
+
+<h2 className="pt-2 text-base font-semibold text-neutral-900">
+  Motion Control experiment (PWYW survey)
+</h2>
+<ul className="list-disc space-y-2 pl-5">
+  <li>
+    “Pay What You Want (PWYW)” is a pricing survey only. No checkout or payment
+    processing is enabled in this experiment.
+  </li>
+  <li>
+    We record only aggregated counts of key steps (page views and survey
+    submissions) grouped by campaign parameters (utm_campaign and utm_content).
+  </li>
+  <li>
+    We do not store IP addresses, user agents, or user identifiers in our own
+    experiment counters.
+  </li>
+  <li>
+    Our hosting provider may retain standard server logs briefly for security
+    and operational reliability.
+  </li>
+</ul>
 
         <h2 className="pt-2 text-base font-semibold text-neutral-900">
           Contact
