@@ -1912,27 +1912,9 @@ for (let i = 0; i < cells.length; i++) {
 }
 
 // ---------- Page ----------
-export default function MotionControlFullArcPage({
-  searchParams,
-}: {
-  searchParams?: Record<string, string | string[] | undefined>;
-}) {
-    const sp = (searchParams ?? {}) as Record<string, any>;
-const unlocked = sp.unlocked === "1";
-const amt = typeof sp.amt === "string" ? sp.amt : "";
-const intent = typeof sp.intent === "string" ? sp.intent : "";
+export default function MotionControlFullArcPage() {
+  
 
-const qs = (() => {
-  const p = new URLSearchParams();
-  for (const [k, v] of Object.entries(sp)) {
-    if (typeof v === "string" && v.length) p.set(k, v);
-    else if (Array.isArray(v)) for (const item of v) if (item) p.append(k, item);
-  }
-  const s = p.toString();
-  return s;
-})();
-
-const unlockHref = `/motion-control/unlock${qs ? `?${qs}` : ""}`;
   // Section 1
   const [mode, setMode] = useState<Mode>("FEW");
   const [oneIdx, setOneIdx] = useState(0);
@@ -2244,8 +2226,23 @@ async function onDownloadDemo() {
   }, [chunks, demoUI.activeCellId]);
 
   const ROOTS: Root[] = ["C", "D", "Eb", "F"];
+    // Gate is query-param only (no cookies/localStorage)
+  const [gateUnlocked, setGateUnlocked] = useState(false);
+  const [gateAmt, setGateAmt] = useState("");
+  const [gateIntent, setGateIntent] = useState("");
+  const [gateUnlockHref, setGateUnlockHref] = useState("/motion-control/unlock");
 
-    if (!unlocked) {
+  useEffect(() => {
+    const qs = typeof window !== "undefined" ? window.location.search : "";
+    const p = new URLSearchParams(qs);
+
+    setGateUnlocked(p.get("unlocked") === "1");
+    setGateAmt(p.get("amt") ?? "");
+    setGateIntent(p.get("intent") ?? "");
+    setGateUnlockHref(`/motion-control/unlock${qs}`);
+  }, []);
+
+    if (!gateUnlocked) {
     return (
       <main className="mx-auto w-full max-w-5xl px-4 py-10">
         <div className="text-sm uppercase tracking-wide opacity-70">Motion Control</div>
@@ -2262,12 +2259,12 @@ async function onDownloadDemo() {
           </p>
 
           <div className="mt-4 flex flex-col gap-2">
-            <Link
-              href="/motion-control/unlock"
-              className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
-            >
-              Go to Unlock
-            </Link>
+  <Link
+    href={gateUnlockHref}
+    className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
+  >
+    Go to Unlock
+  </Link>
 
             <Link href="/motion-control" className="text-sm underline opacity-80">
               Back to Containment
