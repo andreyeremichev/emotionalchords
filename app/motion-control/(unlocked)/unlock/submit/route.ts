@@ -35,5 +35,5 @@ export async function POST(req: Request) {
   const dest =
     `/motion-control/full-arc/view?unlocked=1&amt=${encodeURIComponent(amt)}&intent=${encodeURIComponent(intent)}${extra}`;
 
-  return NextResponse.redirect(dest, 303);
+  return NextResponse.redirect(new URL(dest, req.url), 303);
 }

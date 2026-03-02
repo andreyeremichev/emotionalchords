@@ -12,5 +12,5 @@ export async function GET(req: Request) {
 
   const qs = url.searchParams.toString();
   const dest = `/motion-control/full-arc${qs ? `?${qs}` : ""}#arc1`;
-  return NextResponse.redirect(dest, 302);
+  return NextResponse.redirect(new URL(dest, req.url), 302);
 }
