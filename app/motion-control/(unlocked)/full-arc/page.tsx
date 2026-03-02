@@ -4,13 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
 import Link from "next/link";
 
-function readUnlocked(): boolean {
-  try {
-    return localStorage.getItem("mc_unlocked") === "1";
-  } catch {
-    return false;
-  }
-}
+
 /**
  * /motion-control/full-arc
  *
@@ -1918,7 +1912,27 @@ for (let i = 0; i < cells.length; i++) {
 }
 
 // ---------- Page ----------
-export default function MotionControlFullArcPage() {
+export default function MotionControlFullArcPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
+    const sp = (searchParams ?? {}) as Record<string, any>;
+const unlocked = sp.unlocked === "1";
+const amt = typeof sp.amt === "string" ? sp.amt : "";
+const intent = typeof sp.intent === "string" ? sp.intent : "";
+
+const qs = (() => {
+  const p = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (typeof v === "string" && v.length) p.set(k, v);
+    else if (Array.isArray(v)) for (const item of v) if (item) p.append(k, item);
+  }
+  const s = p.toString();
+  return s;
+})();
+
+const unlockHref = `/motion-control/unlock${qs ? `?${qs}` : ""}`;
   // Section 1
   const [mode, setMode] = useState<Mode>("FEW");
   const [oneIdx, setOneIdx] = useState(0);
@@ -1947,30 +1961,8 @@ function nextCharacter() {
   const next = (i + 1) % CHARACTERS.length;
   setCharacter(CHARACTERS[next]);
 }
-// Load persisted character AFTER mount to avoid hydration mismatch
-useEffect(() => {
-  try {
-    const v = localStorage.getItem("motionCharacter") as MotionCharacter | null;
-    if (v === "STRUCTURAL" || v === "ELASTIC" || v === "INTERWOVEN" || v === "ATMOSPHERIC") {
-      setCharacter(v);
-    }
-  } catch {}
-}, []);
 
-useEffect(() => {
-  try {
-    localStorage.setItem("motionCharacter", character);
-  } catch {}
-}, [character]);
-    // Unlock gate (mock until DB wiring)
-  const [unlocked, setUnlocked] = useState(false);
 
-  useEffect(() => {
-    const hasQuery =
-      typeof window !== "undefined" &&
-      new URLSearchParams(window.location.search).get("unlocked") === "1";
-    setUnlocked(hasQuery || readUnlocked());
-  }, []);
   
   const [isExporting, setIsExporting] = useState(false);
 const [exportMsg, setExportMsg] = useState<string | null>(null);

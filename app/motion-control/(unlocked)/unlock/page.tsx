@@ -1,180 +1,111 @@
-"use client";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { incrStep, preservedQuery } from "@/lib/mcExperiment";
 
-const PRICE_OPTIONS: Array<{ label: string; value: number }> = [
-    { label: "I wouldn’t pay", value: 0 },
-  { label: "$9", value: 9 },
-  { label: "$19", value: 19 },
-  { label: "$39", value: 39 },
-  { label: "$59", value: 59 },
-  { label: "$79+", value: 79 },
+export default async function MotionControlUnlockPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
+  const sp = (searchParams ?? {}) as Record<string, any>;
 
-];
+  await incrStep(sp, "unlock_view");
 
-function safeSet(key: string, value: string) {
-  try {
-    localStorage.setItem(key, value);
-  } catch {
-    // ignore (private mode / blocked storage)
-  }
-}
-function getOrCreateSessionId() {
-  const key = "mc_session_id";
-  try {
-    const existing = localStorage.getItem(key);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    localStorage.setItem(key, id);
-    return id;
-  } catch {
-    return crypto.randomUUID();
-  }
-}
-
-function readAttributionFromUrl() {
-  const p = new URLSearchParams(window.location.search);
-  return {
-    utm: {
-      source: p.get("utm_source") || undefined,
-      medium: p.get("utm_medium") || undefined,
-      campaign: p.get("utm_campaign") || undefined,
-      content: p.get("utm_content") || undefined,
-      term: p.get("utm_term") || undefined,
-    },
-    click: {
-      gclid: p.get("gclid") || undefined,
-      fbclid: p.get("fbclid") || undefined,
-      msclkid: p.get("msclkid") || undefined,
-    },
-  };
-}
-
-export default function MotionControlUnlockPage() {
-  const router = useRouter();
-  const [selected, setSelected] = useState<number | null>(null);
-
-  const selectedLabel = useMemo(() => {
-    const hit = PRICE_OPTIONS.find((o) => o.value === selected);
-    return hit?.label ?? "";
-  }, [selected]);
-
-  async function unlockNow() {
-  if (selected === null) return;
-
-  const sessionId = getOrCreateSessionId();
-  const { utm, click } = readAttributionFromUrl();
-
-  // Local gating (fail-open)
-  safeSet("mc_unlocked", "1");
-  safeSet("mc_intent_price", String(selected));
-  safeSet("mc_intent_price_label", selectedLabel);
-
-  // Persist to Neon (best effort; do not block unlock)
-  try {
-    await fetch("/api/mc/intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sessionId,
-        selectedPrice: selected,
-        landingPath: window.location.pathname + window.location.search,
-        referrer: document.referrer || "",
-        utm,
-        click,
-      }),
-    });
-  } catch {}
-
-  router.push("/motion-control/full-arc?unlocked=1");
-}
+  const qs = preservedQuery(sp);
+  const backHref = `/motion-control${qs}`;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
       <div className="text-sm uppercase tracking-wide opacity-70">Motion Control</div>
       <h1 className="mt-2 text-3xl font-semibold">Unlock Full Arc</h1>
-      <p className="mt-3 leading-7 opacity-90">
-  If your playing keeps sounding the same, it’s usually because intensity isn’t controlled —
-  it either collapses into resolution or drifts with no direction.
-  Full Arc is a closed set of motion blocks and transitions that keep the line moving on purpose.
-</p>
 
-      {/* What you get */}
-      <section className="mt-8 rounded-2xl border p-5">
-  <h2 className="text-xl font-semibold">What this fixes</h2>
-
-  <ul className="mt-4 list-disc space-y-2 pl-5 leading-7 opacity-90">
-    <li><span className="font-medium">Early resolution:</span> you stop “landing by accident” and can sustain pressure</li>
-    <li><span className="font-medium">Drift:</span> you widen the sound without losing the thread</li>
-    <li><span className="font-medium">Flat intensity:</span> you can thin out or land cleanly instead of fading</li>
-  </ul>
-
-  <div className="mt-4 leading-7 opacity-90">
-    You get a finite, closed structure: <span className="font-medium">4 motion blocks</span> +{" "}
-    <span className="font-medium">7 fixed arcs</span>, with beat-accurate highlighting and deterministic LH behavior.
-  </div>
-</section>
-
-      {/* Not for beginners */}
-      <section className="mt-6 rounded-2xl border p-5">
-        <h2 className="text-xl font-semibold">Who this is for</h2>
-        <div className="mt-3 space-y-1 leading-7 opacity-90">
-  <div>This is designed for you if:</div>
-  <ul className="list-disc pl-5">
-    <li>Triads are comfortable</li>
-    <li>You can keep a steady pulse</li>
-    <li>Your main problem is <span className="font-medium">structure</span>: you resolve early, drift, or can’t switch intensity</li>
-  </ul>
-  <div className="pt-2">
-    If you’re still learning basic chord shapes, stay with{" "}
-    <Link className="underline" href="/motion-control">
-      Containment
-    </Link>
-    .
-  </div>
-</div>
-      </section>
-
-      {/* Price form */}
-      <section className="mt-6 rounded-2xl border p-5">
-        <h2 className="text-xl font-semibold">Price </h2>
-        <p className="mt-2 leading-7 opacity-90">
-  If this actually fixes your “everything sounds the same” loop, what price would feel fair?
-  <span className="opacity-70"> (Pick the closest.)</span>
-</p>
-
-        <div className="mt-4 space-y-2">
-          {PRICE_OPTIONS.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex cursor-pointer items-center gap-3 rounded-xl border p-3"
-            >
-              <input
-                type="radio"
-                name="mc_price"
-                value={opt.value}
-                checked={selected === opt.value}
-                onChange={() => setSelected(opt.value)}
-              />
-              <span className="text-sm font-medium">{opt.label}</span>
-            </label>
-          ))}
+      {/* REQUIRED DISCLOSURE ABOVE PWYW */}
+      <section className="mt-5 rounded-2xl border p-4">
+        <div className="text-sm font-semibold">
+          No checkout yet. This is a pricing survey to guide future pricing.
         </div>
-
-        <button
-  onClick={unlockNow}
-  disabled={selected === null}
-  className="mt-5 inline-flex w-full items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium disabled:opacity-50"
->
-  Unlock Full Arc
-</button>
-
-        <div className="mt-2 text-xs opacity-70">
-  Your choice unlocks access and helps us price this correctly.
-</div>
+        <div className="mt-1 text-sm opacity-80">
+          You get full access regardless of what you choose.
+        </div>
       </section>
+
+      <form className="mt-6 space-y-6" action={`/motion-control/unlock/submit${qs}`} method="POST">
+        <section className="rounded-2xl border p-5">
+          <h2 className="text-xl font-semibold">Choose what you’d pay (USD)</h2>
+          <p className="mt-2 leading-7 opacity-90">What would you pay for Full Arc today?</p>
+          <p className="mt-1 text-sm opacity-80">
+            $0 is genuinely okay. If it helps, you can support later when payments are enabled.
+          </p>
+
+          <div className="mt-4 grid gap-2">
+            {[
+              { label: "$0 (Free access)", value: "0" },
+              { label: "$9", value: "9" },
+              { label: "$19", value: "19" },
+              { label: "$39 (Suggested)", value: "39" },
+              { label: "$59", value: "59" },
+              { label: "$79+", value: "79" },
+              { label: "Other: $", value: "custom" },
+            ].map((opt) => (
+              <label key={opt.value} className="flex items-center gap-3 rounded-xl border p-3">
+                <input type="radio" name="amount_bucket" value={opt.value} required />
+                <span className="text-sm font-medium">{opt.label}</span>
+                {opt.value === "custom" ? (
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="____"
+                    aria-label="Other amount (not recorded)"
+                    className="ml-2 w-24 rounded-md border px-2 py-1 text-sm"
+                    name="custom_amount_display_only"
+                  />
+                ) : null}
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border p-5">
+          <h2 className="text-xl font-semibold">Which is closest?</h2>
+
+          <div className="mt-4 grid gap-2">
+            <label className="flex items-center gap-3 rounded-xl border p-3">
+              <input type="radio" name="intent" value="pay_now_if_possible" required />
+              <span className="text-sm font-medium">I’d pay this today if checkout existed.</span>
+            </label>
+
+            <label className="flex items-center gap-3 rounded-xl border p-3">
+              <input type="radio" name="intent" value="pay_later_if_clicks" required />
+              <span className="text-sm font-medium">I’ll pay later if it clicks.</span>
+            </label>
+
+            <label className="flex items-center gap-3 rounded-xl border p-3">
+              <input type="radio" name="intent" value="free_or_browsing" required />
+              <span className="text-sm font-medium">I’m choosing $0 / browsing for now.</span>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="mt-5 inline-flex w-full items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
+          >
+            Unlock Full Arc now
+          </button>
+
+          <div className="mt-2 text-xs opacity-70">
+            Instant access. Your response is recorded for pricing research.
+          </div>
+
+          <div className="mt-4 text-sm">
+            <Link className="underline opacity-80 hover:opacity-100" href={backHref}>
+              Not for me → back to Containment
+            </Link>
+          </div>
+        </section>
+      </form>
     </main>
   );
 }

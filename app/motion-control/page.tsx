@@ -3,7 +3,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
 import Link from "next/link";
-import UnlockLink from "@/components/motion-control/UnlockLink";
+import { useRouter } from "next/navigation";
+
 
 type Status = "IDLE" | "PLAYING" | "PAUSED" | "STOPPED" | "FINISHED";
 type Tonic = "C" | "D" | "Eb" | "F";
@@ -641,11 +642,7 @@ function LoopGrid({
 // ------------------------------
 // Page
 // ------------------------------
-export default function MotionControlPage({
-  searchParams,
-}: {
-  searchParams?: Record<string, string | string[] | undefined>;
-}) {
+export default function MotionControlPage() {
   const [tonic, setTonic] = useState<Tonic>("C");
   const [character, setCharacter] = useState<MotionCharacter>("STRUCTURAL");
 
@@ -797,23 +794,10 @@ const practiceMechanics = `${lhPracticeInstruction(character)} ${rhPracticeInstr
 
   const loop1Grid = practiceBaseSchedule.slice(0, 6);
 const loop2Grid = practiceBaseSchedule.slice(6, 12);
-  // Preserve query string (UTMs) when navigating to unlock
-  const qs = (() => {
-    const sp = new URLSearchParams();
-    for (const [k, v] of Object.entries(searchParams ?? {})) {
-      if (typeof v === "string" && v.length) {
-        sp.set(k, v);
-      } else if (Array.isArray(v)) {
-        for (const item of v) {
-          if (item) sp.append(k, item);
-        }
-      }
-    }
-    const s = sp.toString();
-    return s ? `?${s}` : "";
-  })();
+  
 
-  const unlockHref = `/motion-control/unlock${qs}`;
+  
+    const router = useRouter();
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
@@ -1011,8 +995,11 @@ highlightNotesSecondary={practiceUI.lhPulse}
 <section className="mt-10 rounded-2xl border p-4">
   <div className="text-sm uppercase tracking-wide opacity-70">Beyond One Motion</div>
 
-  <h2 className="mt-2 text-xl font-semibold">Unlock Full Arc</h2>
+  <h2 className="mt-2 text-xl font-semibold">Unlock Full Arc (PWYW survey, $0 ok)</h2>
+<p className="mt-3 leading-6 opacity-90">
+  Instant access after a quick pricing survey (no checkout yet).
 
+</p>
   <p className="mt-3 leading-6 opacity-90">
   If your playing keeps resolving early, the problem usually isn’t chords — it’s motion control.
   Full Arc gives you repeatable ways to sustain, widen, thin, and land on purpose.
@@ -1038,14 +1025,22 @@ highlightNotesSecondary={practiceUI.lhPulse}
   For intermediate players who already play triads, but keep falling back into the same resolution.
 </div>
 
-  <div className="mt-5 flex flex-col gap-2">
-   <UnlockLink
-  href={unlockHref}
+<div className="mt-5 flex flex-col gap-2">
+  <button
+  type="button"
+  onClick={() => {
+    const qs = typeof window !== "undefined" ? window.location.search : "";
+    router.push(`/motion-control/unlock${qs}`);
+  }}
   className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
 >
-  Unlock Full Arc
-</UnlockLink>
+  Unlock Full Arc (PWYW survey, $0 ok)
+</button>
+
+  <div className="text-xs opacity-70">
+    Instant access after a quick pricing survey (no checkout yet).
   </div>
+</div>
 </section>
     </main>
   );
