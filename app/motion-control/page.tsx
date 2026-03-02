@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 type Status = "IDLE" | "PLAYING" | "PAUSED" | "STOPPED" | "FINISHED";
 type Tonic = "C" | "D" | "Eb" | "F";
+const ROOTS: Tonic[] = ["C", "D", "Eb", "F"];
 type MotionCharacter = "STRUCTURAL" | "ELASTIC" | "INTERWOVEN" | "ATMOSPHERIC";
 
 const HELD_PRESSURE_PALETTE = {
@@ -977,24 +978,28 @@ highlightNotesSecondary={practiceUI.lhPulse}
 
       {/* SECTION 3 — TONIC PICKER  */}
       <section className="rounded-2xl border p-4">
-        <div className="mb-3 text-lg font-medium">Start position</div>
+        <div className="mt-6 border-t pt-4">
+  <div className="mb-2 text-sm opacity-70">Root: {tonic}</div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {(["C", "D", "Eb", "F"] as Tonic[]).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTonic(t)}
-              className={[
-                "rounded-full px-3 py-1 text-sm transition",
-                tonic === t ? "border bg-white/10" : "border opacity-70 hover:opacity-100",
-              ].join(" ")}
-            >
-              {t}
-            </button>
-          ))}
-          
-        </div>
+  <div className="flex flex-wrap items-center gap-2">
+    {ROOTS.map((r) => (
+      <button
+        key={r}
+        type="button"
+        onClick={() => setTonic(r)}
+        className={[
+          "rounded-full px-3 py-1 text-sm transition border",
+          tonic === r
+            ? "bg-black/5 border-black/30 ring-1 ring-black/10 opacity-100"
+            : "opacity-70 hover:opacity-100",
+        ].join(" ")}
+        aria-pressed={tonic === r}
+      >
+        {r}
+      </button>
+    ))}
+  </div>
+</div>
 
         
         <div className="mt-6 space-y-5">
