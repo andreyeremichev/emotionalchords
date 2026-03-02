@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
+import { playLiveNote, stopLiveAudios, warmupLiveAudio } from "@/lib/audio/liveAudio";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -50,11 +51,8 @@ const SHARP_TO_FLAT_LABELS: Record<string, string> = (() => {
 // Audio helper (your existing style)
 // ------------------------------
 function playNoteAudio(noteNameSharp: string) {
-  const safeName = noteNameSharp.replace("#", "%23");
-  const audio = new Audio(`/audio/notes/${safeName}.wav`);
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
-  return audio;
+  // Live playback: cached HTMLAudio for stability
+  return playLiveNote(noteNameSharp);
 }
 
 // ------------------------------
@@ -338,9 +336,9 @@ const {
   }
 
   function stopAudios() {
-    for (const a of audiosRef.current) a.pause();
-    audiosRef.current = [];
-  }
+  stopLiveAudios(audiosRef.current);
+  audiosRef.current = [];
+}
 
   function hardStop(to: Status) {
     stopAudios();
@@ -772,6 +770,11 @@ const practicePlaybackSchedule = useMemo(() => {
     }));
   },
 });
+useEffect(() => {
+  const onFirstGesture = () => warmupLiveAudio();
+  window.addEventListener("pointerdown", onFirstGesture, { once: true });
+  return () => window.removeEventListener("pointerdown", onFirstGesture as any);
+}, []);
 
   useEffect(() => {
   practicePlayer.stop();
@@ -812,6 +815,10 @@ const loop2Grid = practiceBaseSchedule.slice(6, 12);
 
       {/* SECTION 1 — DEMO */}
       <section className="mb-10 rounded-2xl border p-4">
+        <div className="mt-2 text-xs text-neutral-500">
+  <span className="font-medium">Audio note:</span>{" "}
+  If playback feels uneven, press Stop and refresh once.
+</div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div className="text-lg font-medium">Demo</div>
 <div className="flex items-center gap-2">
@@ -884,6 +891,10 @@ highlightNotesSecondary={demoUI.lhPulse}
 
       {/* SECTION 2 — PRACTICE */}
       <section className="mb-10 rounded-2xl border p-4">
+        <div className="mt-2 text-xs text-neutral-500">
+  <span className="font-medium">Audio note:</span>{" "}
+  If playback feels uneven, press Stop and refresh once.
+</div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div className="text-lg font-medium">Practice</div>
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
+import { playLiveNote, stopLiveAudios, warmupLiveAudio } from "@/lib/audio/liveAudio";
 import Link from "next/link";
 
 
@@ -78,11 +79,8 @@ const PALETTE = {
 
 // ---------- Audio ----------
 function playNoteAudio(noteNameSharp: string) {
-  const safeName = noteNameSharp.replace("#", "%23");
-  const audio = new Audio(`/audio/notes/${safeName}.wav`);
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
-  return audio;
+  // Live playback: cached HTMLAudio for stability
+  return playLiveNote(noteNameSharp);
 }
 
 // ---------- Root offsets ----------
@@ -913,6 +911,12 @@ function usePulsePlayer(args: {
   useEffect(() => {
     statusRef.current = status;
   }, [status]);
+  
+  useEffect(() => {
+  const onFirstGesture = () => warmupLiveAudio();
+  window.addEventListener("pointerdown", onFirstGesture, { once: true });
+  return () => window.removeEventListener("pointerdown", onFirstGesture as any);
+}, []);
 
   function clearCellTimer() {
     if (cellTimerRef.current !== null) {
@@ -927,9 +931,9 @@ function usePulsePlayer(args: {
   }
 
   function stopAudios() {
-    for (const a of audiosRef.current) a.pause();
-    audiosRef.current = [];
-  }
+  stopLiveAudios(audiosRef.current);
+  audiosRef.current = [];
+}
 
   function hardStop(to: Status) {
     stopAudios();
@@ -2339,6 +2343,10 @@ async function onDownloadDemo() {
 
       {/* SECTION 2 — Immersion (Demo) */}
       <section className="mb-10 rounded-2xl border p-4">
+        <div className="mt-2 text-xs text-neutral-500">
+  <span className="font-medium">Audio note:</span>{" "}
+  If playback feels uneven, press Stop and refresh once.
+</div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div className="text-lg font-medium">
   Demo — {presetLabel}
@@ -2418,6 +2426,10 @@ highlightNotesSecondary={demoUI.lhPulse}
 
       {/* SECTION 3 — Execution (Practice) */}
       <section className="mb-10 rounded-2xl border p-4">
+        <div className="mt-2 text-xs text-neutral-500">
+  <span className="font-medium">Audio note:</span>{" "}
+  If playback feels uneven, press Stop and refresh once.
+</div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div className="text-lg font-medium">
   Practice — {presetLabel}
