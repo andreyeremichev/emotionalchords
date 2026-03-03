@@ -5,7 +5,7 @@ import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl"
 import { playLiveNote, stopLiveAudios, warmupLiveAudio } from "@/lib/audio/liveAudio";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { playLiveNotes, unlockLiveAudio } from "@/lib/audio/liveWebAudio";
 
 type Status = "IDLE" | "PLAYING" | "PAUSED" | "STOPPED" | "FINISHED";
 type Tonic = "C" | "D" | "Eb" | "F";
@@ -324,6 +324,14 @@ const {
     statusRef.current = status;
   }, [status]);
 
+  useEffect(() => {
+  const onFirstGesture = () => {
+    unlockLiveAudio().catch(() => {});
+  };
+  window.addEventListener("pointerdown", onFirstGesture, { once: true });
+  return () => window.removeEventListener("pointerdown", onFirstGesture as any);
+}, []);
+
   function clearCellTimer() {
     if (cellTimerRef.current !== null) {
       window.clearTimeout(cellTimerRef.current);
@@ -337,7 +345,6 @@ const {
   }
 
   function stopAudios() {
-  stopLiveAudios(audiosRef.current);
   audiosRef.current = [];
 }
 
@@ -378,7 +385,7 @@ function flashLH(notes: string[], holdMs = 140) {
     for (let b = 0; b < 4; b++) {
       const t = window.setTimeout(() => {
         if (statusRef.current !== "PLAYING") return;
-        audiosRef.current.push(...octave.map((n) => playNoteAudio(n)));
+        playLiveNotes(octave).catch(() => {});
 flashLH(octave, 140);
       }, b * beatMs);
       beatTimersRef.current.push(t);
@@ -390,13 +397,12 @@ flashLH(octave, 140);
   if (character === "ELASTIC") {
     const t1 = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...low.map((n) => playNoteAudio(n)));
+      playLiveNotes(low).catch(() => {});
       flashLH(high, 140);
     }, 0);
     const t3 = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...high.map((n) => playNoteAudio(n)));
-      flashLH(high, 140);
+playLiveNotes(high).catch(() => {});      flashLH(high, 140);
     }, 2 * beatMs);
     beatTimersRef.current.push(t1, t3);
     return;
@@ -406,23 +412,23 @@ flashLH(octave, 140);
   if (character === "INTERWOVEN") {
     const t1a = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...low.map((n) => playNoteAudio(n)));
+      playLiveNotes(low).catch(() => {});
       flashLH(high, 140);
     }, 0);
     const t1b = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...high.map((n) => playNoteAudio(n)));
+      playLiveNotes(high).catch(() => {});
       flashLH(high, 140);
     }, 60);
 
     const t3a = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...low.map((n) => playNoteAudio(n)));
+      playLiveNotes(low).catch(() => {});
       flashLH(high, 140);
     }, 2 * beatMs);
     const t3b = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...high.map((n) => playNoteAudio(n)));
+      playLiveNotes(high).catch(() => {});
       flashLH(high, 140);
     }, 2 * beatMs + 60);
 
@@ -434,7 +440,7 @@ flashLH(octave, 140);
   if (character === "ATMOSPHERIC") {
     const t1 = window.setTimeout(() => {
       if (statusRef.current !== "PLAYING") return;
-      audiosRef.current.push(...octave.map((n) => playNoteAudio(n)));
+      playLiveNotes(octave).catch(() => {});
       flashLH(high, 140);
     }, 0);
     beatTimersRef.current.push(t1);
@@ -456,14 +462,14 @@ if (cur.rhNotes.length) {
     cur.rhNotes.forEach((note, i) => {
       const t = window.setTimeout(() => {
         if (statusRef.current !== "PLAYING") return;
-        audiosRef.current.push(playNoteAudio(note));
+        playLiveNotes([note]).catch(() => {});
         flashRH([note], 140);
       }, offsets[i] ?? 0);
       beatTimersRef.current.push(t);
     });
   } else {
     // Strike as block + hold highlight across the bar
-    audiosRef.current.push(...cur.rhNotes.map((n) => playNoteAudio(n)));
+    playLiveNotes(cur.rhNotes).catch(() => {});
     flashRH(cur.rhNotes, Math.max(120, cur.cellMs - 40));
   }
 }
@@ -1012,10 +1018,9 @@ highlightNotesSecondary={practiceUI.lhPulse}
   <div className="text-sm uppercase tracking-wide opacity-70">Beyond One Motion</div>
 
   <h2 className="mt-2 text-xl font-semibold">Unlock Full Arc (PWYW survey, $0 ok)</h2>
-<p className="mt-3 leading-6 opacity-90">
-  Instant access after a quick pricing survey (no checkout yet).
-
-</p>
+<div className="text-xs opacity-70">
+    Instant access after a quick pricing survey (no checkout yet).
+  </div>
   <p className="mt-3 leading-6 opacity-90">
   If your playing keeps resolving early, the problem usually isn’t chords — it’s motion control.
   Full Arc gives you repeatable ways to sustain, widen, thin, and land on purpose.

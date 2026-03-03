@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import KeyboardMotionControl from "@/components/playbooks/KeyboardMotionControl";
 import { playLiveNote, stopLiveAudios, warmupLiveAudio } from "@/lib/audio/liveAudio";
 import Link from "next/link";
-
+import { playLiveNotes, unlockLiveAudio } from "@/lib/audio/liveWebAudio";
 
 /**
  * /motion-control/full-arc
@@ -918,6 +918,14 @@ function usePulsePlayer(args: {
   return () => window.removeEventListener("pointerdown", onFirstGesture as any);
 }, []);
 
+useEffect(() => {
+  const onFirstGesture = () => {
+    unlockLiveAudio().catch(() => {});
+  };
+  window.addEventListener("pointerdown", onFirstGesture, { once: true });
+  return () => window.removeEventListener("pointerdown", onFirstGesture as any);
+}, []);
+
   function clearCellTimer() {
     if (cellTimerRef.current !== null) {
       window.clearTimeout(cellTimerRef.current);
@@ -931,7 +939,6 @@ function usePulsePlayer(args: {
   }
 
   function stopAudios() {
-  stopLiveAudios(audiosRef.current);
   audiosRef.current = [];
 }
 
@@ -1137,8 +1144,7 @@ if (cur.rhNotes.length) {
 
   // -------- Default block strike --------
   else {
-    audiosRef.current.push(...rhNotes.map((n) => playNoteAudio(n)));
-    flashRH(rhNotes, Math.max(120, cellMs - 40));
+playLiveNotes(rhNotes).catch(() => {});    flashRH(rhNotes, Math.max(120, cellMs - 40));
   }
 }
 
@@ -1148,7 +1154,7 @@ if (cur.rhNotes.length) {
       const t = window.setTimeout(() => {
         if (statusRef.current !== "PLAYING") return;
         if (p.notes.length) {
-  audiosRef.current.push(...p.notes.map((n) => playNoteAudio(n)));
+playLiveNotes(p.notes).catch(() => {});
 
   // Visual behavior:
   // - Arrival: hold highlight for the full bar when striking on beat 1
