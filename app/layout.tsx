@@ -53,7 +53,7 @@ function SiteJsonLd() {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
+    default: "Emotional Piano Chords & Progressions | EmotionalChords",
     template: "%s | EmotionalChords",
   },
   description:

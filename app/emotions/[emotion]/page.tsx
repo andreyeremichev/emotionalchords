@@ -161,12 +161,8 @@ const DESCRIPTION_LABEL: Record<EmotionId, string> = {
   fear: "Play dark piano chords and chord progressions step by step.",
 };
 
-const title = `${TITLE_LABEL[id]} | EmotionalChords`;
-const description =
-  `${DESCRIPTION_LABEL[id]} ` +
-  `Motion description: ${meta.motion}. ` +
-  "Two paths: Flow and Color. No sheet music. No music theory required.";
-
+const title = TITLE_LABEL[id];
+const description = DESCRIPTION_LABEL[id];
   return {
     title,
     description,
