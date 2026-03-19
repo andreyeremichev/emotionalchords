@@ -4,6 +4,7 @@ import TwoPathsEmotionCompare from "./TwoPathsEmotionCompare";
 
 import TextColorKeyboardSection from "./TextColorKeyboardSection";
 import TextFlowKeyboardSection from "./TextFlowKeyboardSection";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Paths of Harmony – Flow vs Color: Motion Behind Emotion",
@@ -215,8 +216,7 @@ export default function PathsOfHarmonyPage() {
   </li>
 </ul>
          <p style={{ marginTop: 8 }}>
-  <strong>Try this:</strong> listen once, then listen again and track:
-  “Where does orientation change?” “Where does pressure hold?” “Where does return change?”
+  <strong>This explains why some chords feel emotional on piano.</strong>
 </p>
 
           <TwoPathsEmotionCompare />
@@ -627,6 +627,9 @@ export default function PathsOfHarmonyPage() {
 </p>
         </div>
       </section>
+      <Link href="/learn/emotional-piano-chord-progressions">
+  Understand chord progressions and patterns for each Emotion →
+</Link>
     </main>
   );
 }

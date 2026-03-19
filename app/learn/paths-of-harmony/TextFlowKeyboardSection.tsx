@@ -272,7 +272,7 @@ displayChords={flowChordsDisplay}
           autoPlayKey={autoPlayKey ?? undefined}
         />
         <p>
-          <strong>Tap a motion below.</strong> This plays the Flow progression
+          <strong>Tap an emotion below.</strong> This plays the Flow progression
           (right-hand triad + left-hand root). Each chord is played twice so you can hear the step clearly. The sentence above the keyboard
           tells you what the current chord is doing.
         </p>

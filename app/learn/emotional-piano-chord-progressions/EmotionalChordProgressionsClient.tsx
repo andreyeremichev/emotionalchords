@@ -415,14 +415,13 @@ export default function EmotionalChordProgressionsClient() {
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-700">
           Piano chord progressions can create clear feelings like calm, sadness,
           tension, wonder, or mystery. But the feeling does not come from the
-          chords alone. It comes from how they move, which notes stand out, how
+          chords alone. Emotion emerges from how chords move, which notes stand out, how
           the bar unfolds, and how long the sound stays.
         </p>
 
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-700">
           So emotion on piano is not something you paste on top later. It grows
-          out of motion. This page is a feeling guide first. The full playbooks
-          are the hands guide.
+          out of motion. These emotional piano chord progressions are designed to be played immediately.
         </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">

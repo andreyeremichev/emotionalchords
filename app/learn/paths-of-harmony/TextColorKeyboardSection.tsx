@@ -245,7 +245,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
           autoPlayKey={autoPlayKey ?? undefined}
         />
         <p>
-          <strong>Pick a motion below.</strong> This plays the Color progression
+          <strong>Pick an emotion below.</strong> This plays the Color progression
           in a smooth way (right-hand triad + left-hand root). Each chord is played twice so you can hear the step clearly. The sentence above
           the keyboard describes what the current chord is doing.
         </p>

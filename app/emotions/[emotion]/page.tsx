@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import EmotionPracticeBoard from "@/components/emotions/EmotionPracticeBoard";
 import { EMOTION_BY_ID, type EmotionId } from "@/lib/emotions";
-
+import Link from "next/link";
 type Params = { emotion: string };
 
 const EMOTION_META: Record<
@@ -200,8 +200,7 @@ export default async function EmotionPage({
 
         <p className="mt-3 text-sm text-neutral-700">
           Two paths for the same emotion: <strong>Flow</strong> and{" "}
-          <strong>Color</strong>. Practice it in two steps:{" "}
-          <strong>smooth chords</strong>, <strong>play with feeling</strong>.
+          <strong>Color</strong>. The feeling comes from how the chords move.
         </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
@@ -241,7 +240,10 @@ export default async function EmotionPage({
 
       <EmotionPracticeBoard emotion={e} />
 
-      
+      <Link href="/learn/emotional-piano-chord-progressions">
+  See all emotional chord progressions →
+</Link>
     </main>
+    
   );
 }
