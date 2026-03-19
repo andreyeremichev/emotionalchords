@@ -25,7 +25,7 @@ function SiteJsonLd() {
       name: SITE_NAME,
       url: SITE_URL,
       description:
-        "Motion-first piano practice: choose a harmonic motion (emotion emerges), then practice it step by step in Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
+  "Beginner-friendly emotional piano practice. Play emotions on piano using chord progressions, guided examples, and step-by-step practice. No sheet music. No heavy theory language.",
       inLanguage: "en",
     },
     {
@@ -36,7 +36,7 @@ function SiteJsonLd() {
       applicationCategory: "MusicApplication",
       operatingSystem: "Web",
       description:
-        "Interactive motion-first piano practice tool. Choose a motion (emotion emerges), then practice it step by step in two paths: Flow (coherent, readable motion) and Color (faster re-alignment). No sheet music. No heavy theory language.",
+  "Interactive emotional piano chord progressions practice tool for beginners. Explore emotional piano chord progressions, guided examples, and step-by-step practice for calm, sadness, tension, mystery, wonder, and more.",
       isBasedOn:
         "Co-created with AI assistance: AI-generated code and progression drafts refined through human testing, iteration, and musical feedback.",
     },
@@ -52,12 +52,15 @@ function SiteJsonLd() {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+
   title: {
-    default: "Emotional Piano Chords & Progressions | EmotionalChords",
+    default: "Emotional Piano Chord Progressions | EmotionalChords",
     template: "%s | EmotionalChords",
   },
+
   description:
-    "Choose a harmonic motion and stay with it — emotion emerges. Practice each motion step by step in two paths: Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
+    "Play emotional piano chord progressions for calm, sadness, tension, mystery, and more. Beginner-friendly, step-by-step practice. No sheet music. No heavy theory.",
+
   applicationName: SITE_NAME,
   category: "Music",
   authors: [{ name: "EmotionalChords" }],
@@ -66,20 +69,27 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
+    title: "Emotional Piano Chord Progressions | EmotionalChords",
     description:
-      "Choose a harmonic motion and stay with it — emotion emerges. Practice in two paths: Flow (coherent motion) and Color (re-aligned motion). No sheet music. No heavy theory language.",
+      "Explore emotional piano chord progressions for calm, sadness, tension, mystery, and more. Beginner-friendly, step-by-step practice.",
     images: [
-      { url: OG_IMAGE, width: 1200, height: 630, alt: "EmotionalChords OG" },
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "EmotionalChords — Emotional Piano Chords",
+      },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "Motion (Emotion) — Piano States Through Harmony | EmotionalChords",
+    title: "Emotional Piano Chord Progressions | EmotionalChords",
     description:
-      "Choose a motion. Stay with it. Practice in Flow (coherent) and Color (re-aligned) paths. No sheet music. No heavy theory language.",
+      "Play emotional piano chord progressions step by step. Explore calm, sadness, tension, and more.",
     images: [OG_IMAGE],
   },
+
   robots: {
     index: true,
     follow: true,

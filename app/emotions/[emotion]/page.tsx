@@ -1,14 +1,14 @@
 // app/emotions/[emotion]/page.tsx
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import EmotionPracticeBoard from "@/components/emotions/EmotionPracticeBoard";
 import { EMOTION_BY_ID, type EmotionId } from "@/lib/emotions";
-import Link from "next/link";
+
 type Params = { emotion: string };
 
 const EMOTION_META: Record<
-
   EmotionId,
   {
     motion: string;
@@ -19,7 +19,8 @@ const EMOTION_META: Record<
   calm: {
     motion: "Settled Circulation",
     focus: "keep it flowing",
-    pedal: "Flow = light half-pedal with tiny carry; Color = lighter, cleaner, no real blur.",
+    pedal:
+      "Flow = light half-pedal with tiny carry; Color = lighter, cleaner, no real blur.",
   },
   playful: {
     motion: "Light Return",
@@ -29,7 +30,8 @@ const EMOTION_META: Record<
   magic: {
     motion: "Guided Departure",
     focus: "change the frame, then let it glow",
-    pedal: "Flow = half-pedal each bar, slightly deeper on bar 4; Color = cleaner on bars 1–3, deeper on bar 4.",
+    pedal:
+      "Flow = half-pedal each bar, slightly deeper on bar 4; Color = cleaner on bars 1–3, deeper on bar 4.",
   },
   sadness: {
     motion: "Unresolved Descent",
@@ -39,22 +41,26 @@ const EMOTION_META: Record<
   mystery: {
     motion: "Obscured Orientation",
     focus: "hide the explanation",
-    pedal: "Mid half-pedal with slightly late changes; a little deeper on chord 3; in Color, chord 4 slightly cleaner than chord 3.",
+    pedal:
+      "Mid half-pedal with slightly late changes; a little deeper on chord 3; in Color, chord 4 slightly cleaner than chord 3.",
   },
   melancholy: {
     motion: "Altered Return",
     focus: "come back, but changed",
-    pedal: "Light-to-mid half-pedal with slight barline carry; deepest on the loop’s 4th chord.",
+    pedal:
+      "Light-to-mid half-pedal with slight barline carry; deepest on the loop’s 4th chord.",
   },
   wonder: {
     motion: "Upward Opening",
     focus: "make space bigger",
-    pedal: "Half-pedal per bar with clean after-attack changes; slightly more bloom on Flow chord 4, slightly cleaner on Color chord 4.",
+    pedal:
+      "Half-pedal per bar with clean after-attack changes; slightly more bloom on Flow chord 4, slightly cleaner on Color chord 4.",
   },
   tension: {
     motion: "Held Pressure",
     focus: "squeeze without release",
-    pedal: "Shallow half-pedal; catch after 1; refresh on 3; change just after next beat 1.",
+    pedal:
+      "Shallow half-pedal; catch after 1; refresh on 3; change just after next beat 1.",
   },
   anger: {
     motion: "Grinding Advance",
@@ -67,6 +73,7 @@ const EMOTION_META: Record<
     pedal: "Dry.",
   },
 };
+
 const SEARCH_LABEL: Record<EmotionId, string> = {
   calm: "calm piano chords",
   playful: "playful piano chords",
@@ -79,10 +86,47 @@ const SEARCH_LABEL: Record<EmotionId, string> = {
   anger: "aggressive piano chords",
   fear: "dark piano chords",
 };
+
+const TITLE_LABEL: Record<EmotionId, string> = {
+  calm: "Calm Piano Chords & Progressions",
+  playful: "Playful Piano Chords & Progressions",
+  magic: "Magical Piano Chords & Progressions",
+  sadness: "Sad Piano Chords & Progressions",
+  mystery: "Mysterious Piano Chords & Progressions",
+  melancholy: "Melancholic Piano Chords & Progressions",
+  wonder: "Cinematic Piano Chords & Progressions",
+  tension: "Tense Piano Chords & Progressions",
+  anger: "Aggressive Piano Chords & Progressions",
+  fear: "Dark Piano Chords & Progressions",
+};
+
+const DESCRIPTION_LABEL: Record<EmotionId, string> = {
+  calm:
+    "Play calm piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  playful:
+    "Play playful piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  magic:
+    "Play magical piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  sadness:
+    "Play sad piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  mystery:
+    "Play mysterious piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  melancholy:
+    "Play melancholic piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  wonder:
+    "Play cinematic piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  tension:
+    "Play tense piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  anger:
+    "Play aggressive piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+  fear:
+    "Play dark piano chords and chord progressions step by step. Beginner-friendly, with Flow and Color paths.",
+};
+
 function emotionHowToJsonLd(e: {
   id: string;
   label: string;
-  motion: string;
+  searchLabel: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -95,9 +139,8 @@ function emotionHowToJsonLd(e: {
       url: "https://emotionalchords.app",
     },
     description:
-      `Beginner-friendly steps to play ${e.label.toLowerCase()} on piano. ` +
-      `Motion description: ${e.motion}. ` +
-      "Two paths: Flow and Color. No sheet music. No music theory required.",
+      `Beginner-friendly steps to play ${e.searchLabel} using chord progressions and guided practice. ` +
+      "No sheet music. No music theory required.",
     educationalLevel: "Beginner",
     inLanguage: "en",
     supply: [{ "@type": "HowToSupply", name: "Piano or keyboard" }],
@@ -117,7 +160,6 @@ function emotionHowToJsonLd(e: {
         text:
           "Repeat the same chords with simple rhythm and touch so the emotion becomes clear.",
       },
-      
     ],
   };
 }
@@ -133,36 +175,9 @@ export async function generateMetadata({
   const e = EMOTION_BY_ID[id];
   if (!e) return {};
 
-  const meta = EMOTION_META[id];
+  const title = TITLE_LABEL[id];
+  const description = DESCRIPTION_LABEL[id];
 
-  const TITLE_LABEL: Record<EmotionId, string> = {
-  calm: "Calm Piano Chords & Progressions",
-  playful: "Playful Piano Chords & Progressions",
-  magic: "Magical Piano Chords & Progressions",
-  sadness: "Sad Piano Chords & Progressions",
-  mystery: "Mysterious Piano Chords & Progressions",
-  melancholy: "Melancholic Piano Chords & Progressions",
-  wonder: "Cinematic Piano Chords & Progressions",
-  tension: "Tense Piano Chords & Progressions",
-  anger: "Aggressive Piano Chords & Progressions",
-  fear: "Dark Piano Chords & Progressions",
-};
-
-const DESCRIPTION_LABEL: Record<EmotionId, string> = {
-  calm: "Play calm piano chords and chord progressions step by step.",
-  playful: "Play playful piano chords and chord progressions step by step.",
-  magic: "Play magical piano chords and chord progressions step by step.",
-  sadness: "Play sad piano chords and chord progressions step by step.",
-  mystery: "Play mysterious piano chords and chord progressions step by step.",
-  melancholy: "Play melancholic piano chords and chord progressions step by step.",
-  wonder: "Play cinematic piano chords and chord progressions step by step.",
-  tension: "Play tense piano chords and chord progressions step by step.",
-  anger: "Play aggressive piano chords and chord progressions step by step.",
-  fear: "Play dark piano chords and chord progressions step by step.",
-};
-
-const title = TITLE_LABEL[id];
-const description = DESCRIPTION_LABEL[id];
   return {
     title,
     description,
@@ -225,38 +240,36 @@ export default async function EmotionPage({
           {e.emoji} {e.label}
         </h1>
 
-        <div className="mt-2 space-y-1 text-sm text-neutral-700">
-  <p>
-    <strong>Motion:</strong> {meta.motion}
-  </p>
-  
-</div>
-
-        <p className="mt-3 text-sm text-neutral-700">
-          Two paths for the same emotion: <strong>Flow</strong> and{" "}
-          <strong>Color</strong>. The feeling comes from how the chords move.
+        <p className="mt-3 text-sm leading-relaxed text-neutral-700">
+          This page helps you play <strong>{SEARCH_LABEL[id]}</strong> using two
+          harmonic paths: <strong>Flow</strong> and <strong>Color</strong>. The
+          feeling comes from how the chords move.
         </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
-  <p className="text-sm leading-relaxed text-neutral-800">
-    <strong>
-      How to play {e.label.toLowerCase()} on piano:
-    </strong>{" "}
-    start with <strong>smooth chords</strong>, then repeat them with a
-    simple <strong>rhythm</strong>.
-  </p>
+          <p className="text-sm leading-relaxed text-neutral-800">
+            <strong>How to play {e.label.toLowerCase()} on piano:</strong> start
+            with <strong>smooth chords</strong>, then repeat them with a simple{" "}
+            <strong>rhythm</strong>.
+          </p>
 
-  <div className="mt-4 space-y-2 text-sm text-neutral-800">
-    <p>
-      <span className="font-semibold text-neutral-900">Focus:</span>{" "}
-      {meta.focus}
-    </p>
-    <p>
-      <span className="font-semibold text-neutral-900">Pedal:</span>{" "}
-      {meta.pedal}
-    </p>
-  </div>
-</div>
+          <div className="mt-4 space-y-2 text-sm text-neutral-800">
+            <p>
+              <span className="font-semibold text-neutral-900">Motion:</span>{" "}
+              {meta.motion}
+            </p>
+            <p>
+              <span className="font-semibold text-neutral-900">
+                Focus while playing:
+              </span>{" "}
+              {meta.focus}
+            </p>
+            <p>
+              <span className="font-semibold text-neutral-900">Pedal:</span>{" "}
+              {meta.pedal}
+            </p>
+          </div>
+        </div>
 
         <script
           type="application/ld+json"
@@ -265,27 +278,27 @@ export default async function EmotionPage({
               emotionHowToJsonLd({
                 id: e.id,
                 label: e.label,
-                motion: meta.motion,
+                searchLabel: SEARCH_LABEL[id],
               })
             ),
           }}
         />
       </header>
 
-            <EmotionPracticeBoard emotion={e} />
+      <EmotionPracticeBoard emotion={e} />
 
       <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
-  <p className="text-sm leading-relaxed text-neutral-800">
-    This page helps you play <strong>{SEARCH_LABEL[id]}</strong> using simple,
-    repeatable <strong>chord progressions</strong>.
-  </p>
+        <p className="text-sm leading-relaxed text-neutral-800">
+          This page helps you play <strong>{SEARCH_LABEL[id]}</strong> using
+          simple, repeatable <strong>chord progressions</strong>.
+        </p>
 
-  <p className="mt-2 text-sm leading-relaxed text-neutral-700">
-    The feeling comes from how the chords move, not just which chords you
-    play. These progressions are designed for beginners exploring emotional
-    piano playing without sheet music or heavy theory.
-  </p>
-</div>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-700">
+          The feeling comes from how the chords move, not just which chords you
+          play. These progressions are designed for beginners exploring
+          emotional piano playing without sheet music or heavy theory.
+        </p>
+      </div>
 
       <div className="mt-4">
         <Link
@@ -296,6 +309,5 @@ export default async function EmotionPage({
         </Link>
       </div>
     </main>
-    
   );
 }
