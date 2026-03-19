@@ -8,6 +8,7 @@ import Link from "next/link";
 type Params = { emotion: string };
 
 const EMOTION_META: Record<
+
   EmotionId,
   {
     motion: string;
@@ -66,7 +67,18 @@ const EMOTION_META: Record<
     pedal: "Dry.",
   },
 };
-
+const SEARCH_LABEL: Record<EmotionId, string> = {
+  calm: "calm piano chords",
+  playful: "playful piano chords",
+  magic: "magical piano chords",
+  sadness: "sad piano chords",
+  mystery: "mysterious piano chords",
+  melancholy: "melancholic piano chords",
+  wonder: "cinematic piano chords",
+  tension: "tense piano chords",
+  anger: "aggressive piano chords",
+  fear: "dark piano chords",
+};
 function emotionHowToJsonLd(e: {
   id: string;
   label: string;
@@ -238,11 +250,29 @@ export default async function EmotionPage({
         />
       </header>
 
-      <EmotionPracticeBoard emotion={e} />
+            <EmotionPracticeBoard emotion={e} />
 
-      <Link href="/learn/emotional-piano-chord-progressions">
-  See all emotional chord progressions →
-</Link>
+      <div className="mt-6 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
+  <p className="text-sm leading-relaxed text-neutral-800">
+    This page helps you play <strong>{SEARCH_LABEL[id]}</strong> using simple,
+    repeatable <strong>chord progressions</strong>.
+  </p>
+
+  <p className="mt-2 text-sm leading-relaxed text-neutral-700">
+    The feeling comes from how the chords move, not just which chords you
+    play. These progressions are designed for beginners exploring emotional
+    piano playing without sheet music or heavy theory.
+  </p>
+</div>
+
+      <div className="mt-4">
+        <Link
+          href="/learn/emotional-piano-chord-progressions"
+          className="text-sm font-medium underline underline-offset-2 hover:text-black"
+        >
+          See all emotional chord progressions →
+        </Link>
+      </div>
     </main>
     
   );
