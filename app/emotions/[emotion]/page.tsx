@@ -7,15 +7,75 @@ import { EMOTION_BY_ID, type EmotionId } from "@/lib/emotions";
 
 type Params = { emotion: string };
 
-function motionHowToJsonLd(e: {
+const EMOTION_META: Record<
+  EmotionId,
+  {
+    motion: string;
+    focus: string;
+    pedal: string;
+  }
+> = {
+  calm: {
+    motion: "Settled Circulation",
+    focus: "keep it flowing",
+    pedal: "Flow = light half-pedal with tiny carry; Color = lighter, cleaner, no real blur.",
+  },
+  playful: {
+    motion: "Light Return",
+    focus: "bounce and come back",
+    pedal: "Dry, or only a tiny touch on beat 1 if the piano is very dry.",
+  },
+  magic: {
+    motion: "Guided Departure",
+    focus: "change the frame, then let it glow",
+    pedal: "Flow = half-pedal each bar, slightly deeper on bar 4; Color = cleaner on bars 1–3, deeper on bar 4.",
+  },
+  sadness: {
+    motion: "Unresolved Descent",
+    focus: "move away and don’t recover",
+    pedal: "Shallow half-pedal; release during beat 4.",
+  },
+  mystery: {
+    motion: "Obscured Orientation",
+    focus: "hide the explanation",
+    pedal: "Mid half-pedal with slightly late changes; a little deeper on chord 3; in Color, chord 4 slightly cleaner than chord 3.",
+  },
+  melancholy: {
+    motion: "Altered Return",
+    focus: "come back, but changed",
+    pedal: "Light-to-mid half-pedal with slight barline carry; deepest on the loop’s 4th chord.",
+  },
+  wonder: {
+    motion: "Upward Opening",
+    focus: "make space bigger",
+    pedal: "Half-pedal per bar with clean after-attack changes; slightly more bloom on Flow chord 4, slightly cleaner on Color chord 4.",
+  },
+  tension: {
+    motion: "Held Pressure",
+    focus: "squeeze without release",
+    pedal: "Shallow half-pedal; catch after 1; refresh on 3; change just after next beat 1.",
+  },
+  anger: {
+    motion: "Grinding Advance",
+    focus: "push through",
+    pedal: "Dry.",
+  },
+  fear: {
+    motion: "Loss of Ground",
+    focus: "remove support",
+    pedal: "Dry.",
+  },
+};
+
+function emotionHowToJsonLd(e: {
   id: string;
+  label: string;
   motion: string;
-  emotion: string;
 }) {
   return {
     "@context": "https://schema.org",
     "@type": ["LearningResource", "HowTo"],
-    name: `How to play ${e.motion} (${e.emotion}) on piano (beginner)`,
+    name: `How to play ${e.label} on piano (beginner)`,
     url: `https://emotionalchords.app/emotions/${e.id}`,
     isPartOf: {
       "@type": "WebSite",
@@ -23,13 +83,15 @@ function motionHowToJsonLd(e: {
       url: "https://emotionalchords.app",
     },
     description:
-      `Beginner-friendly steps to practice ${e.motion.toLowerCase()} (${e.emotion.toLowerCase()}) on piano. ` +
-      "Two paths: Flow (coherent, readable motion) and Color (faster re-alignment). " +
-      "No sheet music. No music theory required.",
+      `Beginner-friendly steps to play ${e.label.toLowerCase()} on piano. ` +
+      `Motion description: ${e.motion}. ` +
+      "Two paths: Flow and Color. No sheet music. No music theory required.",
     educationalLevel: "Beginner",
     inLanguage: "en",
     supply: [{ "@type": "HowToSupply", name: "Piano or keyboard" }],
-    tool: [{ "@type": "HowToTool", name: "EmotionalChords interactive practice" }],
+    tool: [
+      { "@type": "HowToTool", name: "EmotionalChords interactive practice" },
+    ],
     step: [
       {
         "@type": "HowToStep",
@@ -41,14 +103,9 @@ function motionHowToJsonLd(e: {
         "@type": "HowToStep",
         name: "Step 2 — Play with feeling",
         text:
-          "Repeat the same chords with a simple rhythm and touch. Stay inside the motion long enough to notice what changes.",
+          "Repeat the same chords with simple rhythm and touch so the emotion becomes clear.",
       },
-      {
-        "@type": "HowToStep",
-        name: "Step 3 — Lift it higher",
-        text:
-          "Play the same idea higher on the keyboard to change the intensity without changing the motion.",
-      },
+      
     ],
   };
 }
@@ -64,11 +121,13 @@ export async function generateMetadata({
   const e = EMOTION_BY_ID[id];
   if (!e) return {};
 
-  const title = `${e.motion} (${e.emotion}) Piano Chords (Beginner) | EmotionalChords`;
+  const meta = EMOTION_META[id];
+
+  const title = `${e.label} Piano Chords (Beginner) | EmotionalChords`;
   const description =
-    `Practice ${e.motion.toLowerCase()} (${e.emotion.toLowerCase()}) on piano step by step. ` +
-    "Two paths: Flow (coherent motion) and Color (re-aligned motion). " +
-    "No sheet music. No music theory required.";
+    `Learn how to play ${e.label.toLowerCase()} on piano step by step. ` +
+    `Motion description: ${meta.motion}. ` +
+    "Two paths: Flow and Color. No sheet music. No music theory required.";
 
   return {
     title,
@@ -84,7 +143,7 @@ export async function generateMetadata({
           url: "/og/emotionalchords.jpg",
           width: 1200,
           height: 630,
-          alt: `EmotionalChords — ${e.motion} (${e.emotion})`,
+          alt: `EmotionalChords — ${e.label}`,
         },
       ],
     },
@@ -119,49 +178,62 @@ export default async function EmotionPage({
   const e = EMOTION_BY_ID[id];
   if (!e) return notFound();
 
+  const meta = EMOTION_META[id];
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
       <header className="mb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-          Motion (Emotion)
+          Emotion
         </p>
 
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-neutral-900 sm:text-3xl">
-          {e.emoji} {e.motion}{" "}
-          <span className="text-base font-medium opacity-70">({e.emotion})</span>
+          {e.emoji} {e.label}
         </h1>
 
-        <p className="mt-2 text-sm text-neutral-700">
-          Two paths for the same motion: <strong>Flow</strong> (coherent,
-          readable motion) and <strong>Color</strong> (faster re-alignment).
-          Practice it in three steps: <strong>smooth chords</strong>,{" "}
-          <strong>play with feeling</strong>, and <strong>lift it higher</strong>.
+        <div className="mt-2 space-y-1 text-sm text-neutral-700">
+  <p>
+    <strong>Motion:</strong> {meta.motion}
+  </p>
+  
+</div>
+
+        <p className="mt-3 text-sm text-neutral-700">
+          Two paths for the same emotion: <strong>Flow</strong> and{" "}
+          <strong>Color</strong>. Practice it in two steps:{" "}
+          <strong>smooth chords</strong>, <strong>play with feeling</strong>.
         </p>
 
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
-          <p className="text-sm leading-relaxed text-neutral-800">
-            <strong>
-              How to practice {e.motion.toLowerCase()} ({e.emotion.toLowerCase()}) on piano:
-            </strong>{" "}
-            start with <strong>smooth chords</strong>, then repeat them with a
-            simple <strong>rhythm</strong>, and finally{" "}
-            <strong>lift it higher</strong> by playing the same idea higher on
-            the keyboard.
-          </p>
+  <p className="text-sm leading-relaxed text-neutral-800">
+    <strong>
+      How to play {e.label.toLowerCase()} on piano:
+    </strong>{" "}
+    start with <strong>smooth chords</strong>, then repeat them with a
+    simple <strong>rhythm</strong>.
+  </p>
 
-          <ul className="mt-2 space-y-1 text-xs text-neutral-700">
-            <li>✅ No sheet music</li>
-            <li>✅ No music theory required</li>
-            <li>✅ Two paths: Flow (coherent) and Color (re-aligned)</li>
-          </ul>
-        </div>
+  <div className="mt-4 space-y-2 text-sm text-neutral-800">
+    <p>
+      <span className="font-semibold text-neutral-900">Focus:</span>{" "}
+      {meta.focus}
+    </p>
+    <p>
+      <span className="font-semibold text-neutral-900">Pedal:</span>{" "}
+      {meta.pedal}
+    </p>
+  </div>
+</div>
 
-        {/* JSON-LD for AI engines */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(
-              motionHowToJsonLd({ id: e.id, motion: e.motion, emotion: e.emotion })
+              emotionHowToJsonLd({
+                id: e.id,
+                label: e.label,
+                motion: meta.motion,
+              })
             ),
           }}
         />
@@ -169,9 +241,7 @@ export default async function EmotionPage({
 
       <EmotionPracticeBoard emotion={e} />
 
-      <p className="mt-8 text-xs text-neutral-500">
-        Next: Step 2 (play with feeling) and Step 3 (lift it higher).
-      </p>
+      
     </main>
   );
 }

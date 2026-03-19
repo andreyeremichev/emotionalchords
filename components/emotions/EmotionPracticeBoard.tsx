@@ -1,4 +1,3 @@
-// components/emotions/EmotionPracticeBoard.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -9,7 +8,6 @@ import type { StepId } from "@/components/ui/StepTabs";
 import type { EmotionMeta } from "@/lib/emotions";
 
 import {
-  practicePatternForEmotion,
   practiceStep2FlowSpeed,
   practiceStep2ColorSpeed,
 } from "@/lib/practiceSession";
@@ -23,7 +21,6 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
   const [flowStep, setFlowStep] = useState<StepId>(1);
   const [colorStep, setColorStep] = useState<StepId>(1);
 
-  // Motion-first label used throughout the board
   const motionLabel = `${emotion.motion} (${emotion.emotion})`;
 
   return (
@@ -37,21 +34,23 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
         onStepChange={setFlowStep}
         step1={
           <Step1Practice
-            emotionLabel={`${motionLabel} · Flow`}
-            emotionPalette={emotion.palette}
-            chords={emotion.flow.chords}
-          />
+  emotionId={emotion.id}
+  path="flow"
+  emotionLabel={`${motionLabel} · Flow`}
+  emotionPalette={emotion.palette}
+  chords={emotion.flow.chords}
+/>
         }
         step2={
           <Step2RhythmPractice
             emotionLabel={`${motionLabel} · Flow`}
             emotionPalette={emotion.palette}
             chords={emotion.flow.chords}
-            pattern={practicePatternForEmotion(emotion.id)}
+            pattern={emotion.id}
+            path="flow"
             {...practiceStep2FlowSpeed(emotion.id)}
           />
         }
-        
         disabledSteps={[]}
       />
 
@@ -64,21 +63,23 @@ export default function EmotionPracticeBoard(props: { emotion: EmotionMeta }) {
         onStepChange={setColorStep}
         step1={
           <Step1Practice
-            emotionLabel={`${motionLabel} · Color`}
-            emotionPalette={emotion.palette}
-            chords={emotion.color.chords}
-          />
+  emotionId={emotion.id}
+  path="color"
+  emotionLabel={`${motionLabel} · Color`}
+  emotionPalette={emotion.palette}
+  chords={emotion.color.chords}
+/>
         }
         step2={
           <Step2RhythmPractice
             emotionLabel={`${motionLabel} · Color`}
             emotionPalette={emotion.palette}
             chords={emotion.color.chords}
-            pattern={practicePatternForEmotion(emotion.id)}
+            pattern={emotion.id}
+            path="color"
             {...practiceStep2ColorSpeed(emotion.id)}
           />
         }
-        
         disabledSteps={[]}
       />
     </div>

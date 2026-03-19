@@ -110,7 +110,7 @@ function buildDisplayMapForChord(chord: string) {
   // map both sharp and flat spellings (all octaves we render) to the preferred base label
   for (const pc of pcs) {
     const preferredName = preferred[pc]; // e.g. Eb, Bb, F#
-    for (const oct of [3, 4, 5, 6]) {
+    for (const oct of [2, 3, 4, 5, 6]) {
       map[`${PITCHES[pc]}${oct}`] = preferredName;      // D#4 -> Eb
       map[`${PITCHES_FLAT[pc]}${oct}`] = preferredName; // Eb4 -> Eb
     }
@@ -156,7 +156,7 @@ function triadFromChordName(name: string): string[] {
    Static keyboard C3–C6 (visual only)
    ========================= */
 
-type Oct = 3 | 4 | 5 | 6;
+type Oct = 2 | 3 | 4 | 5 | 6;
 type WhiteLetter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 
 type NoteName =
@@ -179,7 +179,7 @@ function buildKeyboard() {
   const blacks: BlackKey[] = [];
 
   let x = 0;
-  for (let oct = 3 as Oct; oct <= 6; oct = (oct + 1) as Oct) {
+  for (let oct = 2 as Oct; oct <= 6; oct = (oct + 1) as Oct) {
     for (let wi = 0; wi < whiteCycle.length; wi++) {
       const letter = whiteCycle[wi];
       if (oct === 6 && letter !== "C") break; // only C6 in top octave
@@ -315,7 +315,7 @@ export default function KeyboardEmotions({
           <svg
             viewBox={`0 0 ${KEYBOARD_W} ${WHITE_H}`}
             preserveAspectRatio="xMidYMid meet"
-            aria-label="Emotion Keyboard C3–C6"
+            aria-label="Emotion Keyboard C2–C6"
             style={{ width: "100%", height: "100%", display: "block" }}
           >
             {/* White keys */}

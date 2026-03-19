@@ -4,28 +4,52 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as Tone from "tone";
 import KeyboardEmotions, { EmotionPalette } from "@/components/KeyboardEmotions";
 import { PITCHES } from "@/lib/harmony/flow";
+import {
+  buildAscendingRhVoicing,
+  getLockedPracticeVoicing,
+  lhRootToNote,
+  prettyNote,
+  type PracticeEmotionId,
+  type PracticePathId,
+} from "@/lib/emotionPracticeVoicings";
 
 /* =========================
    Types
 ========================= */
 
 type Drill = "one" | "two" | "full";
-type PatternId =
-  | "breathing"
-  | "pulse"
-  | "echo"
-  | "freeze"
-  | "wonder"
-  | "magic"
-  | "mystery";
+type PathId = PracticePathId;
+type PatternId = PracticeEmotionId;
+
+type LHAction = "none" | "single" | "octave" | "upper";
+type RHAction = "none" | "chord";
+
+type PatternEventDef = {
+  pos: number; // 0=beat1, 0.5=1&, 1=beat2, 1.5=2&, ...
+  tokenIndex: number;
+  lh: LHAction;
+  rh: RHAction;
+};
 
 type Event = {
   delayMs: number;
   chordIndex: number;
   tokenIndex: number;
-  doLH: boolean;
-  doRHChord: boolean;
-  doRHNoteIndex: number | null; // sparkle note index (magic)
+  lh: LHAction;
+  rh: RHAction;
+  pos: number;
+};
+
+type PatternConfig = {
+  label: string;
+  tokens: string[];
+  explainer: string;
+  baseBeatMs: number;
+  restBetweenChords: number;
+  events: PatternEventDef[];
+  rhDurBeats: number;
+  lhDurBeats: number;
+  keepRhVisibleOnLhOnly?: boolean;
 };
 
 /* =========================
@@ -38,79 +62,174 @@ const DRILLS: { id: Drill; label: string; subtitle: string }[] = [
   { id: "full", label: "Full progression", subtitle: "Now it becomes music." },
 ];
 
-const PATTERNS: Record<
-  PatternId,
-  {
-    label: string;
-    tokens: string[];
-    explainer: string;
-    baseGap: number;
-    baseRestBetweenReps: number;
-    baseRestBetweenChords: number;
-  }
-> = {
-  breathing: {
-    label: "Breathing",
-    tokens: ["L", "R", "L", "R"],
-    explainer: "Left → Right → Left → Right",
-    // Heavy & slow sadness feel (locked)
-    baseGap: 320,
-    baseRestBetweenReps: 200,
-    baseRestBetweenChords: 140,
+const PATTERNS: Record<PatternId, PatternConfig> = {
+  calm: {
+    label: "Settled circulation",
+    tokens: ["1 T", "1& hold", "2 R", "2& L", "3 R", "4 R", "4& L"],
+    explainer: "Together → hold → right → left → right → right → left",
+    baseBeatMs: 1071,
+    restBetweenChords: 220,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 0.5, tokenIndex: 1, lh: "none", rh: "none" },
+      { pos: 1, tokenIndex: 2, lh: "none", rh: "chord" },
+      { pos: 1.5, tokenIndex: 3, lh: "single", rh: "none" },
+      { pos: 2, tokenIndex: 4, lh: "none", rh: "chord" },
+      { pos: 3, tokenIndex: 5, lh: "none", rh: "chord" },
+      { pos: 3.5, tokenIndex: 6, lh: "single", rh: "none" },
+    ],
+    rhDurBeats: 0.9,
+    lhDurBeats: 0.16,
   },
 
-  wonder: {
-    label: "Open suspension",
-    tokens: ["L", "R", "…"],
-    explainer: "Left → Right → (hold)",
-    baseGap: 320,
-    baseRestBetweenReps: 0,
-    baseRestBetweenChords: 420,
+  playful: {
+    label: "Light return",
+    tokens: ["1 T", "2 R", "2& L", "3 R", "3& L", "4 T"],
+    explainer: "Together → right → left → right → left → together",
+    baseBeatMs: 833,
+    restBetweenChords: 180,
+    events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
+      { pos: 1.5, tokenIndex: 2, lh: "single", rh: "none" },
+      { pos: 2, tokenIndex: 3, lh: "none", rh: "chord" },
+      { pos: 2.5, tokenIndex: 4, lh: "single", rh: "none" },
+      { pos: 3, tokenIndex: 5, lh: "single", rh: "chord" },
+    ],
+    rhDurBeats: 0.5,
+    lhDurBeats: 0.14,
   },
 
   magic: {
-    label: "Shimmer",
-    tokens: ["B", "…", "✨"],
-    explainer: "Both → (hold) → sparkle",
-    baseGap: 360,
-    baseRestBetweenReps: 0,
-    baseRestBetweenChords: 320,
+    label: "Guided departure",
+    tokens: ["1 T", "2 R", "3 –", "4 R"],
+    explainer: "Together → right → silence → right",
+    baseBeatMs: 1034,
+    restBetweenChords: 260,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "none" },
+      { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
+    ],
+    rhDurBeats: 1.2,
+    lhDurBeats: 0.18,
+  },
+
+  sadness: {
+    label: "Unresolved descent",
+    tokens: ["1 T", "2 R", "3 R", "4 –"],
+    explainer: "Together → right → right → silence",
+    baseBeatMs: 1154,
+    restBetweenChords: 260,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "chord" },
+      { pos: 3, tokenIndex: 3, lh: "none", rh: "none" },
+    ],
+    rhDurBeats: 0.9,
+    lhDurBeats: 0.18,
   },
 
   mystery: {
-    label: "Question",
-    tokens: ["L", "R", "…", "R"],
-    explainer: "Left → Right → (pause) → Right",
-    baseGap: 300,
-    baseRestBetweenReps: 0,
-    baseRestBetweenChords: 360,
+    label: "Obscured orientation",
+    tokens: ["1 T", "2& R", "3 R", "4& L"],
+    explainer: "Together → right → right → left",
+    baseBeatMs: 1071,
+    restBetweenChords: 260,
+    events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1.5, tokenIndex: 1, lh: "none", rh: "chord" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "chord" },
+      { pos: 3.5, tokenIndex: 3, lh: "single", rh: "none" },
+    ],
+    rhDurBeats: 1.0,
+    lhDurBeats: 0.16,
   },
 
-  freeze: {
-    label: "Freeze",
-    tokens: ["L", "R", "…"],
-    explainer: "Left → Right → (long silence)",
-    baseGap: 360,
-    baseRestBetweenReps: 0,
-    baseRestBetweenChords: 900,
+  melancholy: {
+    label: "Altered return",
+    tokens: ["1 T", "2 R", "3 –", "4 R"],
+    explainer: "Together → right → silence → right",
+    baseBeatMs: 1111,
+    restBetweenChords: 260,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "none" },
+      { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
+    ],
+    rhDurBeats: 1.0,
+    lhDurBeats: 0.18,
   },
 
-  pulse: {
-    label: "Pulse",
-    tokens: ["B", "B", "B", "B"], // 2 hits per rep × 2 reps = 4 tokens
-    explainer: "Both hands together (pulse)",
-    baseGap: 210,
-    baseRestBetweenReps: 220,
-    baseRestBetweenChords: 210,
+  wonder: {
+    label: "Upward opening",
+    tokens: ["1 T", "2 –", "3 R", "4 R"],
+    explainer: "Together → silence → right → right",
+    baseBeatMs: 1000,
+    restBetweenChords: 260,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "none", rh: "none" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "chord" },
+      { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
+    ],
+    rhDurBeats: 1.2,
+    lhDurBeats: 0.18,
   },
 
-  echo: {
-    label: "Echo",
-    tokens: ["L", "R", "·", "R", "L", "R", "·", "R"],
-    explainer: "Left → Right → (pause) → Right",
-    baseGap: 260,
-    baseRestBetweenReps: 220,
-    baseRestBetweenChords: 260,
+  tension: {
+    label: "Held pressure",
+    tokens: ["1 T", "1& hold", "2 R", "2& L", "3 T", "4 R", "4& L"],
+    explainer: "Together → hold → right → left → together → right → left",
+    baseBeatMs: 909,
+    restBetweenChords: 200,
+    events: [
+      { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
+      { pos: 1, tokenIndex: 2, lh: "none", rh: "chord" },
+      { pos: 1.5, tokenIndex: 3, lh: "single", rh: "none" },
+      { pos: 2, tokenIndex: 4, lh: "single", rh: "chord" },
+      { pos: 3, tokenIndex: 5, lh: "none", rh: "chord" },
+      { pos: 3.5, tokenIndex: 6, lh: "single", rh: "none" },
+    ],
+    rhDurBeats: 0.85,
+    lhDurBeats: 0.16,
+  },
+
+  anger: {
+    label: "Grinding advance",
+    tokens: ["1 T", "2 L octave", "3 L octave", "4 L octave"],
+    explainer: "Together, then left-hand octave pulses while right hand keeps holding",
+    baseBeatMs: 714,
+    restBetweenChords: 160,
+    events: [
+      { pos: 0, tokenIndex: 0, lh: "octave", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "octave", rh: "none" },
+      { pos: 2, tokenIndex: 2, lh: "octave", rh: "none" },
+      { pos: 3, tokenIndex: 3, lh: "octave", rh: "none" },
+    ],
+    rhDurBeats: 4.1,
+    lhDurBeats: 0.14,
+    keepRhVisibleOnLhOnly: true,
+  },
+
+  fear: {
+    label: "Loss of ground",
+    tokens: ["1 T", "2 LH upper", "3 – (nothing)", "4 LH upper"],
+    explainer: "Together, then late upper-note support only",
+    baseBeatMs: 1000,
+    restBetweenChords: 220,
+        events: [
+      { pos: 0, tokenIndex: 0, lh: "octave", rh: "chord" },
+      { pos: 1, tokenIndex: 1, lh: "upper", rh: "none" },
+      { pos: 2, tokenIndex: 2, lh: "none", rh: "none" },
+      { pos: 3, tokenIndex: 3, lh: "upper", rh: "none" },
+    ],
+    rhDurBeats: 4.1,
+    lhDurBeats: 0.12,
+    keepRhVisibleOnLhOnly: true,
   },
 };
 
@@ -118,51 +237,16 @@ const PATTERNS: Record<
    Helpers
 ========================= */
 
-function midiToName(midi: number) {
-  const pc = PITCHES[midi % 12];
-  const oct = Math.floor(midi / 12) - 1;
-  return `${pc}${oct}`;
+function noteDownOctave(note: string): string {
+  const m = /^(.*?)(\d)$/.exec(note);
+  if (!m) return note;
+  const name = m[1];
+  const oct = parseInt(m[2], 10);
+  return `${name}${oct - 1}`;
 }
 
-function chordToPitchClasses(symbol: string): { rootPc: number; pcs: number[] } {
-  const m = /^([A-G])(b|#)?(m|°|dim)?$/i.exec(symbol);
-  if (!m) return { rootPc: 0, pcs: [] };
-
-  const letter = m[1].toUpperCase();
-  const acc = (m[2] || "").toLowerCase();
-  const qual = (m[3] || "").toLowerCase();
-
-  const basePCMap: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-  let pc = basePCMap[letter] ?? 0;
-  if (acc === "#") pc = (pc + 1) % 12;
-  if (acc === "b") pc = (pc + 11) % 12;
-
-  let quality: "M" | "m" | "dim" = "M";
-  if (qual === "m") quality = "m";
-  if (qual === "°" || qual === "dim") quality = "dim";
-
-  const steps = quality === "M" ? [0, 4, 7] : quality === "m" ? [0, 3, 7] : [0, 3, 6];
-  const pcs = steps.map((s) => (pc + s) % 12);
-
-  return { rootPc: pc, pcs };
-}
-
-// LH root in C3–B3
-function chordToRootLH(symbol: string): string {
-  const { rootPc } = chordToPitchClasses(symbol);
-  const midi = (3 + 1) * 12 + rootPc;
-  return midiToName(midi);
-}
-
-// RH close voicing in C4 bucket (C4..B4)
-function chordToCloseRH(symbol: string): string[] {
-  const { pcs } = chordToPitchClasses(symbol);
-  const base = 60; // C4
-  return pcs.map((pc) => midiToName(base + pc));
-}
-
-function prettyChord(s: string) {
-  return s.replace(/b/g, "♭").replace(/#/g, "♯");
+function rootToOctave(root: string): [string, string] {
+  return [noteDownOctave(root), root];
 }
 
 function buildFullPianoUrls(): Record<string, string> {
@@ -191,33 +275,11 @@ async function ensureSampler(ref: React.MutableRefObject<Tone.Sampler | null>) {
   ref.current = sampler;
 }
 
-function ChordProgressLine(props: { chords: string[]; activeIndex: number | null }) {
-  const { chords, activeIndex } = props;
-  return (
-    <div style={{ marginTop: 6, textAlign: "center", fontSize: 13, color: "#111827", minHeight: 20 }}>
-      {chords.map((c, i) => {
-        const active = activeIndex === i;
-        return (
-          <span key={i} style={{ marginInline: 2 }}>
-            {i > 0 && <span style={{ opacity: 0.35, marginInline: 4 }}>·</span>}
-            <span
-              style={{
-                fontWeight: active ? 800 : 600,
-                opacity: active ? 1 : 0.6,
-                textDecoration: active ? "underline" : "none",
-                textUnderlineOffset: 3,
-              }}
-            >
-              {prettyChord(c)}
-            </span>
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-function PatternHelper(props: { pattern: PatternId; activeTokenIndex: number | null; slowMode: boolean }) {
+function PatternHelper(props: {
+  pattern: PatternId;
+  activeTokenIndex: number | null;
+  slowMode: boolean;
+}) {
   const { pattern, activeTokenIndex, slowMode } = props;
   const p = PATTERNS[pattern];
 
@@ -225,12 +287,23 @@ function PatternHelper(props: { pattern: PatternId; activeTokenIndex: number | n
     <div style={{ marginTop: 10 }}>
       <div style={{ fontSize: 12, color: "#374151", fontWeight: 700 }}>
         Pattern: <span style={{ fontWeight: 800 }}>{p.label}</span>{" "}
-        <span style={{ fontWeight: 600, opacity: 0.7 }}>({slowMode ? "Slow mode" : "Normal"})</span>
+        <span style={{ fontWeight: 600, opacity: 0.7 }}>
+          ({slowMode ? "Slow mode" : "Normal"})
+        </span>
       </div>
 
-      <div style={{ marginTop: 6, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+      <div
+        style={{
+          marginTop: 6,
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         {p.tokens.map((t, i) => {
           const isOn = activeTokenIndex === i;
+          const isSilent = t.includes("–");
           return (
             <span
               key={i}
@@ -239,8 +312,9 @@ function PatternHelper(props: { pattern: PatternId; activeTokenIndex: number | n
                 fontWeight: 800,
                 padding: "4px 10px",
                 borderRadius: 999,
-                background: isOn ? "#111" : "rgba(0,0,0,0.06)",
-                color: isOn ? "#fff" : "#111",
+                background: isOn ? "#111" : isSilent ? "rgba(0,0,0,0.04)" : "rgba(0,0,0,0.06)",
+                color: isOn ? "#fff" : isSilent ? "#6B7280" : "#111",
+                border: isSilent ? "1px dashed rgba(0,0,0,0.15)" : "none",
               }}
             >
               {t}
@@ -248,6 +322,46 @@ function PatternHelper(props: { pattern: PatternId; activeTokenIndex: number | n
           );
         })}
         <span style={{ fontSize: 12, color: "#6B7280" }}>({p.explainer})</span>
+      </div>
+    </div>
+  );
+}
+
+function NotesProgressLine(props: {
+  rhBars: string[][];
+  lhBars: string[];
+  activeIndex: number | null;
+}) {
+  const { rhBars, lhBars, activeIndex } = props;
+
+  const renderBar = (content: React.ReactNode, i: number) => {
+    const active = activeIndex === i;
+    return (
+      <span key={i} style={{ marginInline: 2 }}>
+        {i > 0 && <span style={{ opacity: 0.35, marginInline: 4 }}>|</span>}
+        <span
+          style={{
+            fontWeight: active ? 800 : 600,
+            opacity: active ? 1 : 0.7,
+            textDecoration: active ? "underline" : "none",
+            textUnderlineOffset: 3,
+          }}
+        >
+          {content}
+        </span>
+      </span>
+    );
+  };
+
+  return (
+    <div style={{ marginTop: 8, textAlign: "center", fontSize: 12, color: "#111827", lineHeight: 1.7 }}>
+      <div>
+        <span style={{ fontWeight: 800, marginRight: 6 }}>RH:</span>
+        {rhBars.map((bar, i) => renderBar(bar.map(prettyNote).join(" "), i))}
+      </div>
+      <div>
+        <span style={{ fontWeight: 800, marginRight: 6 }}>LH:</span>
+        {lhBars.map((bar, i) => renderBar(prettyNote(bar), i))}
       </div>
     </div>
   );
@@ -262,31 +376,32 @@ export default function Step2RhythmPractice(props: {
   emotionPalette: EmotionPalette;
   chords: string[];
   pattern: PatternId;
+  path: PathId;
   normalMul?: number;
   slowMul?: number;
-  rhOctaveShift?: number;
 
-  // Demo mode (Home)
   autoPlay?: boolean;
+  playToken?: number | null;
   hideControls?: boolean;
   defaultDrill?: Drill;
   defaultSlowMode?: boolean;
-    onFinished?: () => void;
+  onFinished?: () => void;
 }) {
   const {
     emotionLabel,
     emotionPalette,
     chords,
     pattern,
+    path,
     normalMul = 1.0,
-    slowMul = 1.6,
-    rhOctaveShift = 0,
+    slowMul = 1.18,
 
     autoPlay = false,
+    playToken,
     hideControls = false,
     defaultDrill = "one",
     defaultSlowMode = false,
-      onFinished,
+    onFinished,
   } = props;
 
   const samplerRef = useRef<Tone.Sampler | null>(null);
@@ -294,24 +409,15 @@ export default function Step2RhythmPractice(props: {
     ensureSampler(samplerRef).catch(() => {});
   }, []);
 
+  const locked = getLockedPracticeVoicing(pattern, path);
+
   const rhVoicings = useMemo(() => {
-    return chords.map((chord) => {
-      const base = chordToCloseRH(chord);
+    return locked.rh.map(buildAscendingRhVoicing);
+  }, [locked.rh]);
 
-      if (rhOctaveShift === 0) return base;
-
-      // shift RH notes up exactly one octave
-      return base.map((note) => {
-        const m = /^(.*?)(\d)$/.exec(note);
-        if (!m) return note;
-        const name = m[1];
-        const oct = parseInt(m[2], 10);
-        return `${name}${oct + 1}`;
-      });
-    });
-  }, [chords, rhOctaveShift]);
-
-  const lhRoots = useMemo(() => chords.map(chordToRootLH), [chords]);
+  const lhRoots = useMemo(() => {
+    return locked.lh.map(lhRootToNote);
+  }, [locked.lh]);
 
   const [drill, setDrill] = useState<Drill>(defaultDrill);
   const [slowMode, setSlowMode] = useState<boolean>(defaultSlowMode);
@@ -326,10 +432,17 @@ export default function Step2RhythmPractice(props: {
   const [isPaused, setIsPaused] = useState(false);
 
   const timerRef = useRef<number | null>(null);
+  const rhHighlightTimerRef = useRef<number | null>(null);
+  const lhHighlightTimerRef = useRef<number | null>(null);
   const runIdRef = useRef(0);
 
   const eventsRef = useRef<Event[]>([]);
   const eventIndexRef = useRef(0);
+
+  const currentPrimaryRef = useRef<string[]>([]);
+  const currentSecondaryRef = useRef<string[]>([]);
+
+  
 
   const clearTimer = () => {
     if (timerRef.current != null) {
@@ -338,8 +451,35 @@ export default function Step2RhythmPractice(props: {
     }
   };
 
+  const clearHighlightTimers = () => {
+    if (rhHighlightTimerRef.current != null) {
+      window.clearTimeout(rhHighlightTimerRef.current);
+      rhHighlightTimerRef.current = null;
+    }
+    if (lhHighlightTimerRef.current != null) {
+      window.clearTimeout(lhHighlightTimerRef.current);
+      lhHighlightTimerRef.current = null;
+    }
+  };
+
+  const clearRhHighlightTimer = () => {
+    if (rhHighlightTimerRef.current != null) {
+      window.clearTimeout(rhHighlightTimerRef.current);
+      rhHighlightTimerRef.current = null;
+    }
+  };
+
+  const clearLhHighlightTimer = () => {
+    if (lhHighlightTimerRef.current != null) {
+      window.clearTimeout(lhHighlightTimerRef.current);
+      lhHighlightTimerRef.current = null;
+    }
+  };
+
+
   const stop = useCallback(() => {
     clearTimer();
+    clearHighlightTimers();
     runIdRef.current += 1;
 
     setIsPlaying(false);
@@ -349,99 +489,86 @@ export default function Step2RhythmPractice(props: {
     setPrimaryNotes([]);
     setSecondaryNotes([]);
 
+    currentPrimaryRef.current = [];
+    currentSecondaryRef.current = [];
+
     eventsRef.current = [];
     eventIndexRef.current = 0;
   }, []);
+
+  function getLhVisualMode(pattern: PatternId) {
+    switch (pattern) {
+      case "playful":
+      case "anger":
+      case "fear":
+        return "pulse";
+
+      case "sadness":
+        return "untilReleaseToken";
+
+      case "magic":
+      case "melancholy":
+      case "wonder":
+        return "barHold";
+
+      case "calm":
+      case "mystery":
+      case "tension":
+        return "continuousRefresh";
+
+      default:
+        return "pulse";
+    }
+  }
+
+
+
+  function getRhHoldMs(args: {
+    pattern: PatternId;
+    ev: Event;
+    beatMs: number;
+    defaultMs: number;
+    keepRhVisibleOnLhOnly?: boolean;
+  }) {
+    const { pattern, ev, beatMs, defaultMs, keepRhVisibleOnLhOnly } = args;
+
+    // For Anger and Fear, RH visually stays held across the bar
+    if (keepRhVisibleOnLhOnly && ev.rh === "chord") {
+      return Math.max(120, Math.round((4 - ev.pos) * beatMs) - 40);
+    }
+
+    // Everything else: pulse visually
+    return defaultMs;
+  }
 
   const buildEvents = useCallback((): Event[] => {
     const p = PATTERNS[pattern];
     const mul = slowMode ? slowMul : normalMul;
 
-    const gap = Math.round(p.baseGap * mul);
-    const restBetweenReps = Math.round(p.baseRestBetweenReps * mul);
-    const restBetweenChords = Math.round(p.baseRestBetweenChords * mul);
+    const beatMs = Math.round(p.baseBeatMs * mul);
+    const restBetweenChords = Math.round(p.restBetweenChords * mul);
 
-    const chordPlan: number[] = drill === "one" ? [0] : drill === "two" ? [0, 1] : [0, 1, 2, 3];
+    const chordPlan: number[] =
+      drill === "one" ? [0] : drill === "two" ? [0, 1] : [0, 1, 2, 3];
 
     const out: Event[] = [];
     let t = 0;
 
     for (const chordIndex of chordPlan) {
-      const reps =
-        pattern === "freeze" || pattern === "wonder" || pattern === "magic" || pattern === "mystery" ? 1 : 2;
+      const barStart = t;
 
-      for (let rep = 0; rep < reps; rep++) {
-        const repStart = t;
-
-        if (pattern === "freeze") {
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: 0, doLH: true, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: 1, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 2, chordIndex, tokenIndex: 2, doLH: false, doRHChord: false, doRHNoteIndex: null });
-          t = repStart + gap * 2 + restBetweenChords;
-          continue;
-        }
-
-        if (pattern === "wonder") {
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: 0, doLH: true, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: 1, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 2, chordIndex, tokenIndex: 2, doLH: false, doRHChord: false, doRHNoteIndex: null });
-          t = repStart + gap * 2 + restBetweenChords;
-          continue;
-        }
-
-        if (pattern === "breathing") {
-          const tokenBase = rep === 0 ? 0 : 2;
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: tokenBase + 0, doLH: true, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: tokenBase + 1, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          t = repStart + gap + restBetweenReps;
-          continue;
-        }
-
-        if (pattern === "magic") {
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: 0, doLH: true, doRHChord: true, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: 1, doLH: false, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 2, chordIndex, tokenIndex: 2, doLH: false, doRHChord: false, doRHNoteIndex: 2 });
-          t = repStart + gap * 2 + restBetweenChords;
-          continue;
-        }
-
-        if (pattern === "mystery") {
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: 0, doLH: true, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: 1, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 2, chordIndex, tokenIndex: 2, doLH: false, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 3, chordIndex, tokenIndex: 3, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          t = repStart + gap * 3 + restBetweenChords;
-          continue;
-        }
-
-        if (pattern === "echo") {
-          const baseToken = rep === 0 ? 0 : 4;
-          out.push({ delayMs: repStart, chordIndex, tokenIndex: baseToken + 0, doLH: true, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap, chordIndex, tokenIndex: baseToken + 1, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 2, chordIndex, tokenIndex: baseToken + 2, doLH: false, doRHChord: false, doRHNoteIndex: null });
-          out.push({ delayMs: repStart + gap * 3, chordIndex, tokenIndex: baseToken + 3, doLH: false, doRHChord: true, doRHNoteIndex: null });
-          t = repStart + gap * 3 + restBetweenReps;
-          continue;
-        }
-
-        if (pattern === "pulse") {
-          const tokenBase = rep === 0 ? 0 : 2;
-          for (let k = 0; k < 2; k++) {
-            out.push({
-              delayMs: repStart + gap * k,
-              chordIndex,
-              tokenIndex: tokenBase + k,
-              doLH: true,
-              doRHChord: true,
-              doRHNoteIndex: null,
-            });
-          }
-          t = repStart + gap * 1 + restBetweenReps;
-          continue;
-        }
+      for (const ev of p.events) {
+                out.push({
+          delayMs: barStart + Math.round(ev.pos * beatMs),
+          chordIndex,
+          tokenIndex: ev.tokenIndex,
+          lh: ev.lh,
+          rh: ev.rh,
+          pos: ev.pos,
+        });
       }
 
-      t += restBetweenChords;
+      t = barStart + beatMs * 4 + restBetweenChords;
     }
 
     return out;
@@ -461,68 +588,165 @@ export default function Step2RhythmPractice(props: {
       const ev = events[idx];
 
       if (!ev) {
-        scheduleNext(250, () => stop());
+        scheduleNext(250, () => {
+          stop();
+          onFinished?.();
+        });
         return;
       }
 
+      const cfg = PATTERNS[pattern];
+      const beatMs = Math.round(cfg.baseBeatMs * (slowMode ? slowMul : normalMul));
+      const lhDurSec = (cfg.lhDurBeats * beatMs) / 1000;
+      const rhDurSec = (cfg.rhDurBeats * beatMs) / 1000;
+
       const chordIdx = ev.chordIndex;
-      const chordSym = chords[chordIdx];
-      const lh = lhRoots[chordIdx];
+      const lhRoot = lhRoots[chordIdx];
       const rh = rhVoicings[chordIdx];
 
-      let rhToPlay = rh;
+      const lhOctave = rootToOctave(lhRoot);
+      const lhUpperOnly = [lhRoot];
+
+      const lhDefaultMs = Math.max(60, Math.round(lhDurSec * 1000));
+      const rhDefaultMs = Math.max(80, Math.round(rhDurSec * 1000));
+
+      // Start from currently-held visuals
+      let secondary = currentSecondaryRef.current;
+      let primary = currentPrimaryRef.current;
+      let deferSecondaryVisualSet = false;
+      // ---------- LH visual logic ----------
+      const lhMode = getLhVisualMode(pattern);
+
+      if (lhMode === "pulse") {
+        if (ev.lh !== "none") {
+          clearLhHighlightTimer();
+
+          if (ev.lh === "single") secondary = [lhRoot];
+          if (ev.lh === "octave") secondary = lhOctave;
+          if (ev.lh === "upper") secondary = lhUpperOnly;
+
+          lhHighlightTimerRef.current = window.setTimeout(() => {
+            currentSecondaryRef.current = [];
+            setSecondaryNotes([]);
+            lhHighlightTimerRef.current = null;
+          }, lhDefaultMs);
+        } else if (ev.rh === "none") {
+          secondary = [];
+          clearLhHighlightTimer();
+        }
+      }
+
+      if (lhMode === "barHold") {
+        if (ev.lh !== "none") {
+          if (ev.lh === "single") secondary = [lhRoot];
+          if (ev.lh === "octave") secondary = lhOctave;
+          if (ev.lh === "upper") secondary = lhUpperOnly;
+        }
+        // otherwise: keep currently held LH visible for the whole bar
+      }
+
+            if (lhMode === "continuousRefresh") {
+        if (ev.lh !== "none") {
+          if (ev.lh === "single") secondary = [lhRoot];
+          if (ev.lh === "octave") secondary = lhOctave;
+          if (ev.lh === "upper") secondary = lhUpperOnly;
+
+          // Keep sustain state, but visually re-pulse the LH
+          deferSecondaryVisualSet = true;
+          const nextSecondary = [...secondary];
+
+          setSecondaryNotes([]);
+
+          window.setTimeout(() => {
+            currentSecondaryRef.current = nextSecondary;
+            setSecondaryNotes(nextSecondary);
+          }, 70);
+        }
+        // RH-only and hold tokens do not clear LH; they keep the support alive
+      }
+
+      if (lhMode === "untilReleaseToken") {
+        if (ev.lh !== "none") {
+          if (ev.lh === "single") secondary = [lhRoot];
+          if (ev.lh === "octave") secondary = lhOctave;
+          if (ev.lh === "upper") secondary = lhUpperOnly;
+        } else if (ev.lh === "none" && ev.rh === "none") {
+          // explicit release token, e.g. sadness beat 4
+          secondary = [];
+          clearLhHighlightTimer();
+        }
+      }
+
+      // ---------- RH visual logic ----------
+      if (ev.rh === "chord") {
+        clearRhHighlightTimer();
+
+        primary = rh;
+
+        const holdMs = getRhHoldMs({
+          pattern,
+          ev,
+          beatMs,
+          defaultMs: rhDefaultMs,
+          keepRhVisibleOnLhOnly: cfg.keepRhVisibleOnLhOnly,
+        });
+
+        rhHighlightTimerRef.current = window.setTimeout(() => {
+          currentPrimaryRef.current = [];
+          setPrimaryNotes([]);
+          rhHighlightTimerRef.current = null;
+        }, holdMs);
+      } else if (!cfg.keepRhVisibleOnLhOnly && ev.lh !== "none") {
+        // For non-held RH patterns, LH-only events should not keep old RH visual notes
+        primary = [];
+        clearRhHighlightTimer();
+      }
+
+      // ---------- True silence ----------
+      if (ev.lh === "none" && ev.rh === "none") {
+        primary = [];
+
+        // Only pulse-style LH should clear on generic silence.
+        // Sadness uses an explicit release token above.
+        const lhMode = getLhVisualMode(pattern);
+        if (lhMode === "pulse") {
+          secondary = [];
+          clearLhHighlightTimer();
+        }
+
+        clearRhHighlightTimer();
+      }
+
+      currentPrimaryRef.current = primary;
+      currentSecondaryRef.current = secondary;
 
       setActiveChord(chordIdx);
       setActiveTokenIndex(ev.tokenIndex);
 
-      const sampler = samplerRef.current;
-
-      const showLH = ev.doLH;
-      const showRHChord = ev.doRHChord;
-      const showRHNoteIndex = ev.doRHNoteIndex;
-
-      setSecondaryNotes(showLH ? [lh] : []);
-
-      if (showRHChord) {
-        setPrimaryNotes(rhToPlay);
-      } else if (showRHNoteIndex != null) {
-        let sparkleHighlight = rhToPlay[showRHNoteIndex];
-
-        // Magic special-case: Eb 5th highlight drops to octave 3
-        if (pattern === "magic" && chordSym === "Eb" && sparkleHighlight === "A#4") {
-          sparkleHighlight = "A#3";
-        }
-
-        setPrimaryNotes([sparkleHighlight]);
-      } else {
-        setPrimaryNotes([]);
+      if (!deferSecondaryVisualSet) {
+        setSecondaryNotes(secondary);
       }
+
+      setPrimaryNotes(primary);
+
+
+
+      const sampler = samplerRef.current;
 
       if (sampler) {
         try {
-          const holdy = pattern === "freeze" || pattern === "wonder" || pattern === "magic" || pattern === "mystery";
-          const isMagic = pattern === "magic";
+          if (ev.lh === "single") {
+            (sampler as any).triggerAttackRelease(lhRoot, lhDurSec, undefined, 0.8);
+          } else if (ev.lh === "octave") {
+            (sampler as any).triggerAttackRelease(lhOctave, lhDurSec, undefined, 0.84);
+          } else if (ev.lh === "upper") {
+            (sampler as any).triggerAttackRelease(lhUpperOnly, lhDurSec, undefined, 0.68);
+          }
 
-          const lhDur = isMagic ? 1.1 : holdy ? 1.0 : 0.45;
-          const rhDur = isMagic ? 1.6 : holdy ? 1.4 : 0.55;
-          const sparkleDur = isMagic ? 0.55 : holdy ? 0.5 : 0.35;
-
-          const lhVel = isMagic ? 0.38 : 0.9;
-          const rhVel = isMagic ? 0.35 : 0.9;
-          const sparkleVel = isMagic ? 0.18 : 0.9;
-
-          if (showLH) (sampler as any).triggerAttackRelease(lh, lhDur, undefined, lhVel);
-          if (showRHChord) (sampler as any).triggerAttackRelease(rhToPlay, rhDur, undefined, rhVel);
-
-          if (showRHNoteIndex != null) {
-            let sparkleNote = rhToPlay[showRHNoteIndex];
-
-            // Magic special-case: Eb 5th audio drops to octave 3
-            if (pattern === "magic" && chordSym === "Eb" && sparkleNote === "A#4") {
-              sparkleNote = "A#3";
-            }
-
-            (sampler as any).triggerAttackRelease(sparkleNote, sparkleDur, undefined, sparkleVel);
+          if (ev.rh === "chord") {
+            const velocity =
+              pattern === "anger" ? 0.9 : pattern === "fear" ? 0.78 : 0.86;
+            (sampler as any).triggerAttackRelease(rh, rhDurSec, undefined, velocity);
           }
         } catch {}
       }
@@ -530,18 +754,18 @@ export default function Step2RhythmPractice(props: {
       eventIndexRef.current += 1;
 
       const next = events[eventIndexRef.current];
-if (!next) {
-  scheduleNext(250, () => {
-    stop();
-    onFinished?.();
-  });
-  return;
-}
+      if (!next) {
+        scheduleNext(250, () => {
+          stop();
+          onFinished?.();
+        });
+        return;
+      }
 
       const delayToNext = Math.max(0, next.delayMs - ev.delayMs);
       scheduleNext(delayToNext, () => runEvent(runId));
     },
-    [chords, lhRoots, rhVoicings, pattern, scheduleNext, stop]
+    [lhRoots, normalMul, onFinished, pattern, rhVoicings, scheduleNext, slowMode, slowMul, stop]
   );
 
   const play = useCallback(async () => {
@@ -556,8 +780,8 @@ if (!next) {
     setIsPaused(false);
 
     const runId = ++runIdRef.current;
-
     const first = evs[0];
+
     if (!first) {
       stop();
       return;
@@ -566,13 +790,18 @@ if (!next) {
     scheduleNext(first.delayMs, () => runEvent(runId));
   }, [buildEvents, runEvent, scheduleNext, stop]);
 
-  // ✅ Demo autoplay (single, correct useEffect)
-  useEffect(() => {
+    useEffect(() => {
     if (!autoPlay) return;
     play();
     return () => stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoPlay, pattern, chords.join("|")]);
+  }, [autoPlay, pattern, path, chords.join("|")]);
+
+    useEffect(() => {
+    if (playToken == null) return;
+    play();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playToken]);
 
   const pause = useCallback(() => {
     if (!isPlaying || isPaused) return;
@@ -591,101 +820,105 @@ if (!next) {
 
   return (
     <div className="mt-4">
-  {!hideControls && (
-    <>
-      <div className="text-xs font-semibold text-neutral-700">
-        Step 2 — Play with feeling
-      </div>
-      <div className="mt-1 text-xs font-neutral-600">
-        Same smooth chords. Now we add motion.
-      </div>
+      {!hideControls && (
+        <>
+          <div className="text-xs font-semibold text-neutral-700">
+            Step 2 — Play with feeling
+          </div>
+          <div className="mt-1 text-xs font-neutral-600">
+            Same locked notes. Now we add motion.
+          </div>
 
-      <PatternHelper
-        pattern={pattern}
-        activeTokenIndex={activeTokenIndex}
-        slowMode={slowMode}
+          <PatternHelper
+            pattern={pattern}
+            activeTokenIndex={activeTokenIndex}
+            slowMode={slowMode}
+          />
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {DRILLS.map((d) => {
+              const active = drill === d.id;
+              return (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setDrill(d.id)}
+                  className={[
+                    "rounded-full px-3 py-1 text-xs font-semibold transition",
+                    active
+                      ? "bg-black text-white"
+                      : "bg-black/5 text-neutral-800 hover:bg-black/10",
+                  ].join(" ")}
+                >
+                  {d.label}
+                </button>
+              );
+            })}
+
+            <label className="ml-auto inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-neutral-800">
+              <input
+                type="checkbox"
+                checked={slowMode}
+                onChange={(e) => setSlowMode(e.target.checked)}
+              />
+              Slow mode
+            </label>
+          </div>
+
+          <div className="mt-2 text-[11px] text-neutral-500">
+            {DRILLS.find((d) => d.id === drill)?.subtitle}
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {!isPlaying && (
+              <button
+                type="button"
+                onClick={play}
+                className="rounded-full bg-black px-4 py-2 text-xs font-semibold text-white"
+              >
+                ▶ Play
+              </button>
+            )}
+
+            {isPlaying && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => (isPaused ? resume() : pause())}
+                  className="rounded-full bg-black/10 px-4 py-2 text-xs font-semibold text-neutral-900"
+                >
+                  {isPaused ? "▶ Resume" : "⏸ Pause"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={stop}
+                  className="rounded-full bg-black/5 px-4 py-2 text-xs font-semibold text-neutral-900"
+                >
+                  ⏹ Stop
+                </button>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      <KeyboardEmotions
+        activeChordSymbol={activeChord != null ? chords[activeChord] : null}
+        emotion={emotionPalette}
+        emotionLabel={emotionLabel}
+        highlightNotesPrimary={primaryNotes}
+        highlightNotesSecondary={secondaryNotes}
+        highlightColorSecondary="rgba(17,24,39,0.22)"
       />
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {DRILLS.map((d) => {
-          const active = drill === d.id;
-          return (
-            <button
-              key={d.id}
-              type="button"
-              onClick={() => setDrill(d.id)}
-              className={[
-                "rounded-full px-3 py-1 text-xs font-semibold transition",
-                active
-                  ? "bg-black text-white"
-                  : "bg-black/5 text-neutral-800 hover:bg-black/10",
-              ].join(" ")}
-            >
-              {d.label}
-            </button>
-          );
-        })}
-
-        <label className="ml-auto inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-neutral-800">
-          <input
-            type="checkbox"
-            checked={slowMode}
-            onChange={(e) => setSlowMode(e.target.checked)}
-          />
-          Slow mode
-        </label>
-      </div>
-
-      <div className="mt-2 text-[11px] text-neutral-500">
-        {DRILLS.find((d) => d.id === drill)?.subtitle}
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {!isPlaying && (
-          <button
-            type="button"
-            onClick={play}
-            className="rounded-full bg-black px-4 py-2 text-xs font-semibold text-white"
-          >
-            ▶ Play
-          </button>
-        )}
-
-        {isPlaying && (
-          <>
-            <button
-              type="button"
-              onClick={() => (isPaused ? resume() : pause())}
-              className="rounded-full bg-black/10 px-4 py-2 text-xs font-semibold text-neutral-900"
-            >
-              {isPaused ? "▶ Resume" : "⏸ Pause"}
-            </button>
-
-            <button
-              type="button"
-              onClick={stop}
-              className="rounded-full bg-black/5 px-4 py-2 text-xs font-semibold text-neutral-900"
-            >
-              ⏹ Stop
-            </button>
-          </>
-        )}
-      </div>
-    </>
-  )}
-
-  <KeyboardEmotions
-    activeChordSymbol={activeChord != null ? chords[activeChord] : null}
-    emotion={emotionPalette}
-    emotionLabel={emotionLabel}
-    highlightNotesPrimary={primaryNotes}
-    highlightNotesSecondary={secondaryNotes}
-    highlightColorSecondary="rgba(17,24,39,0.22)"
-  />
-
-  {!hideControls && (
-    <ChordProgressLine chords={chords} activeIndex={activeChord} />
-  )}
-</div>
-);
+      {!hideControls && (
+        <NotesProgressLine
+          rhBars={locked.rh}
+          lhBars={locked.lh}
+          activeIndex={activeChord}
+        />
+      )}
+    </div>
+  );
 }

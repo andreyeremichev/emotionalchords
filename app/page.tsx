@@ -1,244 +1,291 @@
-// app/page.tsx
 "use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
-import HomeDemoPlayer from "@/components/home/HomeDemoPlayer";
+import Step2RhythmPractice from "@/components/emotions/Step2RhythmPractice";
 import { EMOTIONS, type EmotionId } from "@/lib/emotions";
 
-type RitualId = "HELD_PRESSURE" | "MOVING_RETURN" | "OBSCURED_ORIENTATION";
+type DemoPath = "flow" | "color";
 
-type Ritual = {
-  id: RitualId;
-  label: string;
-  shortLabel: string;
-  emotionId: EmotionId;
-  hint: string;
-  exploreLines: [string, string, string, string];
-  path: "flow" | "color";
-  repeatsPerChord: number;
-};
-
-// --- Locked ritual trio (reuse existing motions; no emotion names shown) ---
-const RITUALS: Ritual[] = [
-  {
-    id: "HELD_PRESSURE",
-    label: "Held Pressure",
-    shortLabel: "Pressure",
-    emotionId: "tension",
-    hint: "Stay. Don’t fix it.",
-    exploreLines: [
-      "Establishes an apparently stable ground.",
-      "Tightens inward, reducing available space.",
-      "Breaks structural balance, compressing motion.",
-      "Pushes upward while refusing release, keeping pressure active.",
-    ],
-    path: "color" as const,
-    repeatsPerChord: 4,
+const MOTION_LABEL: Record<
+  EmotionId,
+  { motion: string; emotion: string; focus: string }
+> = {
+  calm: {
+    motion: "Settled Circulation",
+    emotion: "Calm",
+    focus: "keep it flowing",
   },
-  {
-    id: "MOVING_RETURN",
-    label: "Altered Return",
-    shortLabel: "Return",
-    emotionId: "melancholy",
-    hint: "Leave lightly. Always return.",
-    exploreLines: [
-       "Establishes an inward-facing reference.",
-    "Turns inward further, slowing and thickening motion.",
-    "Revisits the center, now carrying accumulated change.",
-    "Introduces contrast that alters the return without breaking it.",
-    ],
-    path: "flow" as const,
-    repeatsPerChord: 3,
+  playful: {
+    motion: "Light Return",
+    emotion: "Playful",
+    focus: "bounce and come back",
   },
-  {
-    id: "OBSCURED_ORIENTATION",
-    label: "Obscured Orientation",
-    shortLabel: "Obscured",
-    emotionId: "mystery",
-    hint: "Let orientation blur.",
-    exploreLines: [
-      "Establishes a guarded but readable reference.",
-      "Moves upward into unfamiliar alignment.",
-      "Removes positional clarity, suspending orientation.",
-      "Re-enters the frame unexpectedly, without explaining what happened.",
-    ],
-    path: "color" as const,
-    repeatsPerChord: 4,
+  magic: {
+    motion: "Guided Departure",
+    emotion: "Magic",
+    focus: "change the frame, then let it glow",
   },
-];
-
-// --- Motion (Emotion) labels for the free map cards (all 10) ---
-const MOTION_LABEL: Record<EmotionId, { motion: string; emotion: string }> = {
-  calm: { motion: "Settled Circulation", emotion: "Calm / Peace" },
-  playful: { motion: "Light Return", emotion: "Playful" },
-  magic: { motion: "Guided Departure", emotion: "Magic / Fantasy" },
-  sadness: { motion: "Unresolved Descent", emotion: "Sadness" },
-  mystery: { motion: "Obscured Orientation", emotion: "Mystery" },
-  melancholy: { motion: "Altered Return", emotion: "Melancholy" },
-  wonder: { motion: "Upward Opening", emotion: "Wonder" },
-  tension: { motion: "Held Pressure", emotion: "Tension / Suspense" },
-  anger: { motion: "Grinding Advance", emotion: "Anger" },
-  fear: { motion: "Loss of Ground", emotion: "Fear / Horror" },
+  sadness: {
+    motion: "Unresolved Descent",
+    emotion: "Sadness",
+    focus: "move away and don’t recover",
+  },
+  mystery: {
+    motion: "Obscured Orientation",
+    emotion: "Mystery",
+    focus: "hide the explanation",
+  },
+  melancholy: {
+    motion: "Altered Return",
+    emotion: "Melancholy",
+    focus: "return, but changed",
+  },
+  wonder: {
+    motion: "Upward Opening",
+    emotion: "Wonder",
+    focus: "make space bigger",
+  },
+  tension: {
+    motion: "Held Pressure",
+    emotion: "Tension",
+    focus: "squeeze without release",
+  },
+  anger: {
+    motion: "Grinding Advance",
+    emotion: "Anger",
+    focus: "force through",
+  },
+  fear: {
+    motion: "Loss of Ground",
+    emotion: "Fear",
+    focus: "remove support",
+  },
 };
 
 export default function HomePage() {
-  const [activeRitualId, setActiveRitualId] =
-    useState<RitualId>("HELD_PRESSURE");
-  const [playToken, setPlayToken] = useState(0);
+  const [activeDemoPath, setActiveDemoPath] = useState<DemoPath>("flow");
+  const [playToken, setPlayToken] = useState<number | null>(null);
 
-  const [exploreOpen, setExploreOpen] = useState(false);
-const [activeBaseStep, setActiveBaseStep] = useState<number | null>(null);
+  const tensionEmotion =
+    EMOTIONS.find((e) => e.id === "tension") ?? EMOTIONS[0];
 
-  const activeRitual = useMemo(
-    () => RITUALS.find((r) => r.id === activeRitualId) ?? RITUALS[0],
-    [activeRitualId]
-  );
+  const tensionMeta = MOTION_LABEL[tensionEmotion.id];
 
-  const activeEmotion =
-    EMOTIONS.find((e) => e.id === activeRitual.emotionId) ?? EMOTIONS[0];
+  const pathSubtitle = useMemo(() => {
+    return activeDemoPath === "flow"
+      ? "Flow — coherent, readable pressure."
+      : "Color — faster re-alignment, less stable footing.";
+  }, [activeDemoPath]);
 
-  const onPickRitual = (id: RitualId) => {
-  setActiveRitualId(id);
-  setExploreOpen(false);
-  setActiveBaseStep(null);
-  setPlayToken((t) => t + 1);
-};
+  const onPickPath = (path: DemoPath) => {
+    setActiveDemoPath(path);
+    setPlayToken(null);
+  };
+
+    const onPlayDemo = () => {
+    setPlayToken((t) => (t === null ? 1 : t + 1));
+  };
 
   return (
-    <div className="bg-[#faf7f3] text-[#1c1c1c] overflow-x-hidden">
-      
-
+    <div className="overflow-x-hidden bg-[#faf7f3] text-[#1c1c1c]">
       {/* =========================
-          HERO + RITUAL
+          HERO + FEATURED DEMO
       ========================= */}
       <section className="mx-auto max-w-5xl px-4 pt-6 pb-6 sm:px-6 sm:pt-10 sm:pb-8">
         <div className="max-w-3xl">
           <h1 className="text-3xl font-semibold tracking-tight text-[#111] sm:text-4xl">
-            Choose a{" "}
             <span className="bg-gradient-to-r from-[#87a8ff] via-[#c68bfe] to-[#ff80b5] bg-clip-text text-transparent">
-              motion
-            </span>
-            . Stay with it.
+              Emotional chord progressions
+            </span>{" "}
+            you can play on your piano in minutes
           </h1>
 
           <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-neutral-700">
-            You don’t aim for a feeling.
+            Play emotional piano chord progressions for sadness, calm, tension,
+            wonder, and more.
             <br />
-            You choose how harmony moves — and stay until something emerges.
+            Hear the feeling, then play it step by step.
           </p>
         </div>
 
-        {/* Ritual pills */}
         <div className="mt-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-            Start with a motion
+            Start with Tension progression
           </p>
 
-          {/* One-line pills row (scrolls horizontally if needed) */}
-          <div className="mt-2 flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap pb-1">
-            {RITUALS.map((r) => {
-              const active = r.id === activeRitualId;
-              return (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => onPickRitual(r.id)}
-                  className={[
-                    "inline-flex items-center rounded-full px-4 py-2 text-sm transition shrink-0",
-                    active
-                      ? "bg-black text-white"
-                      : "bg-white text-neutral-800 ring-1 ring-black/10 hover:ring-black/30",
-                  ].join(" ")}
-                >
-                  <span className="font-semibold sm:hidden">{r.shortLabel}</span>
-                  <span className="font-semibold hidden sm:inline">{r.label}</span>
-                </button>
-              );
-            })}
-          </div>
+          <div className="mt-3 rounded-2xl border border-black/10 bg-white p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold text-neutral-900">
+                  {tensionEmotion.emoji} {tensionEmotion.label}
+                </div>
+                <div className="mt-1 text-sm text-neutral-700">
+                  Hear how the same emotion moves through two paths:{" "}
+                  <strong>Flow</strong> and <strong>Color</strong>.
+                </div>
+              </div>
 
-          {/* Full motion label (always shown above keyboard) */}
-          <div className="mt-3 text-sm font-semibold text-neutral-900">
-            {activeRitual.label}
-          </div>
-
-          {/* Keyboard / playback (immediately below pills) */}
-          <div className="mt-2 rounded-2xl border border-black/10 bg-white p-4">
-            {exploreOpen && (
-  <div className="mb-3 text-sm text-neutral-900">
-    {activeRitual.exploreLines[(activeBaseStep ?? 0) as 0 | 1 | 2 | 3]}
-  </div>
-)}
-           <HomeDemoPlayer
-  emotion={activeEmotion}
-  playToken={playToken}
-  path={activeRitual.path}
-  repeatsPerChord={activeRitual.repeatsPerChord}
-  onBaseStepChange={setActiveBaseStep}
-/>
-
-            {/* Hint + Explore under keyboard */}
-            <div className="mt-3 text-sm text-neutral-700">
-              {activeRitual.hint}
+              <Link
+                href="/emotions/tension"
+                className="text-sm font-medium text-neutral-700 underline underline-offset-2 hover:text-black"
+              >
+                Open Tension playbook →
+              </Link>
             </div>
 
-            <div className="mt-1 text-sm">
-  <button
-    type="button"
-    onClick={() => setExploreOpen((v) => !v)}
-    className="text-neutral-700 underline underline-offset-2 opacity-80 hover:opacity-100"
-  >
-    {exploreOpen ? "Hide motion detail" : "Show motion detail"}
-  </button>
-</div>
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+              {(["flow", "color"] as const).map((path) => {
+                const active = path === activeDemoPath;
+                return (
+                  <button
+                    key={path}
+                    type="button"
+                    onClick={() => onPickPath(path)}
+                    className={[
+                      "inline-flex shrink-0 items-center rounded-full px-4 py-2 text-sm transition",
+                      active
+                        ? "bg-black text-white"
+                        : "bg-[#faf7f3] text-neutral-800 ring-1 ring-black/10 hover:ring-black/30",
+                    ].join(" ")}
+                  >
+                    <span className="font-semibold">
+                      {path === "flow" ? "Flow" : "Color"}
+                    </span>
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={onPlayDemo}
+                className="inline-flex items-center rounded-full bg-black px-4 py-2 text-sm font-semibold text-white"
+              >
+                ▶ Play
+              </button>
+            </div>
+
+            <div className="mt-3 text-sm text-neutral-700">
+              {pathSubtitle}
+            </div>
+
+            <div className="mt-4">
+              <Step2RhythmPractice
+                key={activeDemoPath}
+                emotionLabel={`${tensionMeta.motion} (${tensionMeta.emotion}) · ${
+                  activeDemoPath === "flow" ? "Flow" : "Color"
+                }`}
+                emotionPalette={tensionEmotion.palette}
+                chords={
+                  activeDemoPath === "flow"
+                    ? tensionEmotion.flow.chords
+                    : tensionEmotion.color.chords
+                }
+                pattern="tension"
+                path={activeDemoPath}
+                playToken={playToken}
+                hideControls
+                defaultDrill="full"
+                defaultSlowMode={false}
+              />
+            </div>
+
+            <div className="mt-3 text-sm text-neutral-700">
+              Motion: {tensionMeta.motion}
+            </div>
+
+            <div className="mt-1 text-sm text-neutral-700">
+              Focus while playing: {tensionMeta.focus}
+            </div>
           </div>
         </div>
       </section>
 
       {/* =========================
-          MOTION MAP (free playbooks)
+          WHAT MAKES IT FEEL EMOTIONAL
+      ========================= */}
+      <section className="border-t border-black/10 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-7">
+          <h2 className="text-lg font-semibold tracking-tight">
+            What makes piano chords feel emotional?
+          </h2>
+
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-700">
+            Emotion on piano is not something you add on top.
+            <br />
+            It comes from how the chords move, which notes stand out, how the
+            bar unfolds, and how long the sound stays.
+          </p>
+
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-700">
+            That is why the same piano can feel calm, sad, tense, mysterious, or
+            open. Each emotion here is a playable chord progression with a clear
+            emotional shape.
+          </p>
+        </div>
+      </section>
+
+      {/* =========================
+          EMOTION MAP
       ========================= */}
       <section className="border-t border-black/10 bg-[#faf7f3]">
         <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <h2 className="text-lg font-semibold tracking-tight">
-            Explore the motion map
+            Explore emotional piano chord progressions
           </h2>
 
-          <p className="mt-2 max-w-xl text-sm text-neutral-700">
-            Each motion can be entered in two paths: <strong>Flow</strong>{" "}
-            (coherent, readable motion) and <strong>Color</strong> (faster
-            re-alignment).
+          <p className="mt-2 max-w-2xl text-sm text-neutral-700">
+            Each emotion has its own playable chord progressions, motion logic,
+            and guided practice.
           </p>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {EMOTIONS.map((e) => {
               const m = MOTION_LABEL[e.id];
+
+              const flowProgression = e.flow.chords
+                .join("–")
+                .replace(/b/g, "♭")
+                .replace(/#/g, "♯");
+
+              const colorProgression = e.color.chords
+                .join("–")
+                .replace(/b/g, "♭")
+                .replace(/#/g, "♯");
+
               return (
                 <Link
                   key={e.id}
                   href={`/emotions/${e.id}`}
                   className="group flex flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10 hover:shadow-md hover:ring-black/20"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-base font-semibold">
-                      {m.motion}
-                      <span className="ml-2 text-xs font-medium opacity-70">
-                        ({m.emotion})
-                      </span>
-                    </span>
+                  <span className="text-base font-semibold">{m.emotion}</span>
 
-                    <span className="rounded-full bg-neutral-100 px-2 py-[2px] text-[10px] text-neutral-700">
-                      Flow · Color · Guided Practice
-                    </span>
+                  <div className="mt-3">
+                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                      Playable chord progressions
+                    </div>
+
+                    <div className="mt-2 space-y-1 text-xs text-neutral-700">
+  <div>
+    {flowProgression} <span className="text-neutral-500">(Flow)</span>
+  </div>
+  <div>
+    {colorProgression} <span className="text-neutral-500">(Color)</span>
+  </div>
+</div>
                   </div>
 
-                  <p className="mt-2 text-xs text-neutral-600">
-                    A clear way to enter and explore this motion at the piano.
-                  </p>
+                  <div className="mt-3 text-xs text-neutral-600">
+                    Motion: {m.motion}
+                  </div>
 
-                  <span className="mt-3 text-[11px] font-medium text-neutral-700 group-hover:underline">
+                  <div className="mt-1 text-xs text-neutral-600">
+                    Focus while playing: {m.focus}
+                  </div>
+
+                  <span className="mt-4 text-[11px] font-medium text-neutral-700 group-hover:underline">
                     Open playbook →
                   </span>
                 </Link>
@@ -254,11 +301,11 @@ const [activeBaseStep, setActiveBaseStep] = useState<number | null>(null);
       <section className="border-t border-black/10 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <h2 className="text-lg font-semibold tracking-tight">
-            Want to understand why it works?
+            Why do some piano chords feel emotional?
           </h2>
 
           <p className="mt-2 max-w-xl text-sm text-neutral-700">
-            Explore Flow vs Color — without heavy theory language.
+            Explore how chord movement creates feeling — without heavy theory.
           </p>
 
           <ul className="mt-3 space-y-2 text-sm">
@@ -273,10 +320,6 @@ const [activeBaseStep, setActiveBaseStep] = useState<number | null>(null);
               — Flow vs Color
             </li>
           </ul>
-
-          <p className="mt-4 text-xs text-neutral-500">
-            Motion first. Labels later.
-          </p>
         </div>
       </section>
 

@@ -1348,30 +1348,32 @@ useEffect(() => {
       </div>
 
       {/* Emotion bar (bottom) */}
-      <div className="two-paths-emotion-bar">
-        <div className="two-paths-emotion-label">
-          <strong>Tap a motion to hear Flow, then Color</strong>
-        </div>
-        <div className="two-paths-emotion-scroll">
-          {EMOTIONS.map((e) => {
-            const activeClass =
-              e.id === active.id
-                ? "two-paths-emotion-pill active"
-                : "two-paths-emotion-pill";
-            return (
-              <button
-                key={e.id}
-                type="button"
-                className={activeClass}
-                onClick={() => handleEmotionClick(e.id)}
-              >
-                <span className="emoji">{e.emoji}</span>
-                <span>{e.motion}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+<div className="two-paths-emotion-bar">
+  <div className="two-paths-emotion-label">
+    <strong>Tap an emotion to hear Flow, then Color</strong>
+  </div>
+
+  <div className="two-paths-emotion-scroll">
+    {EMOTIONS.map((e) => {
+      const activeClass =
+        e.id === active.id
+          ? "two-paths-emotion-pill active"
+          : "two-paths-emotion-pill";
+
+      return (
+        <button
+          key={e.id}
+          type="button"
+          className={activeClass}
+          onClick={() => handleEmotionClick(e.id)}
+        >
+          <span className="emoji">{e.emoji}</span>
+          <span>{e.label}</span>
+        </button>
+      );
+    })}
+  </div>
+</div>
     </div>
   );
 }

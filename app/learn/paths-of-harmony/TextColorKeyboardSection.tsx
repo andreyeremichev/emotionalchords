@@ -285,7 +285,7 @@ const [autoPlayKey, setAutoPlayKey] = useState<number | null>(null);
                 }}
               >
                 <span style={{ marginRight: 6 }}>{e.emoji}</span>
-                {e.motion}
+                {e.label}
               </button>
             );
           })}

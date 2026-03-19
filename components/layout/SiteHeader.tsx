@@ -35,8 +35,8 @@ export function SiteHeader() {
 
   {/* Secondary (lighter, underlined text) */}
   <Link
-  href="/learn/paths-of-harmony"
-  className="text-xs opacity-70 hover:opacity-100 hover:underline focus:underline"
+href="/learn"  
+className="text-xs opacity-70 hover:opacity-100 hover:underline focus:underline"
 >
   Learn
 </Link>

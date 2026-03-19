@@ -312,7 +312,7 @@ displayChords={flowChordsDisplay}
                 }}
               >
                 <span style={{ marginRight: 6 }}>{e.emoji}</span>
-{e.motion}
+{e.label}
               </button>
             );
           })}

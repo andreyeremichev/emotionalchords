@@ -42,3 +42,4 @@ next-env.d.ts
 
 # local experimental work
 lab/
+lib/mcExperiment copy.ts
