@@ -135,11 +135,37 @@ export async function generateMetadata({
 
   const meta = EMOTION_META[id];
 
-  const title = `${e.label} Piano Chords (Beginner) | EmotionalChords`;
-  const description =
-    `Learn how to play ${e.label.toLowerCase()} on piano step by step. ` +
-    `Motion description: ${meta.motion}. ` +
-    "Two paths: Flow and Color. No sheet music. No music theory required.";
+  const TITLE_LABEL: Record<EmotionId, string> = {
+  calm: "Calm Piano Chords & Progressions",
+  playful: "Playful Piano Chords & Progressions",
+  magic: "Magical Piano Chords & Progressions",
+  sadness: "Sad Piano Chords & Progressions",
+  mystery: "Mysterious Piano Chords & Progressions",
+  melancholy: "Melancholic Piano Chords & Progressions",
+  wonder: "Cinematic Piano Chords & Progressions",
+  tension: "Tense Piano Chords & Progressions",
+  anger: "Aggressive Piano Chords & Progressions",
+  fear: "Dark Piano Chords & Progressions",
+};
+
+const DESCRIPTION_LABEL: Record<EmotionId, string> = {
+  calm: "Play calm piano chords and chord progressions step by step.",
+  playful: "Play playful piano chords and chord progressions step by step.",
+  magic: "Play magical piano chords and chord progressions step by step.",
+  sadness: "Play sad piano chords and chord progressions step by step.",
+  mystery: "Play mysterious piano chords and chord progressions step by step.",
+  melancholy: "Play melancholic piano chords and chord progressions step by step.",
+  wonder: "Play cinematic piano chords and chord progressions step by step.",
+  tension: "Play tense piano chords and chord progressions step by step.",
+  anger: "Play aggressive piano chords and chord progressions step by step.",
+  fear: "Play dark piano chords and chord progressions step by step.",
+};
+
+const title = `${TITLE_LABEL[id]} | EmotionalChords`;
+const description =
+  `${DESCRIPTION_LABEL[id]} ` +
+  `Motion description: ${meta.motion}. ` +
+  "Two paths: Flow and Color. No sheet music. No music theory required.";
 
   return {
     title,
