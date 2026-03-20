@@ -67,8 +67,8 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Settled circulation",
     tokens: ["1 T", "1& hold", "2 R", "2& L", "3 R", "4 R", "4& L"],
     explainer: "Together → hold → right → left → right → right → left",
-    baseBeatMs: 1071,
-    restBetweenChords: 220,
+    baseBeatMs: 900,
+    restBetweenChords: 200,
         events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 0.5, tokenIndex: 1, lh: "none", rh: "none" },
@@ -86,7 +86,7 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Light return",
     tokens: ["1 T", "2 R", "2& L", "3 R", "3& L", "4 T"],
     explainer: "Together → right → left → right → left → together",
-    baseBeatMs: 833,
+    baseBeatMs: 800,
     restBetweenChords: 180,
     events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
@@ -104,15 +104,15 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Guided departure",
     tokens: ["1 T", "2 R", "3 –", "4 R"],
     explainer: "Together → right → silence → right",
-    baseBeatMs: 1034,
-    restBetweenChords: 260,
+    baseBeatMs: 700,
+    restBetweenChords: 180,
         events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
       { pos: 2, tokenIndex: 2, lh: "none", rh: "none" },
       { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
     ],
-    rhDurBeats: 1.2,
+    rhDurBeats: 1.1,
     lhDurBeats: 0.18,
   },
 
@@ -120,8 +120,8 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Unresolved descent",
     tokens: ["1 T", "2 R", "3 R", "4 –"],
     explainer: "Together → right → right → silence",
-    baseBeatMs: 1154,
-    restBetweenChords: 260,
+    baseBeatMs: 800,
+    restBetweenChords: 150,
         events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
@@ -136,15 +136,15 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Obscured orientation",
     tokens: ["1 T", "2& R", "3 R", "4& L"],
     explainer: "Together → right → right → left",
-    baseBeatMs: 1071,
-    restBetweenChords: 260,
+    baseBeatMs: 700,
+    restBetweenChords: 150,
     events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1.5, tokenIndex: 1, lh: "none", rh: "chord" },
       { pos: 2, tokenIndex: 2, lh: "none", rh: "chord" },
       { pos: 3.5, tokenIndex: 3, lh: "single", rh: "none" },
     ],
-    rhDurBeats: 1.0,
+    rhDurBeats: 0.9,
     lhDurBeats: 0.16,
   },
 
@@ -152,15 +152,15 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Altered return",
     tokens: ["1 T", "2 R", "3 –", "4 R"],
     explainer: "Together → right → silence → right",
-    baseBeatMs: 1111,
-    restBetweenChords: 260,
+    baseBeatMs: 700,
+    restBetweenChords: 160,
         events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1, tokenIndex: 1, lh: "none", rh: "chord" },
       { pos: 2, tokenIndex: 2, lh: "none", rh: "none" },
       { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
     ],
-    rhDurBeats: 1.0,
+    rhDurBeats: 0.9,
     lhDurBeats: 0.18,
   },
 
@@ -168,15 +168,15 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Upward opening",
     tokens: ["1 T", "2 –", "3 R", "4 R"],
     explainer: "Together → silence → right → right",
-    baseBeatMs: 1000,
-    restBetweenChords: 260,
+    baseBeatMs: 700,
+    restBetweenChords: 160,
         events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1, tokenIndex: 1, lh: "none", rh: "none" },
       { pos: 2, tokenIndex: 2, lh: "none", rh: "chord" },
       { pos: 3, tokenIndex: 3, lh: "none", rh: "chord" },
     ],
-    rhDurBeats: 1.2,
+    rhDurBeats: 0.9,
     lhDurBeats: 0.18,
   },
 
@@ -184,8 +184,8 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Held pressure",
     tokens: ["1 T", "1& hold", "2 R", "2& L", "3 T", "4 R", "4& L"],
     explainer: "Together → hold → right → left → together → right → left",
-    baseBeatMs: 909,
-    restBetweenChords: 200,
+    baseBeatMs: 900,
+    restBetweenChords: 180,
     events: [
       { pos: 0, tokenIndex: 0, lh: "single", rh: "chord" },
       { pos: 1, tokenIndex: 2, lh: "none", rh: "chord" },
@@ -219,8 +219,8 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
     label: "Loss of ground",
     tokens: ["1 T", "2 LH upper", "3 – (nothing)", "4 LH upper"],
     explainer: "Together, then late upper-note support only",
-    baseBeatMs: 1000,
-    restBetweenChords: 220,
+    baseBeatMs: 900,
+    restBetweenChords: 200,
         events: [
       { pos: 0, tokenIndex: 0, lh: "octave", rh: "chord" },
       { pos: 1, tokenIndex: 1, lh: "upper", rh: "none" },
@@ -237,16 +237,16 @@ const PATTERNS: Record<PatternId, PatternConfig> = {
    Helpers
 ========================= */
 
-function noteDownOctave(note: string): string {
+function noteUpOctave(note: string): string {
   const m = /^(.*?)(\d)$/.exec(note);
   if (!m) return note;
   const name = m[1];
   const oct = parseInt(m[2], 10);
-  return `${name}${oct - 1}`;
+  return `${name}${oct + 1}`;
 }
 
 function rootToOctave(root: string): [string, string] {
-  return [noteDownOctave(root), root];
+  return [root, noteUpOctave(root)];
 }
 
 function buildFullPianoUrls(): Record<string, string> {
@@ -605,7 +605,7 @@ export default function Step2RhythmPractice(props: {
       const rh = rhVoicings[chordIdx];
 
       const lhOctave = rootToOctave(lhRoot);
-      const lhUpperOnly = [lhRoot];
+      const lhUpperOnly = [lhOctave[1]];
 
       const lhDefaultMs = Math.max(60, Math.round(lhDurSec * 1000));
       const rhDefaultMs = Math.max(80, Math.round(rhDurSec * 1000));
