@@ -120,9 +120,9 @@ const RECIPES: EmotionRecipe[] = [
     pedal:
       "Flow = light half-pedal with tiny carry; Color = lighter, cleaner, no real blur.",
     whyItWorks:
-      "Both paths keep the bar alive without making any one chord become the event. Flow stays smooth and low-pressure. Color stays calm because the top contour G–F#–F–G feels like a soft change of light, not a reveal.",
+  "Both paths keep the bar alive without making any one chord become the event. Flow stays smooth and low-pressure. Color stays calm because the top note gently lowers and then returns, which feels like a soft change of light, not a reveal.",
     breaks100:
-      "The instant any chord behaves like an event, Calm is gone. Strong top-note accents, cadential beat 4, heavy bass, or blurred pedal break it immediately.",
+      "The instant any chord feels like an event, Calm is gone. Strong top-note accents, a heavy landing on beat 4, a loud bass, or too much pedal break it immediately.",
   },
   {
     id: "playful",
@@ -148,7 +148,7 @@ const RECIPES: EmotionRecipe[] = [
     whyItWorks:
       "Both paths feel like light deviation plus easy landing. The rhythm skips through the bar. In the Color path, chord 3 feels like a hop instead of a magical flash, so the whole loop stays playful.",
     breaks100:
-      "The moment the harmony lingers or gains consequence, Playful is gone. Long legato, pedal, heavy LH, or a serious beat-4 landing kills it immediately.",
+      "The moment the sound starts to linger or feel important, Playful is gone. Letting notes blur together, using pedal, heavy left hand, or a strong landing on beat 4 kills it immediately.",
   },
   {
     id: "magic",
@@ -177,9 +177,9 @@ const RECIPES: EmotionRecipe[] = [
     pedal:
       "Flow = half-pedal each bar, slightly deeper on bar 4; Color = cleaner on bars 1–3, deeper on bar 4.",
     whyItWorks:
-      "Beat 2 is the frame-change, and beat 4 is the shimmer that lets the new frame linger. In Flow, the added B in the last chord is what turns plain lift into actual magic.",
+  "Beat 2 is the frame-change, and beat 4 is the shimmer that lets the new frame linger. In Flow, the last chord gains an extra suspended color, which turns plain lift into actual magic.",
     breaks100:
-      "If the reframe is too dry, Magic disappears. If it is too blurred, it becomes Mystery. Hammering the pivot or making bar 4 too openly expansive also breaks it.",
+      "If the change feels too plain, Magic disappears. If it is too blurred, it becomes Mystery. If you hit the change too hard or make the last bar too big, it also breaks.",
   },
   {
     id: "sadness",
@@ -206,7 +206,8 @@ const RECIPES: EmotionRecipe[] = [
     rhythm: "1 T | 2 R | 3 R | 4 –",
     pedal: "Shallow half-pedal; release during beat 4.",
     whyItWorks:
-      "Each re-attack has less life than the one before it, and the bar fades before the next one begins. The Color path gives a brief ache at F → E, but it never redirects the descent.",
+
+  "Each time you play, it should feel softer and weaker than before, and the sound should fade before the next bar begins. The Color path adds a brief extra ache near the end, but it still keeps moving downward.",
     breaks100:
       "Any sign of recovery breaks Sadness. A new beat-4 attack, extra LH motion, or pedal that turns the end of the bar into return destroys it.",
   },
@@ -237,7 +238,7 @@ const RECIPES: EmotionRecipe[] = [
     pedal:
       "Mid half-pedal with slightly late changes; a little deeper on chord 3; in Color, chord 4 slightly cleaner than chord 3.",
     whyItWorks:
-      "The harmony stays legible, but its cause stays hidden. The Flow path returns to tonic without fully explaining itself because of the added D in the final chord. The Color path drops clarity most strongly in bar 3, then regains structure without explanation.",
+  "The harmony stays legible, but its cause stays hidden. The Flow path returns to the center without fully explaining itself because the final chord keeps an added inner tension. The Color path drops clarity most strongly in bar 3, then regains structure without explanation.",
     breaks100:
       "The moment the harmony explains itself, Mystery is gone. Plain arrivals, bright emphasized strange chords, or a fully clarified return break it immediately.",
   },
@@ -267,7 +268,7 @@ const RECIPES: EmotionRecipe[] = [
     pedal:
       "Light-to-mid half-pedal with slight barline carry; deepest on the loop’s 4th chord.",
     whyItWorks:
-      "Beat 4 returns as memory, not as closure. Flow changes the home from inside. Color lets brightness appear, but keeps it tethered to an inward center.",
+  "Beat 4 feels like a memory, not a clear ending. Flow changes the home from inside. Color lets brightness appear, but keeps it tied to an inward center.",
     breaks100:
       "Either removing the late recolor or turning the altered bars into obvious events breaks Melancholy immediately.",
   },
@@ -326,9 +327,9 @@ const RECIPES: EmotionRecipe[] = [
     pedal:
       "Shallow half-pedal; catch after 1; refresh on 3; change just after next beat 1.",
     whyItWorks:
-      "Beat 3 is the squeeze-point, and beat 4 still does not release. In Color, the fixed upper E is crucial: the harmony tightens underneath a held ceiling.",
+  "Beat 3 is the squeeze-point, and beat 4 still does not release. In Color, the fixed upper note is crucial: the harmony tightens underneath a held ceiling.",
     breaks100:
-      "Any emotional exhale on beat 4 breaks Tension immediately. If the bar starts driving instead of compressing, it is no longer Tension.",
+      "If beat 4 feels like a release, Tension is gone immediately.",
   },
   {
     id: "anger",
@@ -349,9 +350,9 @@ const RECIPES: EmotionRecipe[] = [
       "LH root-octave pulses on 1–2–3–4, RH attack on beat 1 and hold",
     pedal: "Dry.",
     whyItWorks:
-      "The RH stays like a clenched block while the LH keeps shoving. The last-bar added notes — A♭ in Flow and G in Color — keep the ending snarling instead of releasing.",
+  "The RH stays like a clenched block while the LH keeps shoving. In both paths, the last bar gains an extra biting color, which keeps the ending snarling instead of releasing.",
     breaks100:
-      "The instant the shove becomes smooth, Anger is gone. Legato, pedal, or soft/equal LH pulses break it immediately.",
+      "The instant the shove becomes smooth, Anger is gone. Letting notes connect smoothly, using pedal, or playing the left hand too evenly breaks it immediately.",
   },
   {
     id: "fear",
@@ -376,9 +377,9 @@ const RECIPES: EmotionRecipe[] = [
       "1 T (LH octave + RH chord, RH holds) | 2 LH upper note only | 3 – | 4 LH upper note only",
     pedal: "Dry.",
     whyItWorks:
-      "Support comes late and inadequately, and there is no beat-3 center to stabilize the bar. In Flow, the last chord returns to C without ever feeling safe. In Color, the final diminished shape keeps the floor gone.",
+  "Support comes late and inadequately, and there is no beat-3 center to stabilize the bar. In Flow, the last chord returns toward the center without ever feeling safe. In Color, the final unstable shape keeps the floor gone.",
     breaks100:
-      "The moment the bass feels reliable, Fear is broken. Full LH pulses, equal support on beats 2 and 4, or any pedal that reconnects the bar destroys it.",
+      "The moment the bass feels reliable, Fear is broken. Full LH pulses, equal support on beats 2 and 4, or any pedal that makes everything blend together destroys it.",
   },
 ];
 // ---- COMPONENT ----
@@ -639,19 +640,19 @@ export default function EmotionalChordProgressionsClient() {
         </h2>
 
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <div className="text-sm text-neutral-700">Calm → flow</div>
-          <div className="text-sm text-neutral-700">Playful → bounce</div>
-          <div className="text-sm text-neutral-700">Magic → reframe</div>
-          <div className="text-sm text-neutral-700">Sadness → recede</div>
-          <div className="text-sm text-neutral-700">Mystery → obscure</div>
-          <div className="text-sm text-neutral-700">
-            Melancholy → return changed
-          </div>
-          <div className="text-sm text-neutral-700">Wonder → open</div>
-          <div className="text-sm text-neutral-700">Tension → compress</div>
-          <div className="text-sm text-neutral-700">Anger → push</div>
-          <div className="text-sm text-neutral-700">Fear → lose ground</div>
-        </div>
+  <div className="text-sm text-neutral-700">Calm → circulate</div>
+  <div className="text-sm text-neutral-700">Playful → rebound</div>
+  <div className="text-sm text-neutral-700">Magic → reframe</div>
+  <div className="text-sm text-neutral-700">Sadness → recede</div>
+  <div className="text-sm text-neutral-700">Mystery → obscure</div>
+  <div className="text-sm text-neutral-700">
+    Melancholy → return altered
+  </div>
+  <div className="text-sm text-neutral-700">Wonder → open</div>
+  <div className="text-sm text-neutral-700">Tension → compress</div>
+  <div className="text-sm text-neutral-700">Anger → force through</div>
+  <div className="text-sm text-neutral-700">Fear → lose footing</div>
+</div>
 
         <p className="mt-4 text-sm text-neutral-700">
           If you want the full explanation of why these two harmonic paths feel
@@ -664,6 +665,14 @@ export default function EmotionalChordProgressionsClient() {
           </Link>
           .
         </p>
+        <div className="mt-6 text-xs leading-relaxed text-neutral-500">
+  <p>
+    <strong>For notation nerds:</strong> this page prioritizes readable chord
+    labels over strict enharmonic spelling in every key. So you may sometimes
+    see a simpler name where a more formal theoretical spelling also exists.
+    The motion logic and emotional recipe remain unchanged.
+  </p>
+</div>
       </section>
     </main>
   );
