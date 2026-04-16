@@ -352,7 +352,7 @@ const labelText = prettyBase(baseLabel);
                       C4
                     </text>
                   )}
-                  {isPrimary && (
+                  {(isPrimary || isSecondary) && (
                     <text
                       x={k.x + WHITE_W / 2}
                       y={WHITE_H - 20}
@@ -396,7 +396,7 @@ const labelText = prettyBase(baseLabel);
                     stroke="#000"
                     strokeWidth={1}
                   />
-                  {isPrimary && (
+                                   {(isPrimary || isSecondary) && (
                     <text
                       x={k.x + BLACK_W / 2}
                       y={BLACK_H + 10}
