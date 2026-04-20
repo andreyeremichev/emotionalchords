@@ -434,7 +434,7 @@ const NOTE_TO_PC: Record<string, number> = {
 const PITCHES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
 
 function pretty(note: string) {
-  return note.replace(/#/g, "♯").replace(/b/g, "♭");
+  return note.replace(/#/g, "♯");
 }
 
 function normalizeNote(note: string) {
@@ -540,7 +540,7 @@ function buildSingleRhNote(cell: Cell, prog: Progression): string {
     return "E4";
   }
 
-  const display = cell.displayNotes ?? cell.notes;
+  const display = cell.notes;
   return buildAscendingRhVoicing([display[display.length - 1] ?? display[0]])[0];
 }
 
@@ -872,6 +872,35 @@ function buildBridgeLhNotes(notes: readonly string[]) {
 
   return notes.map((note) => noteToMidiInOctave(note, 3));
 }
+function getDisplayedLhOrder(cell: Cell, prog: Progression): readonly string[] {
+  // Companion display must match actual played order, not abstract schema order
+
+  if (prog.id === "cycling_descent" && cell.cellId === "A#DF") {
+    return ["A#", "D", "F"];
+  }
+
+  if (prog.id === "cycling_descent" && cell.cellId === "ACF") {
+    return ["A", "C", "F"];
+  }
+
+  if (prog.id === "cycling_descent" && cell.cellId === "ACE") {
+    return ["A", "C", "E"];
+  }
+
+  if (prog.id === "cycling_descent" && cell.cellId === "AC#E") {
+    return ["A", "C#", "E"];
+  }
+
+  if (prog.id === "rocking_pressure" && cell.cellId === "A#G") {
+    return ["A#", "G"];
+  }
+
+  if (prog.id === "rocking_pressure" && cell.cellId === "G#G") {
+    return ["G#", "G"];
+  }
+
+  return cell.notes;
+}
 
 function buildStepFromCell(
   key: string,
@@ -889,7 +918,7 @@ function buildStepFromCell(
     pathLabel,
     cellId: cell.cellId,
     lhNotes: buildLhNotes(cell.notes, prog, cell),
-    lhDisplay: display.map(pretty).join(" "),
+    lhDisplay: getDisplayedLhOrder(cell, prog).map(pretty).join(" "),
     beatCount,
     enginePattern: prog.lhEngine.pattern,
     rhHits: rhMode ? buildRhHitsForCell(cell, rhMode, prog, beatCount) : [],
@@ -1226,6 +1255,36 @@ function NotesProgressLine(props: {
     </div>
   );
 }
+function getDisplayedRhythmRow(step: SequenceStep) {
+  const defaultRow = Array.from({ length: step.beatCount }, (_, i) => {
+    const token = step.enginePattern[i % step.enginePattern.length];
+    return token;
+  });
+
+  // Cycling Descent variation cells currently sound like T B M
+  if (
+    step.pathLabel === "Variation" &&
+    ["A#DF", "ACF", "ACE", "AC#E"].includes(step.cellId)
+  ) {
+    const cycle = ["T", "B", "M"];
+    return Array.from({ length: step.beatCount }, (_, i) => cycle[i % cycle.length]);
+  }
+
+  // Rocking Pressure variation cells currently sound like T B
+  if (
+    step.pathLabel === "Variation" &&
+    ["A#G", "G#G", "GG_lock"].includes(step.cellId)
+  ) {
+    const cycle =
+      step.cellId === "GG_lock"
+        ? ["T", "T"]
+        : ["T", "B"];
+
+    return Array.from({ length: step.beatCount }, (_, i) => cycle[i % cycle.length]);
+  }
+
+  return defaultRow;
+}
 
 function RhythmTable(props: {
   step: SequenceStep | null;
@@ -1235,11 +1294,7 @@ function RhythmTable(props: {
   if (!step) return null;
 
   const beatLabels = Array.from({ length: step.beatCount }, (_, i) => `${i + 1}`);
-  const lhRow = Array.from({ length: step.beatCount }, (_, i) => {
-    const token = step.enginePattern[i % step.enginePattern.length];
-    return token;
-  });
-
+  const lhRow = getDisplayedRhythmRow(step);
   const rhRow = Array.from({ length: step.beatCount }, (_, i) => {
     const hit = getRhHit(step, i);
     return hit.length ? simplifyNotes(hit) : "—";
