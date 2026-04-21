@@ -475,6 +475,19 @@ function buildAscendingRhVoicing(notes: readonly string[]) {
   }
   return out.map(midiToName);
 }
+function forceRhToUpperRegister(note: string) {
+  const base = normalizeNote(note);
+  const pc = noteTokenToPc(base);
+
+  let midi = 60 + pc; // start at C4
+
+  // ensure clearly above LH (avoid overlap around C3)
+  if (midi < 60) midi += 12;
+  if (midi < 64) midi += 12; // push a bit higher for clarity
+
+  return midiToName(midi);
+}
+
 function buildSingleRhNote(cell: Cell, prog: Progression): string {
   if (prog.id === "cycling_descent") {
     if (cell.cellId === "DFA") return "A4";
@@ -708,7 +721,7 @@ function buildRhHitsForCell(cell: Cell, rhMode: string, prog: Progression, beatC
   if (rhMode === "top_drift") {
     // Anchored Drift Variation A
     const top = cell.displayNotes?.[cell.displayNotes.length - 1] ?? cell.notes[cell.notes.length - 1];
-    const topNote = buildAscendingRhVoicing([top])[0];
+const topNote = forceRhToUpperRegister(top);
     const hits: Array<{ beatIndex: number; notes: string[] }> = [];
     for (let i = 0; i < beatCount; i++) {
       const pos = i % 4;
@@ -720,7 +733,7 @@ function buildRhHitsForCell(cell: Cell, rhMode: string, prog: Progression, beatC
   if (rhMode === "inner_drift") {
     // Anchored Drift Variation B
     const inner = cell.displayNotes?.[1] ?? cell.notes[1] ?? cell.notes[0];
-    const innerNote = buildAscendingRhVoicing([inner])[0];
+const innerNote = forceRhToUpperRegister(inner);
     const hits: Array<{ beatIndex: number; notes: string[] }> = [];
     for (let i = 0; i < beatCount; i++) {
       const pos = i % 4;
