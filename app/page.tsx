@@ -298,7 +298,7 @@ export default function HomePage() {
       {/* =========================
           LEARN TEASER
       ========================= */}
-      <section className="border-t border-black/10 bg-white">
+            <section className="border-t border-black/10 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-7 sm:px-6 sm:py-8">
           <h2 className="text-lg font-semibold tracking-tight">
             Why do some piano chords feel emotional?
@@ -320,6 +320,26 @@ export default function HomePage() {
               — Flow vs Color
             </li>
           </ul>
+
+          <div className="mt-6 border-t border-black/10 pt-6">
+            <h2 className="text-lg font-semibold tracking-tight">
+              Want to go deeper?
+            </h2>
+
+            <p className="mt-2 max-w-xl text-sm text-neutral-700">
+              Explore the piano playbooks for emotional chord progressions and
+              hypnotic loops.
+            </p>
+
+            <div className="mt-3">
+              <Link
+                href="/playbooks"
+                className="text-sm font-medium underline underline-offset-2 hover:text-black"
+              >
+                Explore piano playbooks →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

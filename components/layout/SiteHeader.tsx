@@ -40,6 +40,12 @@ className="text-xs opacity-70 hover:opacity-100 hover:underline focus:underline"
 >
   Learn
 </Link>
+<Link
+  href="/playbooks"
+className="text-xs opacity-70 hover:opacity-100 hover:underline focus:underline"
+>
+  Playbooks
+</Link>
 </nav>
       </div>
     </header>

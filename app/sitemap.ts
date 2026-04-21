@@ -26,6 +26,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.85,
     },
+        {
+      url: `${SITE_URL}/playbooks`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    
     {
       url: `${SITE_URL}/learn/emotional-piano-chord-progressions`,
       lastModified: now,
