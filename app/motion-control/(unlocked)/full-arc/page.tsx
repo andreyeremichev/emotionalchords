@@ -2236,54 +2236,6 @@ async function onDownloadDemo() {
   }, [chunks, demoUI.activeCellId]);
 
   const ROOTS: Root[] = ["C", "D", "Eb", "F"];
-    // Gate is query-param only (no cookies/localStorage)
-  const [gateUnlocked, setGateUnlocked] = useState(false);
-  const [gateAmt, setGateAmt] = useState("");
-  const [gateIntent, setGateIntent] = useState("");
-  const [gateUnlockHref, setGateUnlockHref] = useState("/motion-control/unlock");
-
-  useEffect(() => {
-    const qs = typeof window !== "undefined" ? window.location.search : "";
-    const p = new URLSearchParams(qs);
-
-    setGateUnlocked(p.get("unlocked") === "1");
-    setGateAmt(p.get("amt") ?? "");
-    setGateIntent(p.get("intent") ?? "");
-    setGateUnlockHref(`/motion-control/unlock${qs}`);
-  }, []);
-
-    if (!gateUnlocked) {
-    return (
-      <main className="mx-auto w-full max-w-5xl px-4 py-10">
-        <div className="text-sm uppercase tracking-wide opacity-70">Motion Control</div>
-        <h1 className="mt-2 text-3xl font-semibold">Full Arc</h1>
-        <p className="mt-3 leading-7 opacity-90">
-          Four motion states. Seven fixed arcs. Controlled transitions.
-        </p>
-
-        <section className="mt-6 rounded-2xl border p-5">
-          <div className="text-sm uppercase tracking-wide opacity-70">Locked</div>
-          <h2 className="mt-2 text-xl font-semibold">Unlock required</h2>
-          <p className="mt-2 leading-7 opacity-90">
-            This page contains the complete system: all states, all transitions, and the full architecture map.
-          </p>
-
-          <div className="mt-4 flex flex-col gap-2">
-  <Link
-    href={gateUnlockHref}
-    className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
-  >
-    Go to Unlock
-  </Link>
-
-            <Link href="/motion-control" className="text-sm underline opacity-80">
-              Back to Containment
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">

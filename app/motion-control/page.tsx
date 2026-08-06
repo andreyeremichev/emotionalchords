@@ -1013,13 +1013,13 @@ highlightNotesSecondary={practiceUI.lhPulse}
 <LoopGrid title="Loop 2" cells={loop2Grid} activeId={null} character={character} />
 </div>
       </section>
-{/* SECTION 4 — Unlock Full Arc */}
+{/* SECTION 4 — Full Arc */}
 <section className="mt-10 rounded-2xl border p-4">
   <div className="text-sm uppercase tracking-wide opacity-70">Beyond One Motion</div>
 
-  <h2 className="mt-2 text-xl font-semibold">Unlock Full Arc (PWYW survey, $0 ok)</h2>
+  <h2 className="mt-2 text-xl font-semibold">Full Arc</h2>
 <div className="text-xs opacity-70">
-    Instant access after a quick pricing survey (no checkout yet).
+    Free and open — no signup, no checkout.
   </div>
   <p className="mt-3 leading-6 opacity-90">
   If your playing keeps resolving early, the problem usually isn’t chords — it’s motion control.
@@ -1051,15 +1051,15 @@ highlightNotesSecondary={practiceUI.lhPulse}
   type="button"
   onClick={() => {
     const qs = typeof window !== "undefined" ? window.location.search : "";
-    router.push(`/motion-control/unlock${qs}`);
+    router.push(`/motion-control/full-arc${qs}`);
   }}
   className="inline-flex items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium"
 >
-  Unlock Full Arc (PWYW survey, $0 ok)
+  Open Full Arc
 </button>
 
   <div className="text-xs opacity-70">
-    Instant access after a quick pricing survey (no checkout yet).
+    Free and open — no signup, no checkout.
   </div>
 </div>
 </section>

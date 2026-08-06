@@ -65,20 +65,16 @@ export default function TermsPrivacyPage() {
 </ul>
 
 <h2 className="pt-2 text-base font-semibold text-neutral-900">
-  Motion Control experiment (PWYW survey)
+  Motion Control
 </h2>
 <ul className="list-disc space-y-2 pl-5">
   <li>
-    “Pay What You Want (PWYW)” is a pricing survey only. No checkout or payment
-    processing is enabled in this experiment.
+    Motion Control, including Full Arc, is free and open. There is no signup,
+    no checkout, and no payment processing.
   </li>
   <li>
-    We record only aggregated counts of key steps (page views and survey
-    submissions) grouped by campaign parameters (utm_campaign and utm_content).
-  </li>
-  <li>
-    We do not store IP addresses, user agents, or user identifiers in our own
-    experiment counters.
+    We do not store any answers, submissions, IP addresses, user agents, or
+    user identifiers of our own for these pages.
   </li>
   <li>
     Our hosting provider may retain standard server logs briefly for security
